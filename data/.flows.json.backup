@@ -87,14 +87,6 @@
         "env": []
     },
     {
-        "id": "0c1f3b47482da83f",
-        "type": "tab",
-        "label": "Get links call",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "185d79b48148ba56",
         "type": "function",
         "z": "f6f2187d.f17ca8",
@@ -1620,7 +1612,7 @@
         "y": 80,
         "wires": [
             [
-                "ae04948297a9437b"
+                "b12156dd47b59ecf"
             ]
         ]
     },
@@ -1661,7 +1653,10 @@
         "x": 480,
         "y": 320,
         "wires": [
-            []
+            [
+                "d1ee23f65b6a3211",
+                "48b69f490df79ca2"
+            ]
         ]
     },
     {
@@ -1673,8 +1668,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 840,
-        "y": 160,
+        "x": 700,
+        "y": 400,
         "wires": []
     },
     {
@@ -1705,8 +1700,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 840,
-        "y": 60,
+        "x": 700,
+        "y": 240,
         "wires": []
     },
     {
@@ -1719,25 +1714,6 @@
         "x": 180,
         "y": 400,
         "wires": []
-    },
-    {
-        "id": "ae04948297a9437b",
-        "type": "link call",
-        "z": "2be0d2205654bc57",
-        "name": "",
-        "links": [
-            "76b977314bdff87c"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 660,
-        "y": 120,
-        "wires": [
-            [
-                "48b69f490df79ca2",
-                "d1ee23f65b6a3211"
-            ]
-        ]
     },
     {
         "id": "8b16852887c82c3b",
@@ -2234,102 +2210,6 @@
         "statusType": "auto",
         "x": 880,
         "y": 260,
-        "wires": []
-    },
-    {
-        "id": "508988429242a401",
-        "type": "link call",
-        "z": "0c1f3b47482da83f",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 390,
-        "y": 100,
-        "wires": [
-            [
-                "8644c145ead9a057"
-            ]
-        ]
-    },
-    {
-        "id": "8644c145ead9a057",
-        "type": "http request",
-        "z": "0c1f3b47482da83f",
-        "name": "Get links for entity instance",
-        "method": "GET",
-        "ret": "txt",
-        "paytoqs": "ignore",
-        "url": "http://atro-web/api/v1/{{entity}}/{{entityId}}/{{entityLink}}",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 660,
-        "y": 220,
-        "wires": [
-            [
-                "86a2eaa7ac22e96d"
-            ]
-        ]
-    },
-    {
-        "id": "a14352edcd3abd3e",
-        "type": "switch",
-        "z": "0c1f3b47482da83f",
-        "name": "",
-        "property": "authToken",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "null"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "false",
-        "repair": false,
-        "outputs": 2,
-        "x": 210,
-        "y": 220,
-        "wires": [
-            [
-                "508988429242a401"
-            ],
-            [
-                "8644c145ead9a057"
-            ]
-        ]
-    },
-    {
-        "id": "76b977314bdff87c",
-        "type": "link in",
-        "z": "0c1f3b47482da83f",
-        "name": "linkLinks",
-        "links": [],
-        "x": 85,
-        "y": 220,
-        "wires": [
-            [
-                "a14352edcd3abd3e"
-            ]
-        ]
-    },
-    {
-        "id": "86a2eaa7ac22e96d",
-        "type": "link out",
-        "z": "0c1f3b47482da83f",
-        "name": "link out 3",
-        "mode": "return",
-        "links": [],
-        "x": 895,
-        "y": 220,
         "wires": []
     }
 ]
