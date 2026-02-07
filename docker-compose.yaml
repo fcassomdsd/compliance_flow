@@ -17,10 +17,10 @@ services:
       - node-red-net
       - node-backend-net
     volumes:
-      - node-red-data:/data
+      - ./data:/data
 
 volumes:
-  node-red-data:
+  data:
 
 networks:
   node-red-net:

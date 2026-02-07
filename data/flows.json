@@ -2,24 +2,755 @@
     {
         "id": "f6f2187d.f17ca8",
         "type": "tab",
-        "label": "Flow 1",
+        "label": "getProtocolQuestions",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "3cc11d24.ff01a2",
-        "type": "comment",
+        "id": "57efe981d107f25d",
+        "type": "tab",
+        "label": "Get atrocore auth",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7534034467cec239",
+        "type": "tab",
+        "label": "Get topics",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7683fa1811ae788c",
+        "type": "tab",
+        "label": "Query entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c865579c6e7f852c",
+        "type": "tab",
+        "label": "Update entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e6eb17aaaa227e4d",
+        "type": "tab",
+        "label": "Add entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "15c8a1dad7c49d22",
+        "type": "tab",
+        "label": "Delete entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2be0d2205654bc57",
+        "type": "tab",
+        "label": "Get links",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b464a16d5b6e3016",
+        "type": "tab",
+        "label": "Add links",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1151e4755687bce1",
+        "type": "tab",
+        "label": "Delete links",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "aef96e90a1e86beb",
+        "type": "tab",
+        "label": "Get Entity call",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "185d79b48148ba56",
+        "type": "function",
         "z": "f6f2187d.f17ca8",
-        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
-        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
-        "x": 350,
-        "y": 80,
+        "name": "Set request parameters",
+        "func": "let whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nif (msg.topics.length > 0) {\n  whereobj.value.push({\"type\": \"in\", \n                       \"attribute\": \"topicId\", \n                       \"value\": msg.topics});\n};\n\nif (msg.specId.length > 0) {\n  whereobj.value.push({\n    \"type\": \"equals\",\n    \"attribute\": \"specialtyId\",\n    \"value\": msg.specId\n  });\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 360,
+        "wires": [
+            [
+                "96cee80f5a7d4fc3"
+            ]
+        ]
+    },
+    {
+        "id": "96cee80f5a7d4fc3",
+        "type": "http request",
+        "z": "f6f2187d.f17ca8",
+        "name": "Get protocol questions",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/ProtocolQuestion?select=topicName,sequence,texto,verification,normativas&maxSize=200",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 540,
+        "y": 360,
+        "wires": [
+            [
+                "5552e88df9693eeb"
+            ]
+        ]
+    },
+    {
+        "id": "05eec633d7f5e98f",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spec",
+                "pt": "msg",
+                "to": "req.query.spec",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topics",
+                "pt": "msg",
+                "to": "req.body.topics",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tags",
+                "pt": "msg",
+                "to": "req.body.tags",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 140,
+        "wires": [
+            [
+                "c4299e8775e77c4a"
+            ]
+        ]
+    },
+    {
+        "id": "794488494f5d8ff2",
+        "type": "http in",
+        "z": "f6f2187d.f17ca8",
+        "name": "Get protocolo",
+        "url": "/protocolo",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 140,
+        "wires": [
+            [
+                "05eec633d7f5e98f"
+            ]
+        ]
+    },
+    {
+        "id": "7ebff2d241b99fec",
+        "type": "http response",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 940,
+        "y": 620,
         "wires": []
     },
     {
-        "id": "f15320d5a658498f",
-        "type": "inject",
+        "id": "5552e88df9693eeb",
+        "type": "split",
         "z": "f6f2187d.f17ca8",
+        "name": "Split query object",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 810,
+        "y": 360,
+        "wires": [
+            [
+                "222a0d72d1228084"
+            ]
+        ]
+    },
+    {
+        "id": "1aa0da4621262a93",
+        "type": "join",
+        "z": "f6f2187d.f17ca8",
+        "name": "Join into questions array",
+        "mode": "auto",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": true,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 610,
+        "y": 480,
+        "wires": [
+            [
+                "420a5f55c84c8148"
+            ]
+        ]
+    },
+    {
+        "id": "222a0d72d1228084",
+        "type": "split",
+        "z": "f6f2187d.f17ca8",
+        "name": "Split questions",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 1060,
+        "y": 360,
+        "wires": [
+            [
+                "851e9b7e0566dddc"
+            ]
+        ]
+    },
+    {
+        "id": "851e9b7e0566dddc",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Convert to checklist format",
+        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : msg.payload.normativas.reduce((accu, actual) => { return accu + actual.reglamentoName + \" \" + actual.name + \"\\n\"}, \"\")\n                };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 480,
+        "wires": [
+            [
+                "1aa0da4621262a93"
+            ]
+        ]
+    },
+    {
+        "id": "abb80c187da0adf6",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "add specialty",
+        "func": "msg.payload = {\"specialty\": msg.spec,\n                \"questions\" : msg.payload}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 620,
+        "wires": [
+            [
+                "da1b9cfe4028bec1"
+            ]
+        ]
+    },
+    {
+        "id": "da1b9cfe4028bec1",
+        "type": "json",
+        "z": "f6f2187d.f17ca8",
+        "name": "Convert to json",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 560,
+        "y": 620,
+        "wires": [
+            [
+                "7ebff2d241b99fec"
+            ]
+        ]
+    },
+    {
+        "id": "c4299e8775e77c4a",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 630,
+        "y": 140,
+        "wires": [
+            [
+                "64cea757ea3843e6"
+            ]
+        ]
+    },
+    {
+        "id": "420a5f55c84c8148",
+        "type": "sort",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "order": "ascending",
+        "as_num": false,
+        "target": "payload",
+        "targetType": "msg",
+        "msgKey": "topic&sequence",
+        "msgKeyType": "jsonata",
+        "seqKey": "payload",
+        "seqKeyType": "msg",
+        "x": 870,
+        "y": 480,
+        "wires": [
+            [
+                "abb80c187da0adf6"
+            ]
+        ]
+    },
+    {
+        "id": "64cea757ea3843e6",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get topics",
+        "links": [
+            "c30da64cde6490b7"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 840,
+        "y": 140,
+        "wires": [
+            [
+                "be6ac0a4cc1373ad"
+            ]
+        ]
+    },
+    {
+        "id": "2852a7a7c4aebcb9",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "be6ac0a4cc1373ad",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "specialty parameters",
+        "func": "msg.entity = \"Specialty\";\nmsg.entityData = { \"name\" : msg.spec }\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 240,
+        "wires": [
+            [
+                "eb9ae640c67e9e05"
+            ]
+        ]
+    },
+    {
+        "id": "eb9ae640c67e9e05",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "Query specialty",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 640,
+        "y": 240,
+        "wires": [
+            [
+                "96a8237c40d6b37c"
+            ]
+        ]
+    },
+    {
+        "id": "96a8237c40d6b37c",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "get specialty id",
+        "func": "const specJson = JSON.parse(msg.payload);\nmsg.specId = specJson.list[0].id;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 240,
+        "wires": [
+            [
+                "185d79b48148ba56",
+                "2852a7a7c4aebcb9"
+            ]
+        ]
+    },
+    {
+        "id": "aa61590209297976",
+        "type": "http request",
+        "z": "57efe981d107f25d",
+        "name": "Get auth token",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://atro-web/api/v1/App/user",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [],
+        "x": 440,
+        "y": 160,
+        "wires": [
+            [
+                "2c42610a8c33a618"
+            ]
+        ]
+    },
+    {
+        "id": "79c7123b33df9145",
+        "type": "function",
+        "z": "57efe981d107f25d",
+        "name": "Set authorization header",
+        "func": "msg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 160,
+        "wires": [
+            [
+                "3e6981e8eae71675"
+            ]
+        ]
+    },
+    {
+        "id": "2cecf651291035ab",
+        "type": "link in",
+        "z": "57efe981d107f25d",
+        "name": "Link atrocore authorization",
+        "links": [],
+        "x": 265,
+        "y": 160,
+        "wires": [
+            [
+                "aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "3e6981e8eae71675",
+        "type": "link out",
+        "z": "57efe981d107f25d",
+        "name": "link out 1",
+        "mode": "return",
+        "links": [],
+        "x": 1085,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "2c42610a8c33a618",
+        "type": "change",
+        "z": "57efe981d107f25d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "authToken",
+                "pt": "msg",
+                "to": "payload.authorizationToken",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 160,
+        "wires": [
+            [
+                "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "387e9b79ae9ce28d",
+        "type": "http request",
+        "z": "7534034467cec239",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/QuestionTopic?select=id,name",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 510,
+        "y": 160,
+        "wires": [
+            [
+                "a2631810f8cdcdbf"
+            ]
+        ]
+    },
+    {
+        "id": "39d8088c93d45fdb",
+        "type": "function",
+        "z": "7534034467cec239",
+        "name": "Set topic parameters",
+        "func": "msg.payload = {\n    where : '[{\"type\":\"and\",\"value\": [{\"type\":\"in\",\"attribute\":\"name\",\"value\":' + JSON.stringify(msg.topics) + '}]}]'\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 160,
+        "wires": [
+            [
+                "387e9b79ae9ce28d"
+            ]
+        ]
+    },
+    {
+        "id": "a2631810f8cdcdbf",
+        "type": "split",
+        "z": "7534034467cec239",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 690,
+        "y": 160,
+        "wires": [
+            [
+                "2596331805042d7c"
+            ]
+        ]
+    },
+    {
+        "id": "c4b6eb4e2de5824b",
+        "type": "change",
+        "z": "7534034467cec239",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 160,
+        "wires": [
+            [
+                "883ce19a7a4069f3"
+            ]
+        ]
+    },
+    {
+        "id": "2596331805042d7c",
+        "type": "split",
+        "z": "7534034467cec239",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 850,
+        "y": 160,
+        "wires": [
+            [
+                "c4b6eb4e2de5824b"
+            ]
+        ]
+    },
+    {
+        "id": "883ce19a7a4069f3",
+        "type": "join",
+        "z": "7534034467cec239",
+        "name": "",
+        "mode": "auto",
+        "build": "array",
+        "property": "payload.topicId",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "95dfb395fc857a22"
+            ]
+        ]
+    },
+    {
+        "id": "95dfb395fc857a22",
+        "type": "change",
+        "z": "7534034467cec239",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topics",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 520,
+        "y": 260,
+        "wires": [
+            [
+                "595e3edbf9c89916"
+            ]
+        ]
+    },
+    {
+        "id": "c30da64cde6490b7",
+        "type": "link in",
+        "z": "7534034467cec239",
+        "name": "Get topics",
+        "links": [],
+        "x": 105,
+        "y": 160,
+        "wires": [
+            [
+                "39d8088c93d45fdb"
+            ]
+        ]
+    },
+    {
+        "id": "595e3edbf9c89916",
+        "type": "link out",
+        "z": "7534034467cec239",
+        "name": "link out 2",
+        "mode": "return",
+        "links": [],
+        "x": 775,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "239341ef637e621d",
+        "type": "inject",
+        "z": "7683fa1811ae788c",
         "name": "",
         "props": [
             {
@@ -30,123 +761,56 @@
                 "vt": "str"
             }
         ],
-        "repeat": "300",
+        "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 240,
+        "payload": "{ \"entity\": \"ServiceProvider\" }",
+        "payloadType": "json",
+        "x": 130,
+        "y": 80,
         "wires": [
-            [
-                "3f9085cdd772cc59"
-            ]
+            []
         ]
     },
     {
-        "id": "3f9085cdd772cc59",
-        "type": "http request",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "method": "GET",
-        "ret": "txt",
-        "paytoqs": "ignore",
-        "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.csv",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 550,
-        "y": 240,
-        "wires": [
-            [
-                "8007d4da7240e4e1"
-            ]
-        ]
-    },
-    {
-        "id": "8007d4da7240e4e1",
-        "type": "csv",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "spec": "rfc",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "none",
-        "multi": "one",
-        "ret": "\\r\\n",
-        "temp": "",
-        "skip": "0",
-        "strings": true,
-        "include_empty_strings": "",
-        "include_null_values": "",
-        "x": 770,
-        "y": 240,
-        "wires": [
-            [
-                "6ad8e002a6fd0556",
-                "22a0881b96a7cc41"
-            ]
-        ]
-    },
-    {
-        "id": "6ad8e002a6fd0556",
-        "type": "debug",
-        "z": "f6f2187d.f17ca8",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 980,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "22a0881b96a7cc41",
-        "type": "switch",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "property": "payload.mag",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "gte",
-                "v": "5",
-                "vt": "num"
-            }
+        "id": "454283bf5034e946",
+        "type": "link call",
+        "z": "7683fa1811ae788c",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
         ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 890,
-        "y": 380,
+        "linkType": "static",
+        "timeout": "30",
+        "x": 590,
+        "y": 80,
         "wires": [
             [
-                "3b82924b4843dc88"
+                "6adb4db4ea764b60"
             ]
         ]
     },
     {
-        "id": "3b82924b4843dc88",
+        "id": "b09f2d07a15b9060",
         "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
+        "z": "7683fa1811ae788c",
+        "name": "Store request parameters",
         "rules": [
             {
                 "t": "set",
-                "p": "payload",
+                "p": "entity",
                 "pt": "msg",
-                "to": "PANIC!",
-                "tot": "str"
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -154,28 +818,1430 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1100,
-        "y": 380,
+        "x": 350,
+        "y": 80,
         "wires": [
             [
-                "5599a903ec16aef6"
+                "454283bf5034e946"
             ]
         ]
     },
     {
-        "id": "5599a903ec16aef6",
+        "id": "7dba0c822478bbc0",
+        "type": "template",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "[\n{{#payload.list}}\n{\n\"id\": \"{{ id }}\",\n\"name\": \"{{ name }}\",\n\"alias\": \"{{ alias }}\"\n}{{^payload.last}},{{/payload.last}}\n{{/payload.list}}\n]",
+        "output": "str",
+        "x": 600,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "202d921782b44e07",
+        "type": "http in",
+        "z": "7683fa1811ae788c",
+        "name": "Query Entity",
+        "url": "/queryEntity",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "b09f2d07a15b9060"
+            ]
+        ]
+    },
+    {
+        "id": "9013d18f89d05fcd",
+        "type": "http response",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 780,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "5a909e22eeb8ab6e",
+        "type": "catch",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 280,
+        "y": 480,
+        "wires": [
+            [
+                "9c45b78ce0fc5b6c"
+            ]
+        ]
+    },
+    {
+        "id": "9c45b78ce0fc5b6c",
+        "type": "http response",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 520,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "cb57f366ba0a1c13",
+        "type": "function",
+        "z": "7683fa1811ae788c",
+        "name": "function 1",
+        "func": "msg.payload.last = function () {return msg.payload.list[msg.payload.list.length - 1].id == this.id};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6bf10b4a40e39b6e",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "7683fa1811ae788c",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "6adb4db4ea764b60",
+        "type": "link call",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 580,
+        "y": 240,
+        "wires": [
+            [
+                "9013d18f89d05fcd",
+                "6bf10b4a40e39b6e"
+            ]
+        ]
+    },
+    {
+        "id": "2b0948e5048c1d42",
+        "type": "http in",
+        "z": "c865579c6e7f852c",
+        "name": "Update Entity",
+        "url": "/updateEntity",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "e54b49132b990229"
+            ]
+        ]
+    },
+    {
+        "id": "e54b49132b990229",
+        "type": "change",
+        "z": "c865579c6e7f852c",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "updateData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "32b7e30306b45659"
+            ]
+        ]
+    },
+    {
+        "id": "32b7e30306b45659",
+        "type": "link call",
+        "z": "c865579c6e7f852c",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 650,
+        "y": 120,
+        "wires": [
+            [
+                "0d73f2eaebb17382"
+            ]
+        ]
+    },
+    {
+        "id": "0d73f2eaebb17382",
+        "type": "function",
+        "z": "c865579c6e7f852c",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.updateData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 120,
+        "wires": [
+            [
+                "5f946ecd39880a69"
+            ]
+        ]
+    },
+    {
+        "id": "5f946ecd39880a69",
+        "type": "http request",
+        "z": "c865579c6e7f852c",
+        "name": "Update entity records",
+        "method": "PUT",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}/{{entityId}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1200,
+        "y": 120,
+        "wires": [
+            [
+                "863a44862822b5a9",
+                "89aeadd7e4fef1c0"
+            ]
+        ]
+    },
+    {
+        "id": "62f886868fc35281",
+        "type": "http response",
+        "z": "c865579c6e7f852c",
+        "name": "Good",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1350,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "15a1c0858625faac",
+        "type": "inject",
+        "z": "c865579c6e7f852c",
+        "name": "",
+        "props": [
+            {
+                "p": "req.body",
+                "v": "{ \"scope\": \"Nothing to see here\" }",
+                "vt": "json"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "863a44862822b5a9",
+        "type": "debug",
+        "z": "c865579c6e7f852c",
         "name": "debug 2",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1240,
-        "y": 520,
+        "x": 920,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c680dd9cfe15db3d",
+        "type": "http response",
+        "z": "c865579c6e7f852c",
+        "name": "No change",
+        "statusCode": "204",
+        "headers": {},
+        "x": 1370,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "89aeadd7e4fef1c0",
+        "type": "switch",
+        "z": "c865579c6e7f852c",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "304",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1170,
+        "y": 280,
+        "wires": [
+            [
+                "62f886868fc35281"
+            ],
+            [
+                "c680dd9cfe15db3d"
+            ],
+            [
+                "13ae05addc05b1d2"
+            ]
+        ]
+    },
+    {
+        "id": "13ae05addc05b1d2",
+        "type": "http response",
+        "z": "c865579c6e7f852c",
+        "name": "Error",
+        "statusCode": "500",
+        "headers": {},
+        "x": 1260,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "b7ae165fc4ae3a9e",
+        "type": "http in",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Add Entity",
+        "url": "/addEntity",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 220,
+        "wires": [
+            [
+                "1b834ed079034115"
+            ]
+        ]
+    },
+    {
+        "id": "1b834ed079034115",
+        "type": "change",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "addData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 140,
+        "wires": [
+            [
+                "7914f79036bd67d1"
+            ]
+        ]
+    },
+    {
+        "id": "7914f79036bd67d1",
+        "type": "link call",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 650,
+        "y": 140,
+        "wires": [
+            [
+                "5c0ca4319b81e817"
+            ]
+        ]
+    },
+    {
+        "id": "5c0ca4319b81e817",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.addData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 140,
+        "wires": [
+            [
+                "5475d96d7baf4b89"
+            ]
+        ]
+    },
+    {
+        "id": "5475d96d7baf4b89",
+        "type": "http request",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Add entity record",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1190,
+        "y": 140,
+        "wires": [
+            [
+                "78cd9869f40be1c8",
+                "395b3799645197f5"
+            ]
+        ]
+    },
+    {
+        "id": "78cd9869f40be1c8",
+        "type": "http response",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1220,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "2579dbcbd4777f2c",
+        "type": "inject",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "props": [
+            {
+                "p": "req.body",
+                "v": "{ \"scope\": \"Nothing to see here\" }",
+                "vt": "json"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fc58921eb3167d4c",
+        "type": "catch",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 360,
+        "y": 300,
+        "wires": [
+            [
+                "cb95456a5e6cf9db"
+            ]
+        ]
+    },
+    {
+        "id": "395b3799645197f5",
+        "type": "debug",
+        "z": "e6eb17aaaa227e4d",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "cb95456a5e6cf9db",
+        "type": "http response",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 540,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c4daafefcacb6c5c",
+        "type": "http in",
+        "z": "15c8a1dad7c49d22",
+        "name": "Delete Entity",
+        "url": "/deleteEntity",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 200,
+        "wires": [
+            [
+                "3d4a96a7c52cc266"
+            ]
+        ]
+    },
+    {
+        "id": "3d4a96a7c52cc266",
+        "type": "change",
+        "z": "15c8a1dad7c49d22",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "3707a0f07de74116"
+            ]
+        ]
+    },
+    {
+        "id": "3707a0f07de74116",
+        "type": "link call",
+        "z": "15c8a1dad7c49d22",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 630,
+        "y": 120,
+        "wires": [
+            [
+                "20e115303a0a641e"
+            ]
+        ]
+    },
+    {
+        "id": "b7d25ec37a5461a2",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.addData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "20e115303a0a641e",
+        "type": "http request",
+        "z": "15c8a1dad7c49d22",
+        "name": "Delete entity record",
+        "method": "DELETE",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}/{{entityId}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "permanently",
+                "valueType": "other",
+                "valueValue": "false"
+            }
+        ],
+        "x": 890,
+        "y": 120,
+        "wires": [
+            [
+                "a81113143222e840",
+                "659207996fc8eeec"
+            ]
+        ]
+    },
+    {
+        "id": "a81113143222e840",
+        "type": "http response",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1200,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d952c21d294f39b1",
+        "type": "catch",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 340,
+        "y": 280,
+        "wires": [
+            [
+                "985233363769dfb3"
+            ]
+        ]
+    },
+    {
+        "id": "659207996fc8eeec",
+        "type": "debug",
+        "z": "15c8a1dad7c49d22",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "985233363769dfb3",
+        "type": "http response",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 520,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "f2ea80ba1964cbca",
+        "type": "http in",
+        "z": "2be0d2205654bc57",
+        "name": "Get Entity Links",
+        "url": "/getLinks",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "281dc8339d56e6e6"
+            ]
+        ]
+    },
+    {
+        "id": "281dc8339d56e6e6",
+        "type": "change",
+        "z": "2be0d2205654bc57",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "req.query.link",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 80,
+        "wires": [
+            [
+                "b12156dd47b59ecf"
+            ]
+        ]
+    },
+    {
+        "id": "b12156dd47b59ecf",
+        "type": "link call",
+        "z": "2be0d2205654bc57",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "4c58e34bb7b2e483"
+            ]
+        ]
+    },
+    {
+        "id": "4c58e34bb7b2e483",
+        "type": "http request",
+        "z": "2be0d2205654bc57",
+        "name": "Get links for entity instance",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://atro-web/api/v1/{{entity}}/{{entityId}}/{{entityLink}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 480,
+        "y": 320,
+        "wires": [
+            [
+                "d1ee23f65b6a3211",
+                "48b69f490df79ca2"
+            ]
+        ]
+    },
+    {
+        "id": "d1ee23f65b6a3211",
+        "type": "http response",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 700,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "500256bb13bdf379",
+        "type": "catch",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "92e365dc5ad8fbc5"
+            ]
+        ]
+    },
+    {
+        "id": "48b69f490df79ca2",
+        "type": "debug",
+        "z": "2be0d2205654bc57",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "92e365dc5ad8fbc5",
+        "type": "http response",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 180,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "8b16852887c82c3b",
+        "type": "http in",
+        "z": "b464a16d5b6e3016",
+        "name": "Add Entity Links",
+        "url": "/addLinks",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 220,
+        "wires": [
+            [
+                "e5c8e05aa784a98c"
+            ]
+        ]
+    },
+    {
+        "id": "e5c8e05aa784a98c",
+        "type": "change",
+        "z": "b464a16d5b6e3016",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "req.query.link",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "addData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 140,
+        "wires": [
+            [
+                "80647407d320b8a5"
+            ]
+        ]
+    },
+    {
+        "id": "80647407d320b8a5",
+        "type": "link call",
+        "z": "b464a16d5b6e3016",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 410,
+        "y": 220,
+        "wires": [
+            [
+                "fb0719b9314b3bef"
+            ]
+        ]
+    },
+    {
+        "id": "3a6c14cbae2c5777",
+        "type": "http request",
+        "z": "b464a16d5b6e3016",
+        "name": "Add links for entity instance",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://atro-web/api/v1/{{entity}}/{{entityId}}/{{entityLink}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 680,
+        "y": 400,
+        "wires": [
+            [
+                "12b61e0fc68d30d2",
+                "f22655fb09e55bb5"
+            ]
+        ]
+    },
+    {
+        "id": "12b61e0fc68d30d2",
+        "type": "http response",
+        "z": "b464a16d5b6e3016",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 860,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "e88fe4516ede2a63",
+        "type": "catch",
+        "z": "b464a16d5b6e3016",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 320,
+        "wires": [
+            [
+                "6bfc24f589892edd"
+            ]
+        ]
+    },
+    {
+        "id": "f22655fb09e55bb5",
+        "type": "debug",
+        "z": "b464a16d5b6e3016",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "6bfc24f589892edd",
+        "type": "http response",
+        "z": "b464a16d5b6e3016",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 260,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "fb0719b9314b3bef",
+        "type": "function",
+        "z": "b464a16d5b6e3016",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.addData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 300,
+        "wires": [
+            [
+                "3a6c14cbae2c5777"
+            ]
+        ]
+    },
+    {
+        "id": "b83dcc225c7eb88d",
+        "type": "http in",
+        "z": "1151e4755687bce1",
+        "name": "Delete Entity Links",
+        "url": "/deleteLinks",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "f621ee193228d87d"
+            ]
+        ]
+    },
+    {
+        "id": "f621ee193228d87d",
+        "type": "change",
+        "z": "1151e4755687bce1",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "req.query.link",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "rmData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 60,
+        "wires": [
+            [
+                "fe089eb76e538b32"
+            ]
+        ]
+    },
+    {
+        "id": "fe089eb76e538b32",
+        "type": "link call",
+        "z": "1151e4755687bce1",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 410,
+        "y": 140,
+        "wires": [
+            [
+                "b70f9835e7dad017"
+            ]
+        ]
+    },
+    {
+        "id": "65bcb3492b0bda31",
+        "type": "http request",
+        "z": "1151e4755687bce1",
+        "name": "Delete links for entity instance",
+        "method": "DELETE",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://atro-web/api/v1/{{entity}}/{{entityId}}/{{entityLink}}?ids={{ids}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 690,
+        "y": 320,
+        "wires": [
+            [
+                "f4c72dd42ee97418",
+                "bdb2e47c471e98e4"
+            ]
+        ]
+    },
+    {
+        "id": "f4c72dd42ee97418",
+        "type": "http response",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 860,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "00daa90e1d4b157f",
+        "type": "catch",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 240,
+        "wires": [
+            [
+                "a101b1a1587ce7f9"
+            ]
+        ]
+    },
+    {
+        "id": "bdb2e47c471e98e4",
+        "type": "debug",
+        "z": "1151e4755687bce1",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "a101b1a1587ce7f9",
+        "type": "http response",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 260,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "b70f9835e7dad017",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "Set request parameters",
+        "func": "msg.ids = msg.rmData.ids.reduce( (prev, curr) => prev + (curr ? \",\"+curr : \"\") );\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 240,
+        "wires": [
+            [
+                "65bcb3492b0bda31"
+            ]
+        ]
+    },
+    {
+        "id": "0ea3a418e92c6a8a",
+        "type": "function",
+        "z": "aef96e90a1e86beb",
+        "name": "Set request parameters",
+        "func": "let whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nlet condition;\n\nfor (const [key, value] of Object.entries(msg.entityData)) {\n  condition = {\"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n               \"attribute\": key,\n               \"value\" : value\n              }\n\n  whereobj.value.push(condition);\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "6f319e5a075c3efc",
+                "ef1280f979b0ae24"
+            ]
+        ]
+    },
+    {
+        "id": "6f319e5a075c3efc",
+        "type": "http request",
+        "z": "aef96e90a1e86beb",
+        "name": "Get entity records",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}?maxSize=200",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 730,
+        "y": 120,
+        "wires": [
+            [
+                "be2469ef5f88a0cc"
+            ]
+        ]
+    },
+    {
+        "id": "be2469ef5f88a0cc",
+        "type": "json",
+        "z": "aef96e90a1e86beb",
+        "name": "",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 970,
+        "y": 120,
+        "wires": [
+            [
+                "6fb50185fb3085f4"
+            ]
+        ]
+    },
+    {
+        "id": "9d1c32d934dc0bce",
+        "type": "link in",
+        "z": "aef96e90a1e86beb",
+        "name": "linkQuery",
+        "links": [],
+        "x": 175,
+        "y": 120,
+        "wires": [
+            [
+                "0ea3a418e92c6a8a"
+            ]
+        ]
+    },
+    {
+        "id": "6fb50185fb3085f4",
+        "type": "link out",
+        "z": "aef96e90a1e86beb",
+        "name": "linkOutQuery",
+        "mode": "return",
+        "links": [],
+        "x": 1155,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "ef1280f979b0ae24",
+        "type": "debug",
+        "z": "aef96e90a1e86beb",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 280,
         "wires": []
     }
 ]
