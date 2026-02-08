@@ -99,15 +99,15 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set request parameters",
-        "func": "let whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nif (msg.questionIds.length > 0) {\n  whereobj.value.push({\"type\": \"in\", \n                       \"attribute\": \"id\", \n                       \"value\": msg.questionIds});\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n\nreturn msg;",
+        "func": "/*\nlet whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nif (msg.questionIds.length > 0) {\n  whereobj.value.push({\"type\": \"in\", \n                       \"attribute\": \"id\", \n                       \"value\": msg.questionIds});\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n*/\n\nmsg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"topicName,sequence,texto,verification,normativas\";\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 470,
-        "y": 260,
+        "x": 450,
+        "y": 700,
         "wires": [
             [
                 "af6db56e177d734f"
@@ -130,39 +130,10 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 300,
-        "y": 740,
+        "x": 680,
+        "y": 1080,
         "wires": [
-            [
-                "5552e88df9693eeb"
-            ]
-        ]
-    },
-    {
-        "id": "05eec633d7f5e98f",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "Capture request parameters",
-        "rules": [
-            {
-                "t": "set",
-                "p": "iSpec",
-                "pt": "msg",
-                "to": "req.query.iSpec",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 240,
-        "y": 160,
-        "wires": [
-            [
-                "be6ac0a4cc1373ad"
-            ]
+            []
         ]
     },
     {
@@ -178,7 +149,7 @@
         "y": 60,
         "wires": [
             [
-                "05eec633d7f5e98f"
+                "e5eea5df0c354686"
             ]
         ]
     },
@@ -191,8 +162,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 720,
-        "y": 520,
+        "x": 400,
+        "y": 400,
         "wires": []
     },
     {
@@ -207,8 +178,8 @@
         "stream": false,
         "addname": "",
         "property": "payload",
-        "x": 190,
-        "y": 800,
+        "x": 170,
+        "y": 1140,
         "wires": [
             [
                 "222a0d72d1228084"
@@ -236,8 +207,8 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 230,
-        "y": 860,
+        "x": 210,
+        "y": 1200,
         "wires": [
             [
                 "420a5f55c84c8148"
@@ -256,8 +227,8 @@
         "stream": false,
         "addname": "",
         "property": "payload",
-        "x": 420,
-        "y": 800,
+        "x": 400,
+        "y": 1140,
         "wires": [
             [
                 "851e9b7e0566dddc"
@@ -276,8 +247,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 660,
-        "y": 800,
+        "x": 640,
+        "y": 1140,
         "wires": [
             [
                 "1aa0da4621262a93"
@@ -296,8 +267,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 820,
-        "y": 420,
+        "x": 800,
+        "y": 860,
         "wires": [
             [
                 "da1b9cfe4028bec1"
@@ -312,11 +283,11 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 420,
-        "y": 520,
+        "x": 400,
+        "y": 960,
         "wires": [
             [
-                "7ebff2d241b99fec"
+                "8483d9f18f8697e1"
             ]
         ]
     },
@@ -333,8 +304,8 @@
         "msgKeyType": "jsonata",
         "seqKey": "payload",
         "seqKeyType": "msg",
-        "x": 450,
-        "y": 860,
+        "x": 430,
+        "y": 1200,
         "wires": [
             [
                 "33fe8eec4d8b8b7d"
@@ -354,8 +325,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 940,
-        "y": 600,
+        "x": 740,
+        "y": 1000,
         "wires": []
     },
     {
@@ -363,15 +334,15 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "inspected question parameters",
-        "func": "msg.entity = \"InspectionQuestion\";\nmsg.entityData = { \"inspectedSpecialtyId\" : msg.iSpec }\nreturn msg;",
+        "func": "msg.entity = \"InspectionQuestion\";\nmsg.entityData = { \"inspectedSpecialtyId\" : msg.iSpec }\nmsg.entitySelect = null;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 550,
-        "y": 160,
+        "x": 390,
+        "y": 600,
         "wires": [
             [
                 "eb9ae640c67e9e05"
@@ -388,8 +359,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 840,
-        "y": 160,
+        "x": 820,
+        "y": 600,
         "wires": [
             [
                 "96a8237c40d6b37c"
@@ -408,8 +379,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 160,
-        "y": 260,
+        "x": 140,
+        "y": 700,
         "wires": [
             [
                 "185d79b48148ba56"
@@ -449,8 +420,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 210,
-        "y": 420,
+        "x": 190,
+        "y": 860,
         "wires": [
             [
                 "4b52a551340e0fbf"
@@ -467,8 +438,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 500,
-        "y": 420,
+        "x": 480,
+        "y": 860,
         "wires": [
             [
                 "abb80c187da0adf6"
@@ -481,11 +452,11 @@
         "z": "f6f2187d.f17ca8",
         "name": "create checklist",
         "links": [],
-        "x": 95,
-        "y": 740,
+        "x": 75,
+        "y": 1080,
         "wires": [
             [
-                "96cee80f5a7d4fc3"
+                "ac0b6432f0212e0f"
             ]
         ]
     },
@@ -496,8 +467,8 @@
         "name": "checklist created",
         "mode": "return",
         "links": [],
-        "x": 825,
-        "y": 860,
+        "x": 805,
+        "y": 1200,
         "wires": []
     },
     {
@@ -510,8 +481,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 780,
-        "y": 260,
+        "x": 760,
+        "y": 700,
         "wires": [
             [
                 "cae8bcad7494f13a"
@@ -537,8 +508,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 620,
-        "y": 860,
+        "x": 600,
+        "y": 1200,
         "wires": [
             [
                 "5bcda936ac856077"
@@ -551,8 +522,8 @@
         "z": "f6f2187d.f17ca8",
         "name": "create checklist sub flow",
         "info": "",
-        "x": 190,
-        "y": 680,
+        "x": 170,
+        "y": 1020,
         "wires": []
     },
     {
@@ -588,8 +559,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 190,
-        "y": 340,
+        "x": 170,
+        "y": 780,
         "wires": [
             [
                 "302b18fdc9ef9d69"
@@ -606,8 +577,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 540,
-        "y": 340,
+        "x": 520,
+        "y": 780,
         "wires": [
             [
                 "bca3ef9af215c4de"
@@ -633,11 +604,312 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 810,
-        "y": 340,
+        "x": 790,
+        "y": 780,
         "wires": [
             [
                 "d4904ab2ba580858"
+            ]
+        ]
+    },
+    {
+        "id": "20e55fc3e383e9f4",
+        "type": "link in",
+        "z": "f6f2187d.f17ca8",
+        "name": "getChecklist",
+        "links": [],
+        "x": 75,
+        "y": 600,
+        "wires": [
+            [
+                "be6ac0a4cc1373ad"
+            ]
+        ]
+    },
+    {
+        "id": "8483d9f18f8697e1",
+        "type": "link out",
+        "z": "f6f2187d.f17ca8",
+        "name": "getChecklistOut",
+        "mode": "return",
+        "links": [],
+        "x": 575,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "e5eea5df0c354686",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.inspection",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyCode",
+                "pt": "msg",
+                "to": "req.query.specialty",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [
+                "6c17c2ca94b9b6f3"
+            ]
+        ]
+    },
+    {
+        "id": "6c17c2ca94b9b6f3",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "inspection parameters",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"code\" : msg.inspectionCode }\nmsg.entitySelect = null;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 160,
+        "wires": [
+            [
+                "8daa3914656634e9"
+            ]
+        ]
+    },
+    {
+        "id": "8daa3914656634e9",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspection",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 680,
+        "y": 160,
+        "wires": [
+            [
+                "75c6990d2dbd8133"
+            ]
+        ]
+    },
+    {
+        "id": "75c6990d2dbd8133",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "save inspection id",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionId",
+                "pt": "msg",
+                "to": "payload.list[0].id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 890,
+        "y": 160,
+        "wires": [
+            [
+                "9a7d1d5dbbd2eb97"
+            ]
+        ]
+    },
+    {
+        "id": "9a7d1d5dbbd2eb97",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "specialty parameters",
+        "func": "msg.entity = \"Specialty\";\nmsg.entityData = { \"code\" : msg.specialtyCode }\nmsg.entitySelect = null;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 240,
+        "wires": [
+            [
+                "199c1b660b59e109"
+            ]
+        ]
+    },
+    {
+        "id": "199c1b660b59e109",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get specialty",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 430,
+        "y": 240,
+        "wires": [
+            [
+                "bd4d615dccf1db93"
+            ]
+        ]
+    },
+    {
+        "id": "bd4d615dccf1db93",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "save specialty id",
+        "rules": [
+            {
+                "t": "set",
+                "p": "specialtyId",
+                "pt": "msg",
+                "to": "payload.list[0].id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 240,
+        "wires": [
+            [
+                "89e25c2338dbce76"
+            ]
+        ]
+    },
+    {
+        "id": "89e25c2338dbce76",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "inspected specialty parameters",
+        "func": "msg.entity = \"InspectedSpecialty\";\nmsg.entityData = { \"inspectionId\" : msg.inspectionId, \n                    \"specialtyId\": msg.specialtyId\n                }\nmsg.entitySelect = null\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 320,
+        "wires": [
+            [
+                "e07a75568b17aa84"
+            ]
+        ]
+    },
+    {
+        "id": "e07a75568b17aa84",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspected specialty",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 520,
+        "y": 320,
+        "wires": [
+            [
+                "6ec782637fa68758"
+            ]
+        ]
+    },
+    {
+        "id": "6ec782637fa68758",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "save iSpec ID",
+        "rules": [
+            {
+                "t": "set",
+                "p": "iSpec",
+                "pt": "msg",
+                "to": "payload.list[0].id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 320,
+        "wires": [
+            [
+                "7502e37405f710a8"
+            ]
+        ]
+    },
+    {
+        "id": "7502e37405f710a8",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "20e55fc3e383e9f4"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "7ebff2d241b99fec"
+            ]
+        ]
+    },
+    {
+        "id": "0c2fb488af9544be",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "getChecklist sub flow",
+        "info": "",
+        "x": 160,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ac0b6432f0212e0f",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get protocol questions",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 300,
+        "y": 1080,
+        "wires": [
+            [
+                "5552e88df9693eeb",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -2145,7 +2417,7 @@
         "type": "function",
         "z": "aef96e90a1e86beb",
         "name": "Set request parameters",
-        "func": "let whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nlet condition;\n\nfor (const [key, value] of Object.entries(msg.entityData)) {\n  condition = {\"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n               \"attribute\": key,\n               \"value\" : value\n              }\n\n  whereobj.value.push(condition);\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n\nreturn msg;",
+        "func": "let whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nlet condition;\n\nfor (const [key, value] of Object.entries(msg.entityData)) {\n  condition = {\"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n               \"attribute\": key,\n               \"value\" : value\n              }\n\n  whereobj.value.push(condition);\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nif (msg.entitySelect) {\n  msg.payload[\"select\"] = msg.entitySelect;\n}\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -2168,7 +2440,7 @@
         "method": "GET",
         "ret": "obj",
         "paytoqs": "query",
-        "url": "http://atro-web/api/v1/{{ entity }}?maxSize=200",
+        "url": "http://atro-web/api/v1/{{ entity }}?{{ select }}maxSize=200",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -2222,7 +2494,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 530,
+        "x": 750,
         "y": 200,
         "wires": []
     },
