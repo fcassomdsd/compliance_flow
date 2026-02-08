@@ -1,0 +1,104 @@
+{
+  "inspection": "0224",
+  "location": "Aeropuerto Internacional Gregorio Luperon",
+  "startDate": "2024-03-27",
+  "specialtyName": "Sistemas de Vigilancia",
+  "questions": [
+    {
+      "id": "a01k65hkdj9e5c9ays18e0n5qqc",
+      "topic": "General",
+      "sequence": "00010",
+      "question": "¿Ha establecido el proveedor de servicios CNS, una estructura orgánica en el que se definan claramente la línea de responsabilidad para el suministro de servicio?",
+      "verification": "Verificar la estructura orgánica de la División (puestos, nombres, cargos y siglas).",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdk0e93s83tzz8b62fy1",
+      "topic": "General",
+      "sequence": "00030",
+      "question": "¿Están claramente definidas todas las funciones y responsabilidades del personal técnico y directivo del proveedor de servicios CNS?",
+      "verification": "Examinar el documento donde se detallen las funciones y responsabilidades del personal técnico y directivo.\nPerfil y requisitos del personal.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdk6eassax41j719m86h",
+      "topic": "General",
+      "sequence": "00040",
+      "question": "¿Ha elaborado el proveedor de servicios CNS, procedimientos que faciliten a su personal técnico el eficaz desempeño de sus deberes y obligaciones?",
+      "verification": "Examinar los procedimientos.\n Nota. ― Los procedimientos pueden estar incorporados en un manual o guía para técnico.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdkbe6wtvsdtzbqcb149",
+      "topic": "General",
+      "sequence": "00050",
+      "question": "¿Están a disposición de todo el personal técnico de el proveedor de servicios CNS, las reglamentaciones nacionales, documentos pertinentes de la OACI y demás publicaciones?",
+      "verification": "Examinar el método que garantiza la recepción, control y la distribución de la documentación técnica necesaria.\nEvaluar el método para determinar la vigencia de los documentos.\nVerificar si están disponibles:\nAIP\nRAD 10 VOL II\nRAD 10 VOL III\nRAD 10 VOL IV\nIDAC/DINA/DSV/9400\nIDAC/DINA/DSISNA/9500\nIDAC/DINA/DCNV-9000\nANEXO10 VOL II\nANEXO10 VOL III\nANEXO 10 VOL IV\nRAD 20 Sanciones adm.\nRAD 22 Emisión y Enmienda\nProcedimiento AFTN.\nManual sobre la performance de comunicación requerida (RCP), (Doc 9869)\nPANS-ATM (Doc 4444)\nGlobal Operational Data Link (GOLD) Manual (Doc 10037)\nManual on Global Performance of the Air Navigation System (Doc 9883)\nManual de vigilancia aeronáutica (Doc 9924)\nTechnical Provisions for Mode S Services and Extended Squitter (Doc 9871)\nDoc 9683, Manual de instrucción sobre factores humano Manual on VHF Digital Link (VDL) Mode 4 (Doc 9816)\nManual on Testing of Radio Navigation Aids (Doc 8071), Volume III — Testing of Surveillance Radar Systems.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdkhe5s9xc8qpbwx294q",
+      "topic": "General",
+      "sequence": "00060",
+      "question": "¿Elabora el proveedor de servicios CNS planes de acción para dar respuesta a las deficiencias detectadas por el personal de inspección?",
+      "verification": "Examinar el mecanismo o procedimiento para el tratamiento de las deficiencias detectadas por el personal de inspección.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdkre4baqhb1fkc7140y",
+      "topic": "General",
+      "sequence": "00070",
+      "question": "¿Cumple el proveedor de servicios CNS con los planes de acción aprobados en los plazos establecidos?",
+      "verification": "Examinar la lista de deficiencias detectadas durante una inspección y las medidas correctivas enviadas como plan de acción.\nExaminar planes de acción aprobados vs acciones realizadas en tiempo.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdkyebk8tx3ak521w0br",
+      "topic": "General",
+      "sequence": "00080",
+      "question": "¿Ha elaborado el proveedor de servicios CNS, un método para mantener actualizados los registros de instrucción de su personal técnico?",
+      "verification": "Examinar las instrucciones o requisitos de creación y mantenimiento de registros de instrucción.\nVerificar que los registros de instrucción se conserven de forma sistemática",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdm4ed6tf2qxrggsqe5a",
+      "topic": "General",
+      "sequence": "00090",
+      "question": "¿Se exige al personal técnico del proveedor de servicios CNS, que complete de manera satisfactoria la (OJT), antes de que se le asignen tareas y responsabilidades?",
+      "verification": "Examinar los requisitos de OJT a fin de verificar la aptitud de los técnicos de las secciones.\nVerificar si es impartida por un instructor con antigüedad y experiencia.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdmae9jr3wt1dqfsgp1a",
+      "topic": "General",
+      "sequence": "00100",
+      "question": "¿Ha elaborado el proveedor de servicios CNS, planes de contingencia para su ejecución en caso de interrupción de los sistemas informáticos de tráfico aéreo y sus componentes?",
+      "verification": "Examinar pruebas documentales de la existencia de planes de contingencia y de modo que se aplica.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdmhe9kamqd69zsby2tp",
+      "topic": "General",
+      "sequence": "00110",
+      "question": "¿Cuenta el proveedor de servicios CNS, con la cantidad suficiente de personal cualificado para desempeñar sus funciones?",
+      "verification": "Examinar la metodología establecida para determinar las necesidades de personal.\nExaminar la capacidad para atraer a nuevos Técnicos, así como las vacantes actuales y el índice de rotación de los técnicos en los años. (horario).",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdmqe4ja7bpkc3fqaxb4",
+      "topic": "General",
+      "sequence": "00120",
+      "question": "¿Ha establecido el proveedor de servicios CNS, los requisitos mínimos de cualificación y experiencia de su personal técnico?",
+      "verification": "Examinar los criterios de\nCualificación y experiencia establecidas para los puestos técnicos.\nHoja de asignación de trabajo.\nNivel de educación.\nExaminar la capacidad para realizar todas las tareas asignadas\nExaminar unas muestras de expedientes de contratación.",
+      "reference": ""
+    },
+    {
+      "id": "a01k65hkdmwecqs2b8q4mxj08rt",
+      "topic": "General",
+      "sequence": "00130",
+      "question": "¿Cuenta el proveedor de servicios CNS, con documentación que describa el objetivo, alcance y tipos de actividades pertinentes para mantener un nivel adecuado de servicio?",
+      "verification": "➢Validar que estén\nTodos los equipos necesarios para ayuda a la Navegación aérea.\n➢ Validar que este\nactualizado y aprobado por\nla DVSO",
+      "reference": ""
+    }
+  ]
+}
