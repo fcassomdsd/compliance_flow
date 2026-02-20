@@ -115,28 +115,6 @@
         ]
     },
     {
-        "id": "96cee80f5a7d4fc3",
-        "type": "http request",
-        "z": "f6f2187d.f17ca8",
-        "name": "Get protocol questions",
-        "method": "GET",
-        "ret": "obj",
-        "paytoqs": "query",
-        "url": "http://atro-web/api/v1/ProtocolQuestion?select=topicName,sequence,texto,verification,normativas&maxSize=200",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 680,
-        "y": 1080,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "794488494f5d8ff2",
         "type": "http in",
         "z": "f6f2187d.f17ca8",
@@ -908,8 +886,7 @@
         "y": 1080,
         "wires": [
             [
-                "5552e88df9693eeb",
-                "2852a7a7c4aebcb9"
+                "5552e88df9693eeb"
             ]
         ]
     },
@@ -1672,7 +1649,8 @@
         "y": 260,
         "wires": [
             [
-                "78cd9869f40be1c8"
+                "78cd9869f40be1c8",
+                "395b3799645197f5"
             ]
         ]
     },
@@ -1717,8 +1695,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 400,
-        "y": 80,
+        "x": 620,
+        "y": 360,
         "wires": []
     },
     {
