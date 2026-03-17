@@ -107,7 +107,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set request parameters",
-        "func": "/*\nlet whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nif (msg.questionIds.length > 0) {\n  whereobj.value.push({\"type\": \"in\", \n                       \"attribute\": \"id\", \n                       \"value\": msg.questionIds});\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n*/\n\nmsg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"topicName,sequence,texto,verification,normativas\";\n\nreturn msg;",
+        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"topicName,sequence,texto,verification,references,normativas\";\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -148,8 +148,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 400,
-        "y": 400,
+        "x": 580,
+        "y": 420,
         "wires": []
     },
     {
@@ -226,7 +226,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Convert to checklist format",
-        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : msg.payload.normativas.reduce((accu, actual) => { return accu + actual.reglamentoName + \" \" + actual.name + \"\\n\"}, \"\")\n                };\nreturn msg;",
+        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : msg.payload.normativas.map((x) => ({\n                        \"id\" : x.id,\n                        \"reglamento\" : x.reglamentoName,\n                        \"articulo\" : x.name,\n                        \"texto\" : x.texto,\n                        \"ICAOref\" : x.acapitesOACIName\n                     })),\n                     \"guidance\" : msg.payload.references\n                  }\n                };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -246,15 +246,15 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "add checklist header",
-        "func": "let inspectionData = msg.payload.list[0];\nmsg.payload = {\"inspection\": inspectionData.code,\n               \"location\": inspectionData.locationName,\n               \"startDate\": inspectionData.startDate,\n               \"specialtyName\" : msg.specialty,\n               \"questions\" : msg.questions\n              }\nreturn msg;",
+        "func": "msg.checklist[\"questions\"] = msg.questions;\nmsg.payload = msg.checklist;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 800,
-        "y": 860,
+        "x": 180,
+        "y": 800,
         "wires": [
             [
                 "da1b9cfe4028bec1"
@@ -269,8 +269,8 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 400,
-        "y": 960,
+        "x": 420,
+        "y": 800,
         "wires": [
             [
                 "8483d9f18f8697e1"
@@ -312,7 +312,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 740,
-        "y": 1000,
+        "y": 500,
         "wires": []
     },
     {
@@ -374,65 +374,6 @@
         ]
     },
     {
-        "id": "d4904ab2ba580858",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "Set params for link Inspection",
-        "rules": [
-            {
-                "t": "set",
-                "p": "entity",
-                "pt": "msg",
-                "to": "InspectedSpecialty",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "entityId",
-                "pt": "msg",
-                "to": "iSpec",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "entityLink",
-                "pt": "msg",
-                "to": "inspection",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 190,
-        "y": 860,
-        "wires": [
-            [
-                "4b52a551340e0fbf"
-            ]
-        ]
-    },
-    {
-        "id": "4b52a551340e0fbf",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "links": [
-            "76b977314bdff87c"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 860,
-        "wires": [
-            [
-                "abb80c187da0adf6"
-            ]
-        ]
-    },
-    {
         "id": "c1f41909ae1642dc",
         "type": "link in",
         "z": "f6f2187d.f17ca8",
@@ -471,7 +412,7 @@
         "y": 700,
         "wires": [
             [
-                "cae8bcad7494f13a"
+                "abb80c187da0adf6"
             ]
         ]
     },
@@ -513,92 +454,6 @@
         "wires": []
     },
     {
-        "id": "cae8bcad7494f13a",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "Set params for specialty",
-        "rules": [
-            {
-                "t": "set",
-                "p": "entity",
-                "pt": "msg",
-                "to": "InspectedSpecialty",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "entityId",
-                "pt": "msg",
-                "to": "iSpec",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "entityLink",
-                "pt": "msg",
-                "to": "specialty",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 170,
-        "y": 780,
-        "wires": [
-            [
-                "302b18fdc9ef9d69"
-            ]
-        ]
-    },
-    {
-        "id": "302b18fdc9ef9d69",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "links": [
-            "76b977314bdff87c"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 520,
-        "y": 780,
-        "wires": [
-            [
-                "bca3ef9af215c4de"
-            ]
-        ]
-    },
-    {
-        "id": "bca3ef9af215c4de",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "specialty",
-                "pt": "msg",
-                "to": "payload.list[0].name",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 790,
-        "y": 780,
-        "wires": [
-            [
-                "d4904ab2ba580858"
-            ]
-        ]
-    },
-    {
         "id": "20e55fc3e383e9f4",
         "type": "link in",
         "z": "f6f2187d.f17ca8",
@@ -619,8 +474,8 @@
         "name": "getChecklistOut",
         "mode": "return",
         "links": [],
-        "x": 575,
-        "y": 960,
+        "x": 585,
+        "y": 800,
         "wires": []
     },
     {
@@ -649,7 +504,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 200,
+        "x": 180,
         "y": 160,
         "wires": [
             [
@@ -669,7 +524,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 460,
+        "x": 440,
         "y": 160,
         "wires": [
             [
@@ -687,38 +542,11 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 680,
+        "x": 660,
         "y": 160,
         "wires": [
             [
-                "75c6990d2dbd8133"
-            ]
-        ]
-    },
-    {
-        "id": "75c6990d2dbd8133",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "save inspection id",
-        "rules": [
-            {
-                "t": "set",
-                "p": "inspectionId",
-                "pt": "msg",
-                "to": "payload.list[0].id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 890,
-        "y": 160,
-        "wires": [
-            [
-                "9a7d1d5dbbd2eb97"
+                "8d1fe2ce52854438"
             ]
         ]
     },
@@ -756,34 +584,7 @@
         "y": 240,
         "wires": [
             [
-                "bd4d615dccf1db93"
-            ]
-        ]
-    },
-    {
-        "id": "bd4d615dccf1db93",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "save specialty id",
-        "rules": [
-            {
-                "t": "set",
-                "p": "specialtyId",
-                "pt": "msg",
-                "to": "payload.list[0].id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 660,
-        "y": 240,
-        "wires": [
-            [
-                "89e25c2338dbce76"
+                "48f149e28a050195"
             ]
         ]
     },
@@ -837,6 +638,13 @@
                 "pt": "msg",
                 "to": "payload.list[0].id",
                 "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "iService",
+                "pt": "msg",
+                "to": "payload.list[0].inspectedServiceId",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -848,7 +656,7 @@
         "y": 320,
         "wires": [
             [
-                "7502e37405f710a8"
+                "b9136e0503319e1e"
             ]
         ]
     },
@@ -862,11 +670,12 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 140,
-        "y": 400,
+        "x": 370,
+        "y": 420,
         "wires": [
             [
-                "7ebff2d241b99fec"
+                "7ebff2d241b99fec",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -897,6 +706,216 @@
                 "5552e88df9693eeb"
             ]
         ]
+    },
+    {
+        "id": "ef8c59d1fa3aac09",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "set location service params",
+        "func": "msg.entity = \"LocationService\";\nmsg.entityData = {\n    \"id\" : msg.payload.list[0].id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 1420,
+        "wires": [
+            [
+                "54ab4c24fabc1f59"
+            ]
+        ]
+    },
+    {
+        "id": "8d1fe2ce52854438",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "save inspection data",
+        "func": "msg.inspectionId = msg.payload.list[0].id;\nmsg.checklist = {\n    \"inspection\": msg.payload.list[0].code,\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"location\": msg.payload.list[0].locationName,\n    \"locationId\": msg.payload.list[0].locationId,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 160,
+        "wires": [
+            [
+                "9a7d1d5dbbd2eb97"
+            ]
+        ]
+    },
+    {
+        "id": "48f149e28a050195",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "save specialty data",
+        "func": "msg.specialtyId = msg.payload.list[0].id;\nmsg.specialty = msg.payload.list[0].name;\nmsg.checklist[\"specialtyName\"] = msg.specialty;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 240,
+        "wires": [
+            [
+                "89e25c2338dbce76"
+            ]
+        ]
+    },
+    {
+        "id": "54ab4c24fabc1f59",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 440,
+        "y": 1420,
+        "wires": [
+            [
+                "660c57bd0c256f45"
+            ]
+        ]
+    },
+    {
+        "id": "660c57bd0c256f45",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "save provider data",
+        "func": "msg.checklist[\"providerId\"] = msg.payload.list[0].serviceProviderId;\nmsg.checklist[\"providerName\"] = msg.payload.list[0].serviceProviderName;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 1420,
+        "wires": [
+            [
+                "c244ac031e1523e4"
+            ]
+        ]
+    },
+    {
+        "id": "ef6c9caf77b46989",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "set inspected service params",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "InspectedService",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "msg.iService",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "locationService",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 1340,
+        "wires": [
+            [
+                "fd38fce11ec9265e"
+            ]
+        ]
+    },
+    {
+        "id": "fd38fce11ec9265e",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspected service",
+        "links": [
+            "76b977314bdff87c"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 580,
+        "y": 1340,
+        "wires": [
+            [
+                "ef8c59d1fa3aac09"
+            ]
+        ]
+    },
+    {
+        "id": "12ebc1c05bdbe277",
+        "type": "link in",
+        "z": "f6f2187d.f17ca8",
+        "name": "inspected provider",
+        "links": [],
+        "x": 95,
+        "y": 1340,
+        "wires": [
+            [
+                "ef6c9caf77b46989"
+            ]
+        ]
+    },
+    {
+        "id": "c244ac031e1523e4",
+        "type": "link out",
+        "z": "f6f2187d.f17ca8",
+        "name": "link out 6",
+        "mode": "return",
+        "links": [],
+        "x": 835,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "b9136e0503319e1e",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "12ebc1c05bdbe277"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 170,
+        "y": 420,
+        "wires": [
+            [
+                "7502e37405f710a8"
+            ]
+        ]
+    },
+    {
+        "id": "8618f54ec4f06154",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "inspected provider",
+        "info": "",
+        "x": 130,
+        "y": 1300,
+        "wires": []
     },
     {
         "id": "aa61590209297976",
@@ -2721,7 +2740,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save inspection data",
-        "func": "msg.inspectionPlan = {\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"localtionId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    \"objective\": msg.payload.list[0].objective,\n    \"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n};\n\nmsg.inspectionId = msg.payload.list[0].id\n\nreturn msg;",
+        "func": "msg.inspectionPlan = {\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    \"objective\": msg.payload.list[0].objective,\n    \"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n};\n\nmsg.inspectionId = msg.payload.list[0].id\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
