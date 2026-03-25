@@ -226,7 +226,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Convert to checklist format",
-        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : msg.payload.normativas.map((x) => ({\n                        \"id\" : x.id,\n                        \"reglamento\" : x.reglamentoName,\n                        \"articulo\" : x.name,\n                        \"texto\" : x.texto,\n                        \"ICAOref\" : x.acapitesOACIName\n                     })),\n                     \"guidance\" : msg.payload.references\n                  }\n                };\nreturn msg;",
+        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : {\n                        \"id\": msg.payload.normativas[0]?.id,\n                        \"reglamento\": msg.payload.normativas[0]?.reglamentoName,\n                        \"articulo\": msg.payload.normativas[0]?.name,\n                        \"texto\": msg.payload.normativas[0]?.texto,\n                        \"ICAOref\": msg.payload.normativas[0]?.acapitesOACIName\n                     },\n                     \"guidance\" : msg.payload.references\n                  }\n                };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -311,8 +311,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 740,
-        "y": 500,
+        "x": 900,
+        "y": 260,
         "wires": []
     },
     {
@@ -584,7 +584,8 @@
         "y": 240,
         "wires": [
             [
-                "48f149e28a050195"
+                "48f149e28a050195",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -674,8 +675,7 @@
         "y": 420,
         "wires": [
             [
-                "7ebff2d241b99fec",
-                "2852a7a7c4aebcb9"
+                "7ebff2d241b99fec"
             ]
         ]
     },
