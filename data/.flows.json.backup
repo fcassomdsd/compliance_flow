@@ -103,11 +103,35 @@
         "env": []
     },
     {
+        "id": "8bc09f7eb890dde7",
+        "type": "tab",
+        "label": "get alfresco auth",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2958c4a9b21da45a",
+        "type": "tab",
+        "label": "import canonical to alfresco",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "041ce3d9cda14530",
+        "type": "tab",
+        "label": "Inspection report",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "185d79b48148ba56",
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set request parameters",
-        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"topicName,sequence,texto,verification,references,normativas\";\n\nreturn msg;",
+        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"code,topicName,sequence,texto,verification,references,normativas\";\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3268,6 +3292,698 @@
         "wires": [
             [
                 "d937265e26cb1547"
+            ]
+        ]
+    },
+    {
+        "id": "88575afab2887a40",
+        "type": "http request",
+        "z": "8bc09f7eb890dde7",
+        "name": "Get auth token",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://alfresco:8080/alfresco/api/-default-/public/authentication/versions/1/tickets",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 760,
+        "y": 80,
+        "wires": [
+            [
+                "019efa6654f8439a"
+            ]
+        ]
+    },
+    {
+        "id": "8d3b44750cd7d77c",
+        "type": "function",
+        "z": "8bc09f7eb890dde7",
+        "name": "Set authorization header",
+        "func": "msg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 220,
+        "wires": [
+            [
+                "faeb5ba33af0d534"
+            ]
+        ]
+    },
+    {
+        "id": "4d523d26325278ff",
+        "type": "link in",
+        "z": "8bc09f7eb890dde7",
+        "name": "Link alfresco authorization",
+        "links": [],
+        "x": 105,
+        "y": 80,
+        "wires": [
+            [
+                "677281727f0d96eb"
+            ]
+        ]
+    },
+    {
+        "id": "faeb5ba33af0d534",
+        "type": "link out",
+        "z": "8bc09f7eb890dde7",
+        "name": "link out 7",
+        "mode": "return",
+        "links": [],
+        "x": 885,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "019efa6654f8439a",
+        "type": "change",
+        "z": "8bc09f7eb890dde7",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "authToken",
+                "pt": "msg",
+                "to": "payload.entry.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 270,
+        "y": 220,
+        "wires": [
+            [
+                "8d3b44750cd7d77c"
+            ]
+        ]
+    },
+    {
+        "id": "677281727f0d96eb",
+        "type": "credentials",
+        "z": "8bc09f7eb890dde7",
+        "name": "",
+        "props": [
+            {
+                "value": "username",
+                "type": "msg"
+            },
+            {
+                "value": "password",
+                "type": "msg"
+            }
+        ],
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "88575afab2887a40"
+            ]
+        ]
+    },
+    {
+        "id": "9fd365977e2628d9",
+        "type": "function",
+        "z": "8bc09f7eb890dde7",
+        "name": "set request parameters",
+        "func": "msg.payload = {\n    \"userId\" : msg.username,\n    \"password\" : msg.password\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "db3a7f6bde359aa7"
+            ]
+        ]
+    },
+    {
+        "id": "db3a7f6bde359aa7",
+        "type": "debug",
+        "z": "8bc09f7eb890dde7",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "4b1f9e2113621dd8",
+        "type": "http in",
+        "z": "2958c4a9b21da45a",
+        "name": "Import Canonical Models",
+        "url": "/importCanonical",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 80,
+        "wires": [
+            [
+                "05bb6c09918f3b7b"
+            ]
+        ]
+    },
+    {
+        "id": "05bb6c09918f3b7b",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.inspection",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "domain",
+                "pt": "msg",
+                "to": "req.query.specialty",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 180,
+        "wires": [
+            [
+                "085b06de7f20dbf3"
+            ]
+        ]
+    },
+    {
+        "id": "811d16f91fbe9293",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "Get alfresco auth",
+        "links": [
+            "4d523d26325278ff"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 550,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "085b06de7f20dbf3",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "Set request parameters",
+        "func": "msg.payload = {\n    \"domain\" : msg.domain,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 180,
+        "wires": [
+            [
+                "90613ba352af9a02",
+                "4f450e00fab88e37"
+            ]
+        ]
+    },
+    {
+        "id": "4f450e00fab88e37",
+        "type": "http request",
+        "z": "2958c4a9b21da45a",
+        "name": "import data",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/import-canonical",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 250,
+        "y": 260,
+        "wires": [
+            [
+                "61f3e4f51ebe920e"
+            ]
+        ]
+    },
+    {
+        "id": "61f3e4f51ebe920e",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 660,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "2daee083b5f63ed6",
+        "type": "catch",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "3220f3f3f70fa16f"
+            ]
+        ]
+    },
+    {
+        "id": "90613ba352af9a02",
+        "type": "debug",
+        "z": "2958c4a9b21da45a",
+        "name": "import canonical",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "3220f3f3f70fa16f",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 380,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "bd82a7a67ef6d40c",
+        "type": "change",
+        "z": "041ce3d9cda14530",
+        "name": "Store request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.inspection",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "providerId",
+                "pt": "msg",
+                "to": "req.query.provider",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "reportDate",
+                "pt": "msg",
+                "to": "req.query.reportDate",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 180,
+        "wires": [
+            [
+                "ee96d9c8e4a422c0"
+            ]
+        ]
+    },
+    {
+        "id": "f81e490b9c063162",
+        "type": "http in",
+        "z": "041ce3d9cda14530",
+        "name": "Inspection Report",
+        "url": "/inspectionReport",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "bd82a7a67ef6d40c"
+            ]
+        ]
+    },
+    {
+        "id": "99727fd091645792",
+        "type": "http response",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 920,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "b42e3ed47a787122",
+        "type": "catch",
+        "z": "041ce3d9cda14530",
+        "d": true,
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "b0a2994c799fd3dc"
+            ]
+        ]
+    },
+    {
+        "id": "b0a2994c799fd3dc",
+        "type": "http response",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "5ed2ab4b88d233a5",
+        "type": "debug",
+        "z": "041ce3d9cda14530",
+        "name": "inspectionReport",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "af055080076259f2",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 420,
+        "y": 280,
+        "wires": [
+            [
+                "5c497290c30a0c70"
+            ]
+        ]
+    },
+    {
+        "id": "5c497290c30a0c70",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save inspection data",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName\n};\n\nmsg.inspectionId = msg.payload.list[0].id;\nmsg.locationId = msg.payload.list[0].locationId;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 280,
+        "wires": [
+            [
+                "91bbed2b3cda5bd5"
+            ]
+        ]
+    },
+    {
+        "id": "9b5aaa79e9d78dc4",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "construct services array",
+        "func": "let serviceIds = [];\nfor (var locationService of msg.payload.list) {\n  for (var inspectedService of locationService.inspectedServices) {\n    if (inspectedService.inspectionId == msg.inspectionId ) {\n      serviceIds.push(inspectedService.id);\n    }\n  }\n}\n\nmsg.serviceIds = serviceIds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 380,
+        "wires": [
+            [
+                "eced5631dd2e7842"
+            ]
+        ]
+    },
+    {
+        "id": "eced5631dd2e7842",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "inspected specialty parameters",
+        "func": "msg.entity = \"InspectedSpecialty\";\nmsg.entityData = { \"inspectedServiceId\" : msg.serviceIds };\nmsg.entitySelect = \"id\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 520,
+        "wires": [
+            [
+                "a280859553a52a29"
+            ]
+        ]
+    },
+    {
+        "id": "a280859553a52a29",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "get insp specialties",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 470,
+        "y": 520,
+        "wires": [
+            [
+                "fffc0b7e8f13e374"
+            ]
+        ]
+    },
+    {
+        "id": "fffc0b7e8f13e374",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "get specialty info",
+        "func": "var specialties = [];\nfor (var specialty of msg.payload.list) {\n  specialties.push(specialty.id);\n}\n\nmsg.specialties = specialties;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 520,
+        "wires": [
+            [
+                "0ac20b5ee6e67291"
+            ]
+        ]
+    },
+    {
+        "id": "3670efee8fa9cb90",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 440,
+        "y": 380,
+        "wires": [
+            [
+                "9b5aaa79e9d78dc4",
+                "5ed2ab4b88d233a5"
+            ]
+        ]
+    },
+    {
+        "id": "91bbed2b3cda5bd5",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "location services parameters",
+        "func": "msg.entity = \"LocationService\";\nmsg.entityData = {\n    \"locationId\" : msg.locationId,\n    \"serviceProviderId\" : msg.providerId\n};\nmsg.entitySelect = \"inspectedServices\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 380,
+        "wires": [
+            [
+                "3670efee8fa9cb90"
+            ]
+        ]
+    },
+    {
+        "id": "ee96d9c8e4a422c0",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set inspection params",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "af055080076259f2"
+            ]
+        ]
+    },
+    {
+        "id": "0ac20b5ee6e67291",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "inspector parameters",
+        "func": "msg.entity = \"InspectedSpecialtyInspector\";\nmsg.entityData = { \"inspectedSpecialtyId\" : msg.specialties };\nmsg.entitySelect = \"inspectorName, inspectedSpecialtyName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 600,
+        "wires": [
+            [
+                "9729b91c720d1466"
+            ]
+        ]
+    },
+    {
+        "id": "9729b91c720d1466",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "get inspectors",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "603ea05e2b87ca0f"
+            ]
+        ]
+    },
+    {
+        "id": "603ea05e2b87ca0f",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "get inspector info",
+        "func": "var inspectors = [];\nvar thisOne = -1;\nfor (var inspector of msg.payload.list) {\n  thisOne = inspectors.findIndex( (x) => x.name == inspector.inspectorName);\n  if (thisOne >= 0 ) {\n    inspectors[thisOne].specialty.push(\n      inspector.inspectedSpecialtyName\n    )\n  } else {\n    inspectors.push({\n      \"name\": inspector.inspectorName,\n      \"specialty\": [inspector.inspectedSpecialtyName]\n    })\n  }\n}\n\nmsg.inspectionReport[\"inspectors\"] = inspectors;\nmsg.payload = msg.inspectionReport;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 600,
+        "wires": [
+            [
+                "99727fd091645792"
             ]
         ]
     }
