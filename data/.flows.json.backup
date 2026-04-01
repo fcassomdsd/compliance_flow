@@ -103,14 +103,6 @@
         "env": []
     },
     {
-        "id": "8bc09f7eb890dde7",
-        "type": "tab",
-        "label": "get alfresco auth",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "2958c4a9b21da45a",
         "type": "tab",
         "label": "import canonical to alfresco",
@@ -2692,8 +2684,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 920,
-        "y": 480,
+        "x": 900,
+        "y": 560,
         "wires": []
     },
     {
@@ -3018,7 +3010,7 @@
         "y": 480,
         "wires": [
             [
-                "7cb35d6d0bf3d372"
+                "af66b696c5573785"
             ]
         ]
     },
@@ -3296,19 +3288,19 @@
         ]
     },
     {
-        "id": "88575afab2887a40",
+        "id": "af66b696c5573785",
         "type": "http request",
-        "z": "8bc09f7eb890dde7",
-        "name": "Get auth token",
+        "z": "5afaefaae1db46d5",
+        "name": "send report",
         "method": "POST",
         "ret": "obj",
-        "paytoqs": "ignore",
-        "url": "http://alfresco:8080/alfresco/api/-default-/public/authentication/versions/1/tickets",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/generate",
         "tls": "",
         "persist": false,
         "proxy": "",
         "insecureHTTPParser": false,
-        "authType": "",
+        "authType": "basic",
         "senderr": false,
         "headers": [
             {
@@ -3316,147 +3308,21 @@
                 "keyValue": "",
                 "valueType": "application/json",
                 "valueValue": ""
-            }
-        ],
-        "x": 760,
-        "y": 80,
-        "wires": [
-            [
-                "019efa6654f8439a"
-            ]
-        ]
-    },
-    {
-        "id": "8d3b44750cd7d77c",
-        "type": "function",
-        "z": "8bc09f7eb890dde7",
-        "name": "Set authorization header",
-        "func": "msg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 590,
-        "y": 220,
-        "wires": [
-            [
-                "faeb5ba33af0d534"
-            ]
-        ]
-    },
-    {
-        "id": "4d523d26325278ff",
-        "type": "link in",
-        "z": "8bc09f7eb890dde7",
-        "name": "Link alfresco authorization",
-        "links": [],
-        "x": 105,
-        "y": 80,
-        "wires": [
-            [
-                "677281727f0d96eb"
-            ]
-        ]
-    },
-    {
-        "id": "faeb5ba33af0d534",
-        "type": "link out",
-        "z": "8bc09f7eb890dde7",
-        "name": "link out 7",
-        "mode": "return",
-        "links": [],
-        "x": 885,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "019efa6654f8439a",
-        "type": "change",
-        "z": "8bc09f7eb890dde7",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "authToken",
-                "pt": "msg",
-                "to": "payload.entry.id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 270,
-        "y": 220,
-        "wires": [
-            [
-                "8d3b44750cd7d77c"
-            ]
-        ]
-    },
-    {
-        "id": "677281727f0d96eb",
-        "type": "credentials",
-        "z": "8bc09f7eb890dde7",
-        "name": "",
-        "props": [
-            {
-                "value": "username",
-                "type": "msg"
             },
             {
-                "value": "password",
-                "type": "msg"
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
             }
         ],
-        "x": 230,
-        "y": 80,
+        "x": 850,
+        "y": 480,
         "wires": [
             [
-                "88575afab2887a40"
+                "7cb35d6d0bf3d372"
             ]
         ]
-    },
-    {
-        "id": "9fd365977e2628d9",
-        "type": "function",
-        "z": "8bc09f7eb890dde7",
-        "name": "set request parameters",
-        "func": "msg.payload = {\n    \"userId\" : msg.username,\n    \"password\" : msg.password\n}\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 490,
-        "y": 80,
-        "wires": [
-            [
-                "db3a7f6bde359aa7"
-            ]
-        ]
-    },
-    {
-        "id": "db3a7f6bde359aa7",
-        "type": "debug",
-        "z": "8bc09f7eb890dde7",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 920,
-        "y": 180,
-        "wires": []
     },
     {
         "id": "4b1f9e2113621dd8",
@@ -3507,22 +3373,6 @@
             [
                 "085b06de7f20dbf3"
             ]
-        ]
-    },
-    {
-        "id": "811d16f91fbe9293",
-        "type": "link call",
-        "z": "2958c4a9b21da45a",
-        "name": "Get alfresco auth",
-        "links": [
-            "4d523d26325278ff"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 550,
-        "y": 100,
-        "wires": [
-            []
         ]
     },
     {
@@ -3706,8 +3556,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 920,
-        "y": 520,
+        "x": 460,
+        "y": 680,
         "wires": []
     },
     {
@@ -3884,8 +3734,7 @@
         "y": 380,
         "wires": [
             [
-                "9b5aaa79e9d78dc4",
-                "5ed2ab4b88d233a5"
+                "9b5aaa79e9d78dc4"
             ]
         ]
     },
@@ -3981,6 +3830,43 @@
         "libs": [],
         "x": 710,
         "y": 600,
+        "wires": [
+            [
+                "e3fbb648496dac27"
+            ]
+        ]
+    },
+    {
+        "id": "e3fbb648496dac27",
+        "type": "http request",
+        "z": "041ce3d9cda14530",
+        "name": "send report",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/report/generate",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 170,
+        "y": 680,
         "wires": [
             [
                 "99727fd091645792"
