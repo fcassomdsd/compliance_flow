@@ -181,7 +181,7 @@
             "content-type": "application/json"
         },
         "x": 580,
-        "y": 420,
+        "y": 480,
         "wires": []
     },
     {
@@ -343,8 +343,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 260,
+        "x": 860,
+        "y": 520,
         "wires": []
     },
     {
@@ -616,8 +616,7 @@
         "y": 240,
         "wires": [
             [
-                "48f149e28a050195",
-                "2852a7a7c4aebcb9"
+                "48f149e28a050195"
             ]
         ]
     },
@@ -633,8 +632,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 230,
-        "y": 320,
+        "x": 190,
+        "y": 400,
         "wires": [
             [
                 "e07a75568b17aa84"
@@ -651,8 +650,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 520,
-        "y": 320,
+        "x": 480,
+        "y": 400,
         "wires": [
             [
                 "6ec782637fa68758"
@@ -685,8 +684,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 730,
-        "y": 320,
+        "x": 720,
+        "y": 400,
         "wires": [
             [
                 "b9136e0503319e1e"
@@ -704,10 +703,11 @@
         "linkType": "static",
         "timeout": "30",
         "x": 370,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
-                "7ebff2d241b99fec"
+                "7ebff2d241b99fec",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -784,7 +784,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "save specialty data",
-        "func": "msg.specialtyId = msg.payload.list[0].id;\nmsg.specialty = msg.payload.list[0].name;\nmsg.checklist[\"specialtyName\"] = msg.specialty;\nmsg.checklist[\"specialtyCode\"] = msg.payload.list[0].code;\nreturn msg;",
+        "func": "msg.specialtyId = msg.payload.list[0].id;\nmsg.specialty = msg.payload.list[0].name;\nmsg.checklist[\"specialtyName\"] = msg.specialty;\nmsg.checklist[\"specialtyCode\"] = msg.payload.list[0].code;\nmsg.checklist[\"specialtyId\"] = msg.payload.list[0].id;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -795,7 +795,7 @@
         "y": 240,
         "wires": [
             [
-                "89e25c2338dbce76"
+                "c98a2417365e34b1"
             ]
         ]
     },
@@ -932,7 +932,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 170,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
                 "7502e37405f710a8"
@@ -948,6 +948,64 @@
         "x": 130,
         "y": 1300,
         "wires": []
+    },
+    {
+        "id": "c98a2417365e34b1",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "location parameters",
+        "func": "msg.entity = \"Location\";\nmsg.entityData = { \"LocationId\" : msg.checklist.locationId\n                 }\nmsg.entitySelect = 'icaoCode'\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 320,
+        "wires": [
+            [
+                "e58b38b85d4f6b73"
+            ]
+        ]
+    },
+    {
+        "id": "e58b38b85d4f6b73",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get location",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 490,
+        "y": 320,
+        "wires": [
+            [
+                "68f9e718831a71af"
+            ]
+        ]
+    },
+    {
+        "id": "68f9e718831a71af",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "save inspection data",
+        "func": "msg.checklist[\"icaoCode\"] = msg.payload.list[0].icaoCode\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 320,
+        "wires": [
+            [
+                "89e25c2338dbce76"
+            ]
+        ]
     },
     {
         "id": "aa61590209297976",
@@ -4462,7 +4520,8 @@
         "y": 360,
         "wires": [
             [
-                "63cce0a745e14369"
+                "63cce0a745e14369",
+                "3ff525e760c2d85e"
             ]
         ]
     },
