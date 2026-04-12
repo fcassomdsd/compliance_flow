@@ -155,7 +155,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set request parameters",
-        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"code,topicName,sequence,texto,verification,references,normativas\";\n\nreturn msg;",
+        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"code,topicName,sequence,texto,verification,references,normativas,riskLevel\";\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -274,7 +274,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Convert to checklist format",
-        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"code\" : msg.payload.code,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : {\n                        \"id\": msg.payload.normativas[0]?.id,\n                        \"reglamento\": msg.payload.normativas[0]?.reglamentoName,\n                        \"articulo\": msg.payload.normativas[0]?.name,\n                        \"texto\": msg.payload.normativas[0]?.texto,\n                        \"ICAOref\": msg.payload.normativas[0]?.acapitesOACIName\n                     },\n                     \"guidance\" : msg.payload.references\n                  }\n                };\nreturn msg;",
+        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"code\" : msg.payload.code,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : {\n                        \"id\": msg.payload.normativas[0]?.id,\n                        \"reglamento\": msg.payload.normativas[0]?.reglamentoName,\n                        \"articulo\": msg.payload.normativas[0]?.name,\n                        \"texto\": msg.payload.normativas[0]?.texto,\n                        \"ICAOref\": msg.payload.normativas[0]?.acapitesOACIName\n                     },\n                     \"guidance\" : msg.payload.references\n                  },\n                  \"riskLevel\" : msg.payload.riskLevelName\n                };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -359,8 +359,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 1620,
+        "x": 680,
+        "y": 960,
         "wires": []
     },
     {
@@ -750,7 +750,8 @@
         "y": 1000,
         "wires": [
             [
-                "5552e88df9693eeb"
+                "5552e88df9693eeb",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -1083,8 +1084,7 @@
         "y": 1500,
         "wires": [
             [
-                "1325ebe62337530f",
-                "2852a7a7c4aebcb9"
+                "1325ebe62337530f"
             ]
         ]
     },
@@ -1156,65 +1156,6 @@
             [
                 "7ebff2d241b99fec"
             ]
-        ]
-    },
-    {
-        "id": "500b4670986decd6",
-        "type": "split",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "property": "payload",
-        "x": 170,
-        "y": 1580,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "6baec105af118d0a",
-        "type": "function",
-        "z": "f6f2187d.f17ca8",
-        "name": "set prior finding id",
-        "func": "var found = msg.checklist.questions.findIndex((x) => x.code == msg.payload.itemCode)\nif (found > -1) {\n    msg.checklist.questions[found][\"priorFindingId\"] = msg.payload.id;\n}\nmsg.checklist.questions[found][\"found\"] = found;\nmsg.checklist.questions[found][\"findingcode\"] = msg.payload.itemCode;\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 310,
-        "y": 1780,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "30b7630276a252b4",
-        "type": "join",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "mode": "auto",
-        "build": "object",
-        "property": "payload",
-        "propertyType": "msg",
-        "key": "topic",
-        "joiner": "\\n",
-        "joinerType": "str",
-        "useparts": false,
-        "accumulate": "false",
-        "timeout": "",
-        "count": "",
-        "reduceRight": false,
-        "x": 570,
-        "y": 1580,
-        "wires": [
-            []
         ]
     },
     {
@@ -5083,7 +5024,8 @@
         "y": 100,
         "wires": [
             [
-                "27d2d4872fb1b8f6"
+                "27d2d4872fb1b8f6",
+                "1ab5cc53868b0395"
             ]
         ]
     },
@@ -5151,6 +5093,22 @@
                 "6f9d06e081f9a39e"
             ]
         ]
+    },
+    {
+        "id": "1ab5cc53868b0395",
+        "type": "debug",
+        "z": "18c3156c77e1c2fb",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 260,
+        "wires": []
     },
     {
         "id": "b7ef9a6b5d70ce2a",
@@ -5392,7 +5350,7 @@
         "type": "function",
         "z": "be74fd69d845153f",
         "name": "format findings",
-        "func": "const findingList = msg.payload.findings.map( (x) => {\n    const f = x.finding;\n    if (f.correctiveAction.capId == \"\") {\n        f.correctiveAction = undefined;\n    }\n    return f;\n    });\nmsg.payload = findingList;\nreturn msg;",
+        "func": "const findingList = msg.payload.findings.map( (x) => {\n    const f = x.finding;\n    if (f.correctiveAction.capId == \"\") {\n       f.correctiveAction = undefined;\n    }\n    return f;\n    });\nmsg.payload = findingList;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
