@@ -3626,7 +3626,7 @@
             },
             {
                 "t": "set",
-                "p": "domain",
+                "p": "specialtyName",
                 "pt": "msg",
                 "to": "req.query.specialty",
                 "tot": "msg"
@@ -3650,7 +3650,7 @@
         "type": "function",
         "z": "2958c4a9b21da45a",
         "name": "Set request parameters",
-        "func": "msg.payload = {\n    \"domain\" : msg.domain,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
+        "func": "msg.payload = {\n    \"specialtyName\" : msg.specialtyName,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3774,6 +3774,163 @@
         "wires": [
             [
                 "085b06de7f20dbf3"
+            ]
+        ]
+    },
+    {
+        "id": "0f7dc8a7cf76071a",
+        "type": "http in",
+        "z": "2958c4a9b21da45a",
+        "name": "Import Follow ups",
+        "url": "/importFollowUp",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 420,
+        "wires": [
+            [
+                "ca7f8df347dd7beb"
+            ]
+        ]
+    },
+    {
+        "id": "ca7f8df347dd7beb",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "followUp",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 520,
+        "wires": [
+            [
+                "dbd3043502f149d4"
+            ]
+        ]
+    },
+    {
+        "id": "ebac6e5376bc7bbc",
+        "type": "http request",
+        "z": "2958c4a9b21da45a",
+        "name": "import data",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/follow-up/import",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 590,
+        "y": 600,
+        "wires": [
+            [
+                "d2f2602a5ec15194",
+                "2f70858160b486f1"
+            ]
+        ]
+    },
+    {
+        "id": "d2f2602a5ec15194",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "2f70858160b486f1",
+        "type": "debug",
+        "z": "2958c4a9b21da45a",
+        "name": "import follow up",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "dbd3043502f149d4",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 520,
+        "wires": [
+            [
+                "01e297ebbd9d42ec"
+            ]
+        ]
+    },
+    {
+        "id": "01e297ebbd9d42ec",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "followUp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 600,
+        "wires": [
+            [
+                "ebac6e5376bc7bbc"
             ]
         ]
     },
