@@ -151,6 +151,14 @@
         "env": []
     },
     {
+        "id": "5e1aad1777646734",
+        "type": "tab",
+        "label": "follow up flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "185d79b48148ba56",
         "type": "function",
         "z": "f6f2187d.f17ca8",
@@ -1008,7 +1016,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "save location data",
-        "func": "msg.checklist[\"icaoCode\"] = msg.payload.list[0].icaoCode\nreturn msg;",
+        "func": "msg.checklist[\"locationCode\"] = msg.payload.list[0].icaoCode\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3626,7 +3634,7 @@
             },
             {
                 "t": "set",
-                "p": "domain",
+                "p": "specialtyName",
                 "pt": "msg",
                 "to": "req.query.specialty",
                 "tot": "msg"
@@ -3650,7 +3658,7 @@
         "type": "function",
         "z": "2958c4a9b21da45a",
         "name": "Set request parameters",
-        "func": "msg.payload = {\n    \"domain\" : msg.domain,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
+        "func": "msg.payload = {\n    \"specialtyName\" : msg.specialtyName,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3782,7 +3790,7 @@
         "type": "http in",
         "z": "2958c4a9b21da45a",
         "name": "Import Follow ups",
-        "url": "/importFollowUp",
+        "url": "/importFollowUps",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
@@ -3829,7 +3837,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "query",
-        "url": "http://alfresco:8080/alfresco/s/api/follow-up/import",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/import-canonical",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -3885,8 +3893,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 880,
-        "y": 640,
+        "x": 900,
+        "y": 440,
         "wires": []
     },
     {
@@ -5519,6 +5527,247 @@
         "wires": [
             [
                 "179fea6113c9a09e"
+            ]
+        ]
+    },
+    {
+        "id": "355c318caf6fc721",
+        "type": "http in",
+        "z": "5e1aad1777646734",
+        "name": "get last sequence Follow Ups",
+        "url": "/content/lastSeq",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "87398e603e4cd557"
+            ]
+        ]
+    },
+    {
+        "id": "87398e603e4cd557",
+        "type": "change",
+        "z": "5e1aad1777646734",
+        "name": "get parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "prefix",
+                "pt": "msg",
+                "to": "req.query.prefix",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "relativePath",
+                "pt": "msg",
+                "to": "req.query.relativePath",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "2ba66e3da5a2cf69"
+            ]
+        ]
+    },
+    {
+        "id": "e6b3daa270c934e8",
+        "type": "link call",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 260,
+        "wires": [
+            [
+                "0c0220959198349e"
+            ]
+        ]
+    },
+    {
+        "id": "3856a097e0ba3c92",
+        "type": "http request",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://proxy:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 340,
+        "wires": [
+            [
+                "63e20a552ddab517",
+                "463ace0ebbc03553"
+            ]
+        ]
+    },
+    {
+        "id": "90d02e729b93bac5",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "prepare payload",
+        "func": "msg.scriptPayload = {};\nif (msg.relativePath) {\n  msg.scriptPayload[\"relativePath\"] = msg.relativePath\n}\n\nmsg.scriptPayload[\"fields\"] = [\"name\"];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "e6b3daa270c934e8"
+            ]
+        ]
+    },
+    {
+        "id": "0c0220959198349e",
+        "type": "change",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "scriptPayload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "3856a097e0ba3c92"
+            ]
+        ]
+    },
+    {
+        "id": "b38be35bcddb3b07",
+        "type": "http response",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 840,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "8a89544c87a5a0b8",
+        "type": "link in",
+        "z": "5e1aad1777646734",
+        "name": "link followup sequence",
+        "links": [],
+        "x": 85,
+        "y": 260,
+        "wires": [
+            [
+                "90d02e729b93bac5"
+            ]
+        ]
+    },
+    {
+        "id": "dd22dfeb1cbdd77c",
+        "type": "link out",
+        "z": "5e1aad1777646734",
+        "name": "link out 10",
+        "mode": "return",
+        "links": [],
+        "x": 815,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "9ae829a3a13e1828",
+        "type": "comment",
+        "z": "5e1aad1777646734",
+        "name": "open findings sub flow",
+        "info": "",
+        "x": 160,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "2ba66e3da5a2cf69",
+        "type": "link call",
+        "z": "5e1aad1777646734",
+        "name": "link open findings",
+        "links": [
+            "8a89544c87a5a0b8"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 650,
+        "y": 80,
+        "wires": [
+            [
+                "b38be35bcddb3b07"
+            ]
+        ]
+    },
+    {
+        "id": "63e20a552ddab517",
+        "type": "debug",
+        "z": "5e1aad1777646734",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "463ace0ebbc03553",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "format findings",
+        "func": "// look for follow ups for this finding\nconst rgx = \"^\" + msg.prefix;\nconst followUpList = msg.payload.list.entries.map( (x) => \n    x.entry.name\n  ).filter((x) => x.match(rgx)\n  )\nif (followUpList.length == 0) {\n    msg.payload = \"00\";\n} else {\n  const lastOneParts = followUpList.sort()[followUpList.length-1].split(\" \");\n  msg.payload = lastOneParts[lastOneParts.length-1];\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 340,
+        "wires": [
+            [
+                "dd22dfeb1cbdd77c"
             ]
         ]
     }

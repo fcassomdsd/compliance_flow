@@ -17,6 +17,7 @@ services:
       - node-red-net
       - node-backend-net
       - alfresco-net
+      - import-net
     volumes:
       - ./data:/data
 
@@ -30,4 +31,7 @@ networks:
     external: true
   alfresco-net:
     name: alfresco_backend
+    external: true
+  import-net:
+    name: import-backend
     external: true
