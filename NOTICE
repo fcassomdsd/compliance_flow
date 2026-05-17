@@ -1,0 +1,61 @@
+Compliance Inspection API — Node-RED Service
+Copyright 2026 Fernando A. Casso Rodriguez
+
+This product is licensed under the Apache License, Version 2.0.
+You may obtain a copy of the License at:
+    http://www.apache.org/licenses/LICENSE-2.0
+
+===============================================================================
+THIRD-PARTY COMPONENTS
+===============================================================================
+
+This product includes or depends upon the following third-party software:
+
+Node-RED
+  Copyright OpenJS Foundation and Node-RED contributors
+  Licensed under the Apache License, Version 2.0
+  https://github.com/node-red/node-red
+
+===============================================================================
+ICAO CONTENT NOTICE
+===============================================================================
+
+Certain checklist questions and verification procedures contained in
+the Node-RED flows reference Standards and Recommended
+Practices (SARPs), procedures, and document numbers published by the
+International Civil Aviation Organization (ICAO).
+
+ICAO documents are copyright © International Civil Aviation Organization.
+All rights reserved.
+
+This software references ICAO material solely to identify the applicable
+regulatory standards for each inspection item. No ICAO document text is
+reproduced verbatim in its entirety. Each State or organisation that deploys
+this software is responsible for:
+
+  (a) obtaining access to the current, authoritative versions of all
+      referenced ICAO documents through official ICAO channels;
+
+  (b) verifying that checklist content reflects the current ICAO SARPs and
+      any applicable Regional Supplementary Procedures; and
+
+  (c) adapting inspection criteria to their national regulatory framework
+      and applicable legislation.
+
+Reference to an ICAO document number does not imply endorsement of this
+software by ICAO, nor does it represent an official interpretation of ICAO
+Standards or Recommended Practices.
+
+===============================================================================
+DISCLAIMER
+===============================================================================
+
+This software is a reference implementation provided to assist civil aviation
+authorities and service providers in developing compliance oversight tools.
+It is NOT a certified aviation safety system and carries no guarantee of
+fitness for any particular regulatory or operational purpose.
+
+Each State or organisation deploying this software bears sole responsibility
+for validating its correctness against applicable national regulations,
+ICAO SARPs, and operational requirements before use in any official oversight
+or safety-related activity.

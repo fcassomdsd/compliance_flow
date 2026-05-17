@@ -103,11 +103,67 @@
         "env": []
     },
     {
+        "id": "2958c4a9b21da45a",
+        "type": "tab",
+        "label": "import canonical to alfresco",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "041ce3d9cda14530",
+        "type": "tab",
+        "label": "Inspection report",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4462ef5386374bff",
+        "type": "tab",
+        "label": "Auth flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dbdd767669d57957",
+        "type": "tab",
+        "label": "Static data",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "18c3156c77e1c2fb",
+        "type": "tab",
+        "label": "get alfresco auth",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "be74fd69d845153f",
+        "type": "tab",
+        "label": "findings flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5e1aad1777646734",
+        "type": "tab",
+        "label": "follow up flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "185d79b48148ba56",
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set request parameters",
-        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"topicName,sequence,texto,verification,references,normativas\";\n\nreturn msg;",
+        "func": "msg.entity = \"ProtocolQuestion\";\nmsg.entityData = { \"id\" : msg.questionIds }\nmsg.entitySelect = \"code,topicName,sequence,texto,verification,references,normativas,riskLevel\";\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -115,7 +171,7 @@
         "finalize": "",
         "libs": [],
         "x": 450,
-        "y": 700,
+        "y": 740,
         "wires": [
             [
                 "af6db56e177d734f"
@@ -148,8 +204,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 580,
-        "y": 420,
+        "x": 960,
+        "y": 480,
         "wires": []
     },
     {
@@ -165,7 +221,7 @@
         "addname": "",
         "property": "payload",
         "x": 170,
-        "y": 1140,
+        "y": 1060,
         "wires": [
             [
                 "222a0d72d1228084"
@@ -194,7 +250,7 @@
         "reduceInitType": "",
         "reduceFixup": "",
         "x": 210,
-        "y": 1200,
+        "y": 1120,
         "wires": [
             [
                 "420a5f55c84c8148"
@@ -214,7 +270,7 @@
         "addname": "",
         "property": "payload",
         "x": 400,
-        "y": 1140,
+        "y": 1060,
         "wires": [
             [
                 "851e9b7e0566dddc"
@@ -226,7 +282,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Convert to checklist format",
-        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : msg.payload.normativas.map((x) => ({\n                        \"id\" : x.id,\n                        \"reglamento\" : x.reglamentoName,\n                        \"articulo\" : x.name,\n                        \"texto\" : x.texto,\n                        \"ICAOref\" : x.acapitesOACIName\n                     })),\n                     \"guidance\" : msg.payload.references\n                  }\n                };\nreturn msg;",
+        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"code\" : msg.payload.code,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : {\n                        \"id\": msg.payload.normativas[0]?.id,\n                        \"reglamento\": msg.payload.normativas[0]?.reglamentoName,\n                        \"articulo\": msg.payload.normativas[0]?.name,\n                        \"texto\": msg.payload.normativas[0]?.texto,\n                        \"ICAOref\": msg.payload.normativas[0]?.acapitesOACIName\n                     },\n                     \"guidance\" : msg.payload.references\n                  },\n                  \"riskLevel\" : msg.payload.riskLevelName\n                };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -234,7 +290,7 @@
         "finalize": "",
         "libs": [],
         "x": 640,
-        "y": 1140,
+        "y": 1060,
         "wires": [
             [
                 "1aa0da4621262a93"
@@ -254,7 +310,7 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 800,
+        "y": 840,
         "wires": [
             [
                 "da1b9cfe4028bec1"
@@ -270,7 +326,7 @@
         "action": "",
         "pretty": false,
         "x": 420,
-        "y": 800,
+        "y": 840,
         "wires": [
             [
                 "8483d9f18f8697e1"
@@ -291,7 +347,7 @@
         "seqKey": "payload",
         "seqKeyType": "msg",
         "x": 430,
-        "y": 1200,
+        "y": 1120,
         "wires": [
             [
                 "33fe8eec4d8b8b7d"
@@ -311,8 +367,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 740,
-        "y": 500,
+        "x": 680,
+        "y": 960,
         "wires": []
     },
     {
@@ -328,7 +384,7 @@
         "finalize": "",
         "libs": [],
         "x": 390,
-        "y": 600,
+        "y": 640,
         "wires": [
             [
                 "eb9ae640c67e9e05"
@@ -346,7 +402,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 820,
-        "y": 600,
+        "y": 640,
         "wires": [
             [
                 "96a8237c40d6b37c"
@@ -366,7 +422,7 @@
         "finalize": "",
         "libs": [],
         "x": 140,
-        "y": 700,
+        "y": 740,
         "wires": [
             [
                 "185d79b48148ba56"
@@ -380,7 +436,7 @@
         "name": "create checklist",
         "links": [],
         "x": 75,
-        "y": 1080,
+        "y": 1000,
         "wires": [
             [
                 "ac0b6432f0212e0f"
@@ -395,7 +451,7 @@
         "mode": "return",
         "links": [],
         "x": 805,
-        "y": 1200,
+        "y": 1120,
         "wires": []
     },
     {
@@ -409,7 +465,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 760,
-        "y": 700,
+        "y": 740,
         "wires": [
             [
                 "abb80c187da0adf6"
@@ -436,7 +492,7 @@
         "to": "",
         "reg": false,
         "x": 600,
-        "y": 1200,
+        "y": 1120,
         "wires": [
             [
                 "5bcda936ac856077"
@@ -450,7 +506,7 @@
         "name": "create checklist sub flow",
         "info": "",
         "x": 170,
-        "y": 1020,
+        "y": 940,
         "wires": []
     },
     {
@@ -460,7 +516,7 @@
         "name": "getChecklist",
         "links": [],
         "x": 75,
-        "y": 600,
+        "y": 640,
         "wires": [
             [
                 "be6ac0a4cc1373ad"
@@ -475,7 +531,7 @@
         "mode": "return",
         "links": [],
         "x": 585,
-        "y": 800,
+        "y": 840,
         "wires": []
     },
     {
@@ -600,8 +656,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 230,
-        "y": 320,
+        "x": 190,
+        "y": 400,
         "wires": [
             [
                 "e07a75568b17aa84"
@@ -618,8 +674,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 520,
-        "y": 320,
+        "x": 480,
+        "y": 400,
         "wires": [
             [
                 "6ec782637fa68758"
@@ -652,8 +708,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 730,
-        "y": 320,
+        "x": 720,
+        "y": 400,
         "wires": [
             [
                 "b9136e0503319e1e"
@@ -671,11 +727,10 @@
         "linkType": "static",
         "timeout": "30",
         "x": 370,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
-                "7ebff2d241b99fec",
-                "2852a7a7c4aebcb9"
+                "93f3e4d8fb190270"
             ]
         ]
     },
@@ -686,7 +741,7 @@
         "name": "getChecklist sub flow",
         "info": "",
         "x": 160,
-        "y": 540,
+        "y": 580,
         "wires": []
     },
     {
@@ -700,10 +755,11 @@
         "linkType": "static",
         "timeout": "30",
         "x": 300,
-        "y": 1080,
+        "y": 1000,
         "wires": [
             [
-                "5552e88df9693eeb"
+                "5552e88df9693eeb",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -720,7 +776,7 @@
         "finalize": "",
         "libs": [],
         "x": 200,
-        "y": 1420,
+        "y": 1380,
         "wires": [
             [
                 "54ab4c24fabc1f59"
@@ -732,7 +788,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "save inspection data",
-        "func": "msg.inspectionId = msg.payload.list[0].id;\nmsg.checklist = {\n    \"inspection\": msg.payload.list[0].code,\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"location\": msg.payload.list[0].locationName,\n    \"locationId\": msg.payload.list[0].locationId,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n}\nreturn msg;",
+        "func": "msg.inspectionId = msg.payload.list[0].id;\nmsg.checklist = {\n    \"inspection\": msg.payload.list[0].code,\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"locationName\": msg.payload.list[0].locationName,\n    \"locationId\": msg.payload.list[0].locationId,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -752,7 +808,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "save specialty data",
-        "func": "msg.specialtyId = msg.payload.list[0].id;\nmsg.specialty = msg.payload.list[0].name;\nmsg.checklist[\"specialtyName\"] = msg.specialty;\nreturn msg;",
+        "func": "msg.specialtyId = msg.payload.list[0].id;\nmsg.specialty = msg.payload.list[0].name;\nmsg.checklist[\"specialtyName\"] = msg.specialty;\nmsg.checklist[\"specialtyCode\"] = msg.payload.list[0].code;\nmsg.checklist[\"specialtyId\"] = msg.payload.list[0].id;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -763,7 +819,7 @@
         "y": 240,
         "wires": [
             [
-                "89e25c2338dbce76"
+                "c98a2417365e34b1"
             ]
         ]
     },
@@ -778,7 +834,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 440,
-        "y": 1420,
+        "y": 1380,
         "wires": [
             [
                 "660c57bd0c256f45"
@@ -798,7 +854,7 @@
         "finalize": "",
         "libs": [],
         "x": 670,
-        "y": 1420,
+        "y": 1380,
         "wires": [
             [
                 "c244ac031e1523e4"
@@ -839,7 +895,7 @@
         "to": "",
         "reg": false,
         "x": 280,
-        "y": 1340,
+        "y": 1300,
         "wires": [
             [
                 "fd38fce11ec9265e"
@@ -857,7 +913,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 580,
-        "y": 1340,
+        "y": 1300,
         "wires": [
             [
                 "ef8c59d1fa3aac09"
@@ -871,7 +927,7 @@
         "name": "inspected provider",
         "links": [],
         "x": 95,
-        "y": 1340,
+        "y": 1300,
         "wires": [
             [
                 "ef6c9caf77b46989"
@@ -886,7 +942,7 @@
         "mode": "return",
         "links": [],
         "x": 835,
-        "y": 1420,
+        "y": 1380,
         "wires": []
     },
     {
@@ -900,7 +956,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 170,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
                 "7502e37405f710a8"
@@ -914,8 +970,201 @@
         "name": "inspected provider",
         "info": "",
         "x": 130,
-        "y": 1300,
+        "y": 1260,
         "wires": []
+    },
+    {
+        "id": "c98a2417365e34b1",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "location parameters",
+        "func": "msg.entity = \"Location\";\nmsg.entityData = { \n    \"id\" : msg.checklist.locationId\n                 }\nmsg.entitySelect = 'icaoCode'\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 320,
+        "wires": [
+            [
+                "e58b38b85d4f6b73"
+            ]
+        ]
+    },
+    {
+        "id": "e58b38b85d4f6b73",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get location",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 490,
+        "y": 320,
+        "wires": [
+            [
+                "68f9e718831a71af"
+            ]
+        ]
+    },
+    {
+        "id": "68f9e718831a71af",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "save location data",
+        "func": "msg.checklist[\"locationCode\"] = msg.payload.list[0].icaoCode\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 320,
+        "wires": [
+            [
+                "89e25c2338dbce76"
+            ]
+        ]
+    },
+    {
+        "id": "d603ae3950a95246",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "locationId",
+                "pt": "msg",
+                "to": "checklist.locationId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 230,
+        "y": 1500,
+        "wires": [
+            [
+                "4999deeecb47ded5"
+            ]
+        ]
+    },
+    {
+        "id": "4999deeecb47ded5",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "7020910e67e189ea"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 510,
+        "y": 1500,
+        "wires": [
+            [
+                "98b9a29d6013bd9e"
+            ]
+        ]
+    },
+    {
+        "id": "98b9a29d6013bd9e",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "set prior finding id",
+        "func": "let found = -1\nfor ( var finding of msg.payload ) {\n    found = msg.checklist.questions.findIndex((x) => x.code == finding.itemCode)\n    if (found > -1) {\n        msg.checklist.questions[found][\"priorFindingId\"] = finding.findingId;\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1500,
+        "wires": [
+            [
+                "1325ebe62337530f"
+            ]
+        ]
+    },
+    {
+        "id": "3354f59616b8e747",
+        "type": "link in",
+        "z": "f6f2187d.f17ca8",
+        "name": "get prior findings",
+        "links": [],
+        "x": 75,
+        "y": 1500,
+        "wires": [
+            [
+                "d603ae3950a95246"
+            ]
+        ]
+    },
+    {
+        "id": "1325ebe62337530f",
+        "type": "link out",
+        "z": "f6f2187d.f17ca8",
+        "name": "link out 9",
+        "mode": "return",
+        "links": [],
+        "x": 895,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "93f3e4d8fb190270",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "3354f59616b8e747"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 480,
+        "wires": [
+            [
+                "02ab8120bc4b6d66"
+            ]
+        ]
+    },
+    {
+        "id": "02ab8120bc4b6d66",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "checklist",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 780,
+        "y": 480,
+        "wires": [
+            [
+                "7ebff2d241b99fec"
+            ]
+        ]
     },
     {
         "id": "aa61590209297976",
@@ -2668,8 +2917,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 920,
-        "y": 480,
+        "x": 900,
+        "y": 560,
         "wires": []
     },
     {
@@ -2730,8 +2979,7 @@
         "y": 240,
         "wires": [
             [
-                "f038ecdcd8a7bb0f",
-                "1d55d021874f94ec"
+                "f038ecdcd8a7bb0f"
             ]
         ]
     },
@@ -2983,18 +3231,18 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "add contact info",
-        "func": "let thisOne = 0;\nfor (var person of msg.payload.list) {\n    thisOne = msg.inspectionPlan.providers.findIndex( (x) => x.name == person.serviceProviderName);\n    msg.inspectionPlan.providers[thisOne].contact = {\n        \"name\" : person.name,\n        \"position\" : person.workPosition\n    }\n}\n\nmsg.payload = msg.inspectionPlan;\nreturn msg;",
+        "func": "let thisOne = 0;\nfor (var person of msg.payload.list) {\n    thisOne = msg.inspectionPlan.providers.findIndex( (x) => x.name == person.serviceProviderName);\n    msg.inspectionPlan.providers[thisOne].contact = {\n        \"name\" : person.name,\n        \"position\" : person.workPosition\n    }\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 640,
+        "x": 600,
         "y": 480,
         "wires": [
             [
-                "7cb35d6d0bf3d372"
+                "bded2a99204287bd"
             ]
         ]
     },
@@ -3268,6 +3516,2257 @@
         "wires": [
             [
                 "d937265e26cb1547"
+            ]
+        ]
+    },
+    {
+        "id": "af66b696c5573785",
+        "type": "http request",
+        "z": "5afaefaae1db46d5",
+        "name": "send report",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://proxy:8080/alfresco/s/api/inspection/generate",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 550,
+        "y": 560,
+        "wires": [
+            [
+                "7cb35d6d0bf3d372",
+                "1d55d021874f94ec"
+            ]
+        ]
+    },
+    {
+        "id": "bded2a99204287bd",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 860,
+        "y": 480,
+        "wires": [
+            [
+                "2a46f207dd799e40"
+            ]
+        ]
+    },
+    {
+        "id": "2a46f207dd799e40",
+        "type": "change",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "inspectionPlan",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 560,
+        "wires": [
+            [
+                "af66b696c5573785"
+            ]
+        ]
+    },
+    {
+        "id": "4b1f9e2113621dd8",
+        "type": "http in",
+        "z": "2958c4a9b21da45a",
+        "name": "Import Canonical Models",
+        "url": "/importCanonical",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 80,
+        "wires": [
+            [
+                "05bb6c09918f3b7b"
+            ]
+        ]
+    },
+    {
+        "id": "05bb6c09918f3b7b",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.inspection",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyName",
+                "pt": "msg",
+                "to": "req.query.specialty",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 180,
+        "wires": [
+            [
+                "7a3c382c54194732"
+            ]
+        ]
+    },
+    {
+        "id": "085b06de7f20dbf3",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "Set request parameters",
+        "func": "msg.payload = {\n    \"specialtyName\" : msg.specialtyName,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 260,
+        "wires": [
+            [
+                "4f450e00fab88e37"
+            ]
+        ]
+    },
+    {
+        "id": "4f450e00fab88e37",
+        "type": "http request",
+        "z": "2958c4a9b21da45a",
+        "name": "import data",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/import-canonical",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 590,
+        "y": 260,
+        "wires": [
+            [
+                "61f3e4f51ebe920e",
+                "90613ba352af9a02"
+            ]
+        ]
+    },
+    {
+        "id": "61f3e4f51ebe920e",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "2daee083b5f63ed6",
+        "type": "catch",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "3220f3f3f70fa16f"
+            ]
+        ]
+    },
+    {
+        "id": "90613ba352af9a02",
+        "type": "debug",
+        "z": "2958c4a9b21da45a",
+        "name": "import canonical",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "3220f3f3f70fa16f",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "304",
+        "headers": {},
+        "x": 380,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7a3c382c54194732",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 180,
+        "wires": [
+            [
+                "085b06de7f20dbf3"
+            ]
+        ]
+    },
+    {
+        "id": "0f7dc8a7cf76071a",
+        "type": "http in",
+        "z": "2958c4a9b21da45a",
+        "name": "Import Follow ups",
+        "url": "/importFollowUps",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 420,
+        "wires": [
+            [
+                "ca7f8df347dd7beb"
+            ]
+        ]
+    },
+    {
+        "id": "ca7f8df347dd7beb",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "followUp",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 520,
+        "wires": [
+            [
+                "dbd3043502f149d4"
+            ]
+        ]
+    },
+    {
+        "id": "ebac6e5376bc7bbc",
+        "type": "http request",
+        "z": "2958c4a9b21da45a",
+        "name": "import data",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/import-canonical",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 590,
+        "y": 600,
+        "wires": [
+            [
+                "d2f2602a5ec15194",
+                "2f70858160b486f1"
+            ]
+        ]
+    },
+    {
+        "id": "d2f2602a5ec15194",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "2f70858160b486f1",
+        "type": "debug",
+        "z": "2958c4a9b21da45a",
+        "name": "import follow up",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "dbd3043502f149d4",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 520,
+        "wires": [
+            [
+                "01e297ebbd9d42ec"
+            ]
+        ]
+    },
+    {
+        "id": "01e297ebbd9d42ec",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "followUp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 600,
+        "wires": [
+            [
+                "ebac6e5376bc7bbc"
+            ]
+        ]
+    },
+    {
+        "id": "bd82a7a67ef6d40c",
+        "type": "change",
+        "z": "041ce3d9cda14530",
+        "name": "Store request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.inspection",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "providerId",
+                "pt": "msg",
+                "to": "req.query.provider",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "reportDate",
+                "pt": "msg",
+                "to": "req.query.reportDate",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 180,
+        "wires": [
+            [
+                "ee96d9c8e4a422c0"
+            ]
+        ]
+    },
+    {
+        "id": "f81e490b9c063162",
+        "type": "http in",
+        "z": "041ce3d9cda14530",
+        "name": "Inspection Report",
+        "url": "/inspectionReport",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "bd82a7a67ef6d40c"
+            ]
+        ]
+    },
+    {
+        "id": "99727fd091645792",
+        "type": "http response",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 860,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "b42e3ed47a787122",
+        "type": "catch",
+        "z": "041ce3d9cda14530",
+        "d": true,
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "b0a2994c799fd3dc"
+            ]
+        ]
+    },
+    {
+        "id": "b0a2994c799fd3dc",
+        "type": "http response",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "5ed2ab4b88d233a5",
+        "type": "debug",
+        "z": "041ce3d9cda14530",
+        "name": "inspectionReport",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "af055080076259f2",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 420,
+        "y": 280,
+        "wires": [
+            [
+                "5c497290c30a0c70"
+            ]
+        ]
+    },
+    {
+        "id": "5c497290c30a0c70",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save inspection data",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName\n};\n\nmsg.inspectionId = msg.payload.list[0].id;\nmsg.locationId = msg.payload.list[0].locationId;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 280,
+        "wires": [
+            [
+                "91bbed2b3cda5bd5"
+            ]
+        ]
+    },
+    {
+        "id": "9b5aaa79e9d78dc4",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "construct services array",
+        "func": "let serviceIds = [];\nfor (var locationService of msg.payload.list) {\n  for (var inspectedService of locationService.inspectedServices) {\n    if (inspectedService.inspectionId == msg.inspectionId ) {\n      serviceIds.push(inspectedService.id);\n    }\n  }\n}\n\nmsg.serviceIds = serviceIds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 380,
+        "wires": [
+            [
+                "eced5631dd2e7842"
+            ]
+        ]
+    },
+    {
+        "id": "eced5631dd2e7842",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "inspected specialty parameters",
+        "func": "msg.entity = \"InspectedSpecialty\";\nmsg.entityData = { \"inspectedServiceId\" : msg.serviceIds };\nmsg.entitySelect = \"id\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 520,
+        "wires": [
+            [
+                "a280859553a52a29"
+            ]
+        ]
+    },
+    {
+        "id": "a280859553a52a29",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "get insp specialties",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 470,
+        "y": 520,
+        "wires": [
+            [
+                "fffc0b7e8f13e374"
+            ]
+        ]
+    },
+    {
+        "id": "fffc0b7e8f13e374",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "get specialty info",
+        "func": "var specialties = [];\nfor (var specialty of msg.payload.list) {\n  specialties.push(specialty.id);\n}\n\nmsg.specialties = specialties;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 520,
+        "wires": [
+            [
+                "0ac20b5ee6e67291"
+            ]
+        ]
+    },
+    {
+        "id": "3670efee8fa9cb90",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 440,
+        "y": 380,
+        "wires": [
+            [
+                "9b5aaa79e9d78dc4"
+            ]
+        ]
+    },
+    {
+        "id": "91bbed2b3cda5bd5",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "location services parameters",
+        "func": "msg.entity = \"LocationService\";\nmsg.entityData = {\n    \"locationId\" : msg.locationId,\n    \"serviceProviderId\" : msg.providerId\n};\nmsg.entitySelect = \"inspectedServices\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 380,
+        "wires": [
+            [
+                "3670efee8fa9cb90"
+            ]
+        ]
+    },
+    {
+        "id": "ee96d9c8e4a422c0",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set inspection params",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "af055080076259f2"
+            ]
+        ]
+    },
+    {
+        "id": "0ac20b5ee6e67291",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "inspector parameters",
+        "func": "msg.entity = \"InspectedSpecialtyInspector\";\nmsg.entityData = { \"inspectedSpecialtyId\" : msg.specialties };\nmsg.entitySelect = \"inspectorName, inspectedSpecialtyName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 600,
+        "wires": [
+            [
+                "9729b91c720d1466"
+            ]
+        ]
+    },
+    {
+        "id": "9729b91c720d1466",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "get inspectors",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "603ea05e2b87ca0f"
+            ]
+        ]
+    },
+    {
+        "id": "603ea05e2b87ca0f",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "get inspector info",
+        "func": "var inspectors = [];\nvar thisOne = -1;\nfor (var inspector of msg.payload.list) {\n  thisOne = inspectors.findIndex( (x) => x.name == inspector.inspectorName);\n  if (thisOne >= 0 ) {\n    inspectors[thisOne].specialty.push(\n      inspector.inspectedSpecialtyName\n    )\n  } else {\n    inspectors.push({\n      \"name\": inspector.inspectorName,\n      \"specialty\": [inspector.inspectedSpecialtyName]\n    })\n  }\n}\n\nmsg.inspectionReport[\"inspectors\"] = inspectors;\nmsg.payload = msg.inspectionReport;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 600,
+        "wires": [
+            [
+                "bec446be943ad654"
+            ]
+        ]
+    },
+    {
+        "id": "e3fbb648496dac27",
+        "type": "http request",
+        "z": "041ce3d9cda14530",
+        "name": "send report",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://alfresco:8080/alfresco/s/api/inspection/report/generate",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 650,
+        "y": 680,
+        "wires": [
+            [
+                "99727fd091645792",
+                "5ed2ab4b88d233a5"
+            ]
+        ]
+    },
+    {
+        "id": "bec446be943ad654",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 200,
+        "y": 680,
+        "wires": [
+            [
+                "dbdd72860edcabb4"
+            ]
+        ]
+    },
+    {
+        "id": "dbdd72860edcabb4",
+        "type": "change",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "inspectionReport",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 680,
+        "wires": [
+            [
+                "e3fbb648496dac27"
+            ]
+        ]
+    },
+    {
+        "id": "d6a9d7aecd4fd3fc",
+        "type": "http in",
+        "z": "4462ef5386374bff",
+        "name": "Query Inspector",
+        "url": "/inspector/:externalId",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "f35160c07e027e6c"
+            ]
+        ]
+    },
+    {
+        "id": "dfd7d1126c27028f",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "65dfa012d755fa8a",
+        "type": "catch",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "3800a06e3170345b"
+            ]
+        ]
+    },
+    {
+        "id": "3800a06e3170345b",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 360,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "017b7d2c2761d8f3",
+        "type": "debug",
+        "z": "4462ef5386374bff",
+        "name": "queryInspector",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "de28d8125a390f40",
+        "type": "link call",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 600,
+        "y": 100,
+        "wires": [
+            [
+                "7251cf3fe6b2a510",
+                "017b7d2c2761d8f3"
+            ]
+        ]
+    },
+    {
+        "id": "f35160c07e027e6c",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "set inspector params",
+        "func": "msg.entity = \"Inspector\";\nmsg.entityData = {\n    \"externalUserID\" : msg.req.params.externalId\n}\nmsg.entitySelect = \"id,name,specialty\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "de28d8125a390f40"
+            ]
+        ]
+    },
+    {
+        "id": "7251cf3fe6b2a510",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "Create inspection object",
+        "func": "msg.inspector = {\n    \"id\" : msg.payload.list[0]?.id,\n    \"name\" : msg.payload.list[0]?.name,\n    \"specialties\" : msg.payload.list[0]?.specialty?.map((x) => \n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.inspector;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 100,
+        "wires": [
+            [
+                "dfd7d1126c27028f"
+            ]
+        ]
+    },
+    {
+        "id": "3ae4599a923f2d89",
+        "type": "http in",
+        "z": "4462ef5386374bff",
+        "name": "Query Inspection",
+        "url": "/inspection/:inspectionId",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "b119067bf8ac10b3"
+            ]
+        ]
+    },
+    {
+        "id": "be64af621c41a7a5",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 940,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "c82e5739d9f96f39",
+        "type": "debug",
+        "z": "4462ef5386374bff",
+        "name": "queryInspection",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "235c4f351bd9f157",
+        "type": "link call",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 600,
+        "y": 400,
+        "wires": [
+            [
+                "f274d07e82b8dbc1"
+            ]
+        ]
+    },
+    {
+        "id": "b119067bf8ac10b3",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "set inspector params",
+        "func": "const inspectionId = msg.req.params.inspectionId;\nconst idKey = (inspectionId.substring(0,2) == \"MD\" \n      ? ({ \"code\" : inspectionId }) \n      : ({ \"id\" : inspectionId }));\nmsg.entity = \"Inspection\";\nmsg.entityData = idKey;\nmsg.entitySelect = \"id,code,locationId,locationName,mainInspectorId,mainInspectorName,secondaryInspectorId,secondaryInspectorName,startDate,endDate,status\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 400,
+        "wires": [
+            [
+                "235c4f351bd9f157"
+            ]
+        ]
+    },
+    {
+        "id": "8f286dc5d019636e",
+        "type": "http in",
+        "z": "4462ef5386374bff",
+        "name": "Query Assigner group",
+        "url": "/assignmentGroup/:externalGroup",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 720,
+        "wires": [
+            [
+                "971b8b9418905d87"
+            ]
+        ]
+    },
+    {
+        "id": "50e8db1efcf2b4e3",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "51538052113f82c0",
+        "type": "catch",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 140,
+        "y": 840,
+        "wires": [
+            [
+                "ba30a1d3a6d9a47e"
+            ]
+        ]
+    },
+    {
+        "id": "ba30a1d3a6d9a47e",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 360,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "b7cc0a622e4cc39b",
+        "type": "debug",
+        "z": "4462ef5386374bff",
+        "name": "queryAssignment",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "4b95c1a0676e8c86",
+        "type": "link call",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 600,
+        "y": 720,
+        "wires": [
+            [
+                "f214c53eba0d1c22",
+                "b7cc0a622e4cc39b"
+            ]
+        ]
+    },
+    {
+        "id": "971b8b9418905d87",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "set assigner group params",
+        "func": "msg.entity = \"AssignmentGroup\";\nmsg.entityData = {\n    \"externalGroup\" : msg.req.params.externalGroup\n}\nmsg.entitySelect = \"id,name,specialty\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 720,
+        "wires": [
+            [
+                "4b95c1a0676e8c86"
+            ]
+        ]
+    },
+    {
+        "id": "f214c53eba0d1c22",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "Create group object",
+        "func": "msg.assignment = {\n    \"id\" : msg.payload.list[0]?.id,\n    \"name\" : msg.payload.list[0]?.name,\n    \"specialties\" : msg.payload.list[0]?.specialty?.map((x) => \n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.assignment;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 720,
+        "wires": [
+            [
+                "50e8db1efcf2b4e3"
+            ]
+        ]
+    },
+    {
+        "id": "f274d07e82b8dbc1",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "create inspection object",
+        "func": "const inspection = msg.payload.list[0];\nmsg.payload = inspection;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 400,
+        "wires": [
+            [
+                "be64af621c41a7a5"
+            ]
+        ]
+    },
+    {
+        "id": "b35f1c933bf6e77c",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Query specialties",
+        "url": "/specialties",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "171d96bba8a52e61"
+            ]
+        ]
+    },
+    {
+        "id": "63cce0a745e14369",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 920,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "66865b51e6acfcf0",
+        "type": "catch",
+        "z": "dbdd767669d57957",
+        "d": true,
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 60,
+        "wires": [
+            [
+                "cc74b3a907939c68"
+            ]
+        ]
+    },
+    {
+        "id": "cc74b3a907939c68",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "3ff525e760c2d85e",
+        "type": "debug",
+        "z": "dbdd767669d57957",
+        "name": "queryInspector",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "171d96bba8a52e61",
+        "type": "change",
+        "z": "dbdd767669d57957",
+        "name": "set filter",
+        "rules": [
+            {
+                "t": "set",
+                "p": "specialtyFilter",
+                "pt": "msg",
+                "to": "req.query.option",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "be151a9a6d230ee7"
+            ]
+        ]
+    },
+    {
+        "id": "f103a4ce0a691d1a",
+        "type": "switch",
+        "z": "dbdd767669d57957",
+        "name": "specialtyFilter null?",
+        "property": "specialtyFilter",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "be53fd4a382031bb"
+            ],
+            [
+                "26dbeccda49b912a"
+            ]
+        ]
+    },
+    {
+        "id": "be151a9a6d230ee7",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "find specialty params",
+        "func": "msg.entity=\"Specialty\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 140,
+        "wires": [
+            [
+                "c467165894b0c769"
+            ]
+        ]
+    },
+    {
+        "id": "c467165894b0c769",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "query specialties",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "b98a1635343936d9"
+            ]
+        ]
+    },
+    {
+        "id": "e32dab8498403768",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "filter leaves",
+        "func": "msg.validSpecialties = msg.specialties.filter((x) => (!msg.parentIds.includes(x.id)))\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 220,
+        "wires": [
+            [
+                "4a223f2a859f29e7"
+            ]
+        ]
+    },
+    {
+        "id": "4a223f2a859f29e7",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "return object",
+        "func": "msg.payload = msg.validSpecialties.map((x) => ({\n    \"id\" : x.id,\n    \"code\" : x.code,\n    \"name\" : x.name\n}));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 360,
+        "wires": [
+            [
+                "63cce0a745e14369",
+                "3ff525e760c2d85e"
+            ]
+        ]
+    },
+    {
+        "id": "be53fd4a382031bb",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "get parent ids",
+        "func": "\nmsg.parentIds = msg.specialties.map((x) => (x.parentId)).filter((y) => (y !== null));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 420,
+        "wires": [
+            [
+                "701257e88ccbd7b5"
+            ]
+        ]
+    },
+    {
+        "id": "701257e88ccbd7b5",
+        "type": "switch",
+        "z": "dbdd767669d57957",
+        "name": "specialtyFilter leaf?",
+        "property": "specialtyFilter",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "leaf",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "parent",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "e32dab8498403768"
+            ],
+            [
+                "cbdbbf8ac92f0cb0"
+            ],
+            [
+                "26dbeccda49b912a"
+            ]
+        ]
+    },
+    {
+        "id": "cbdbbf8ac92f0cb0",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "filter parents",
+        "func": "msg.validSpecialties = msg.specialties.filter((x) => (msg.parentIds.includes(x.id)))\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 360,
+        "wires": [
+            [
+                "4a223f2a859f29e7"
+            ]
+        ]
+    },
+    {
+        "id": "26dbeccda49b912a",
+        "type": "change",
+        "z": "dbdd767669d57957",
+        "name": "set validSpecialties",
+        "rules": [
+            {
+                "t": "set",
+                "p": "validSpecialties",
+                "pt": "msg",
+                "to": "specialties",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 500,
+        "wires": [
+            [
+                "4a223f2a859f29e7"
+            ]
+        ]
+    },
+    {
+        "id": "b98a1635343936d9",
+        "type": "change",
+        "z": "dbdd767669d57957",
+        "name": "store specialties",
+        "rules": [
+            {
+                "t": "set",
+                "p": "specialties",
+                "pt": "msg",
+                "to": "payload.list",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "f103a4ce0a691d1a"
+            ]
+        ]
+    },
+    {
+        "id": "8e089aca3e961ec0",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get locations",
+        "url": "/location",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 640,
+        "wires": [
+            [
+                "4ca836268aabe9ec"
+            ]
+        ]
+    },
+    {
+        "id": "4ca836268aabe9ec",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "find specialty params",
+        "func": "msg.entity=\"Location\";\nmsg.entitySelect=\"id,name,icaoCode,city,province\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 640,
+        "wires": [
+            [
+                "f21aaf6ebdb529a5"
+            ]
+        ]
+    },
+    {
+        "id": "f21aaf6ebdb529a5",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 640,
+        "wires": [
+            [
+                "7c24b6ca1d0dfdec"
+            ]
+        ]
+    },
+    {
+        "id": "9fb0b0ad48e00844",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 940,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "7c24b6ca1d0dfdec",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "function 1",
+        "func": "let locationList = msg.payload.list.map((x) => ({\n    \"id\" : x.id,\n    \"name\" : x.name,\n    \"icaoCode\" : x.icaoCode,\n    \"city\" : x.city,\n    \"province\" : x. province\n}));\nmsg.payload = locationList;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 640,
+        "wires": [
+            [
+                "9fb0b0ad48e00844"
+            ]
+        ]
+    },
+    {
+        "id": "6f9d06e081f9a39e",
+        "type": "http request",
+        "z": "18c3156c77e1c2fb",
+        "name": "Get auth ticket",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://proxy:8080/alfresco/api/-default-/public/authentication/versions/1/tickets",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 460,
+        "y": 100,
+        "wires": [
+            [
+                "27d2d4872fb1b8f6",
+                "1ab5cc53868b0395"
+            ]
+        ]
+    },
+    {
+        "id": "27d2d4872fb1b8f6",
+        "type": "function",
+        "z": "18c3156c77e1c2fb",
+        "name": "Set authorization header",
+        "func": "msg.headers = { \"Authorization\": \"Basic \" + Buffer.from(msg.payload.entry.id).toString('base64') };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 100,
+        "wires": [
+            [
+                "c0a92aa5d3f5ef39"
+            ]
+        ]
+    },
+    {
+        "id": "396d75052328dabf",
+        "type": "link in",
+        "z": "18c3156c77e1c2fb",
+        "name": "link alfresco authentication",
+        "links": [],
+        "x": 85,
+        "y": 100,
+        "wires": [
+            [
+                "57edab273be1c845"
+            ]
+        ]
+    },
+    {
+        "id": "c0a92aa5d3f5ef39",
+        "type": "link out",
+        "z": "18c3156c77e1c2fb",
+        "name": "link out 7",
+        "mode": "return",
+        "links": [],
+        "x": 935,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "57edab273be1c845",
+        "type": "function",
+        "z": "18c3156c77e1c2fb",
+        "name": "set payload",
+        "func": "msg.payload = {\n    \"userId\" : \"admin\",\n    \"password\" : \"admin\"\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 100,
+        "wires": [
+            [
+                "6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "1ab5cc53868b0395",
+        "type": "debug",
+        "z": "18c3156c77e1c2fb",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b7ef9a6b5d70ce2a",
+        "type": "http in",
+        "z": "be74fd69d845153f",
+        "name": "get open findings",
+        "url": "/findings/open",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "c1ec5c598feb9954"
+            ]
+        ]
+    },
+    {
+        "id": "c1ec5c598feb9954",
+        "type": "change",
+        "z": "be74fd69d845153f",
+        "name": "get parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "locationCode",
+                "pt": "msg",
+                "to": "req.query.locationCode",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locationId",
+                "pt": "msg",
+                "to": "req.query.locationId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyCode",
+                "pt": "msg",
+                "to": "req.query.specialtyCode",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyId",
+                "pt": "msg",
+                "to": "req.query.specialtyId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 80,
+        "wires": [
+            [
+                "24c1bb20d7548a07"
+            ]
+        ]
+    },
+    {
+        "id": "d5ad990219f7e100",
+        "type": "link call",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 600,
+        "y": 260,
+        "wires": [
+            [
+                "5df3c363ff334a37"
+            ]
+        ]
+    },
+    {
+        "id": "de062de86100cbc3",
+        "type": "http request",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://proxy:8080/alfresco/s/api/findings/open/query",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "da044a31bcb31118",
+                "4afccf560762d782"
+            ]
+        ]
+    },
+    {
+        "id": "57c03636fad05005",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "prepare payload",
+        "func": "msg.scriptPayload = {};\nif (msg.locationId) {\n  msg.scriptPayload[\"locationId\"] = msg.locationId\n} else {\n  if (msg.locationCode) {\n    msg.scriptPayload[\"locationCode\"] = msg.locationCode\n  }\n}\n\nif (msg.specialtyId) {\n  msg.scriptPayload[\"specialtyId\"] = msg.specialtyId\n} else {\n  if (msg.specialtyCode) {\n    msg.scriptPayload[\"specialtyCode\"] = msg.specialtyCode\n  }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 260,
+        "wires": [
+            [
+                "d5ad990219f7e100"
+            ]
+        ]
+    },
+    {
+        "id": "5df3c363ff334a37",
+        "type": "change",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "scriptPayload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 340,
+        "wires": [
+            [
+                "de062de86100cbc3"
+            ]
+        ]
+    },
+    {
+        "id": "78451597aa97c229",
+        "type": "http response",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 880,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "7020910e67e189ea",
+        "type": "link in",
+        "z": "be74fd69d845153f",
+        "name": "link open findings",
+        "links": [],
+        "x": 125,
+        "y": 260,
+        "wires": [
+            [
+                "57c03636fad05005"
+            ]
+        ]
+    },
+    {
+        "id": "179fea6113c9a09e",
+        "type": "link out",
+        "z": "be74fd69d845153f",
+        "name": "link out 8",
+        "mode": "return",
+        "links": [],
+        "x": 855,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "ad16f0af8c380a43",
+        "type": "comment",
+        "z": "be74fd69d845153f",
+        "name": "open findings sub flow",
+        "info": "",
+        "x": 200,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "24c1bb20d7548a07",
+        "type": "link call",
+        "z": "be74fd69d845153f",
+        "name": "link open findings",
+        "links": [
+            "7020910e67e189ea"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 670,
+        "y": 80,
+        "wires": [
+            [
+                "78451597aa97c229"
+            ]
+        ]
+    },
+    {
+        "id": "da044a31bcb31118",
+        "type": "debug",
+        "z": "be74fd69d845153f",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "4afccf560762d782",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "format findings",
+        "func": "const findingList = msg.payload.findings.map( (x) => {\n    const f = x.finding;\n    if (f.correctiveAction.capId == \"\") {\n       f.correctiveAction = undefined;\n    }\n    return f;\n    });\nmsg.payload = findingList;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 340,
+        "wires": [
+            [
+                "179fea6113c9a09e"
+            ]
+        ]
+    },
+    {
+        "id": "355c318caf6fc721",
+        "type": "http in",
+        "z": "5e1aad1777646734",
+        "name": "get last sequence Follow Ups",
+        "url": "/content/lastSeq",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "87398e603e4cd557"
+            ]
+        ]
+    },
+    {
+        "id": "87398e603e4cd557",
+        "type": "change",
+        "z": "5e1aad1777646734",
+        "name": "get parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "prefix",
+                "pt": "msg",
+                "to": "req.query.prefix",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "relativePath",
+                "pt": "msg",
+                "to": "req.query.relativePath",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "2ba66e3da5a2cf69"
+            ]
+        ]
+    },
+    {
+        "id": "e6b3daa270c934e8",
+        "type": "link call",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "links": [
+            "396d75052328dabf"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 260,
+        "wires": [
+            [
+                "0c0220959198349e"
+            ]
+        ]
+    },
+    {
+        "id": "3856a097e0ba3c92",
+        "type": "http request",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://proxy:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 340,
+        "wires": [
+            [
+                "463ace0ebbc03553"
+            ]
+        ]
+    },
+    {
+        "id": "90d02e729b93bac5",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "prepare payload",
+        "func": "msg.scriptPayload = {};\nif (msg.relativePath) {\n  msg.scriptPayload[\"relativePath\"] = msg.relativePath\n}\n\nmsg.scriptPayload[\"fields\"] = [\"name\"];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "e6b3daa270c934e8"
+            ]
+        ]
+    },
+    {
+        "id": "0c0220959198349e",
+        "type": "change",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "scriptPayload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "3856a097e0ba3c92"
+            ]
+        ]
+    },
+    {
+        "id": "b38be35bcddb3b07",
+        "type": "http response",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 840,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "8a89544c87a5a0b8",
+        "type": "link in",
+        "z": "5e1aad1777646734",
+        "name": "link followup sequence",
+        "links": [],
+        "x": 85,
+        "y": 260,
+        "wires": [
+            [
+                "90d02e729b93bac5"
+            ]
+        ]
+    },
+    {
+        "id": "dd22dfeb1cbdd77c",
+        "type": "link out",
+        "z": "5e1aad1777646734",
+        "name": "link out 10",
+        "mode": "return",
+        "links": [],
+        "x": 815,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "9ae829a3a13e1828",
+        "type": "comment",
+        "z": "5e1aad1777646734",
+        "name": "follow up sequence sub flow",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "2ba66e3da5a2cf69",
+        "type": "link call",
+        "z": "5e1aad1777646734",
+        "name": "link follow up sequence",
+        "links": [
+            "8a89544c87a5a0b8"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 670,
+        "y": 80,
+        "wires": [
+            [
+                "b38be35bcddb3b07"
+            ]
+        ]
+    },
+    {
+        "id": "63e20a552ddab517",
+        "type": "debug",
+        "z": "5e1aad1777646734",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "463ace0ebbc03553",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "format findings",
+        "func": "// look for follow ups for this finding\nconst rgx = \"^\" + msg.prefix;\nconst followUpList = msg.payload.list.entries.map( (x) => \n    x.entry.name\n  ).filter((x) => x.match(rgx)\n  )\nif (followUpList.length == 0) {\n    msg.payload = \"00\";\n} else {\n  const lastOneParts = followUpList.sort()[followUpList.length-1].split(\" \");\n  msg.payload = lastOneParts[lastOneParts.length-1];\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 340,
+        "wires": [
+            [
+                "dd22dfeb1cbdd77c"
             ]
         ]
     }
