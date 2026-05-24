@@ -1,8 +1,8 @@
 # Changelog
 
-All notable changes included in this release branch are documented here.
+All notable changes are documented in this file.
 
-## [Unreleased] - 2026-05-17
+## [0.1.0] - 2026-05-23
 
 ### Summary
 - Release scope from `main..develop`
