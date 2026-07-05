@@ -104,21 +104,27 @@ docker network create import-backend
 | `data/flows.json` | All Node-RED flow definitions (source of truth for the API) |
 | `data/flows_cred.json` | Encrypted credentials used by flows (do **not** commit plaintext secrets) |
 | `data/package.json` | Node-RED project metadata and custom node dependencies |
-| `checklist.json` | Seed data — inspection checklist questions for the surveillance specialty |
+| `.env.example` | Environment variable template (copy to `.env` before deployment) |
 
 ### Key settings (`data/settings.js`)
 
 - **Port**: `1880` (overridable via the `PORT` environment variable)
 - **Flow file**: `flows.json`
-- **Credential encryption**: uses a generated key by default. Set `credentialSecret` to a fixed value in production to prevent credentials from being lost on container rebuild.
-- **Authentication**: admin auth is disabled by default. Enable `adminAuth` in `settings.js` for production deployments.
+- **Credential encryption**: `credentialSecret` is set via `NODE_RED_CREDENTIAL_SECRET` env var with a dev default
+- **Editor auth**: `adminAuth` is enabled — login required to access the Node-RED editor
+- **API auth**: All 19 REST endpoints route through an API key check subflow — when `API_KEY` is set, requests require `X-API-Key` header
 
 ### Environment variables
 
 | Variable | Default | Description |
 |---|---|---|
 | `TZ` | `Europe/Amsterdam` | Container timezone |
-| `PORT` | `1880` | HTTP port for the Node-RED server |
+| `ALFRESCO_USERNAME` | `admin` | Alfresco credentials (used when frontend does not forward a user ticket) |
+| `ALFRESCO_PASSWORD` | `admin` | Alfresco credentials |
+| `API_KEY` | *(unset)* | Shared secret for REST endpoint protection; unset = no auth (dev mode) |
+| `ADMIN_USERNAME` | `admin` | Node-RED editor login username |
+| `ADMIN_PASSWORD_HASH` | *(bcrypt hash)* | Node-RED editor login password (bcrypt hash) |
+| `NODE_RED_CREDENTIAL_SECRET` | `a-secret-key` | Encryption key for flow credentials — change in production |
 
 ---
 
@@ -228,6 +234,9 @@ node-red/
 
 ## Security Notes
 
-- **Do not commit `flows_cred.json` with plaintext secrets.** Credentials are encrypted at rest by Node-RED using the `credentialSecret` value in `settings.js`.
-- Enable `adminAuth` in `settings.js` before exposing the Node-RED editor to any non-local network.
+- **`adminAuth` is enabled** — the Node-RED editor requires login (username/password from `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH` env vars).
+- **API key protection**: when `API_KEY` env var is set, all 19 REST endpoints require `X-API-Key` header.
+- **`credentialSecret`** is managed via `NODE_RED_CREDENTIAL_SECRET` env var — set a unique value in production.
+- **Alfresco credentials** are read from `ALFRESCO_USERNAME`/`ALFRESCO_PASSWORD` env vars. Frontend apps can forward user-specific Alfresco tickets via the `X-Alfresco-Ticket` header, which the auth flow will use preferentially over env var credentials.
+- **`.gitignore`** excludes backup files (`.backup`), runtime configs (`.config.*.json`), and `node_modules/`.
 - Consider placing Node-RED behind a reverse proxy (e.g., nginx) with TLS for production deployments.
