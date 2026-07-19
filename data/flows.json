@@ -1179,7 +1179,7 @@
         "persist": false,
         "proxy": "",
         "insecureHTTPParser": false,
-        "authType": "basic",
+        "authType": "",
         "senderr": false,
         "headers": [],
         "x": 260,
@@ -1220,7 +1220,7 @@
         "y": 160,
         "wires": [
             [
-                "aa61590209297976"
+                "set_atrocore_auth"
             ]
         ]
     },
@@ -1259,6 +1259,25 @@
         "wires": [
             [
                 "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "set_atrocore_auth",
+        "type": "function",
+        "z": "57efe981d107f25d",
+        "name": "Set AtroCore credentials",
+        "func": "var user = env.get(\"ATROCORE_USERNAME\") || \"admin\";\nvar pass = env.get(\"ATROCORE_PASSWORD\") || \"admin\";\nmsg.headers = msg.headers || {};\nmsg.headers[\"Authorization\"] = \"Basic \" + Buffer.from(user + \":\" + pass).toString(\"base64\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 300,
+        "wires": [
+            [
+                "aa61590209297976"
             ]
         ]
     },
@@ -2953,7 +2972,7 @@
         "type": "debug",
         "z": "5afaefaae1db46d5",
         "name": "inspectionPlan",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -2961,8 +2980,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 800,
-        "y": 140,
+        "x": 1160,
+        "y": 620,
         "wires": []
     },
     {
@@ -3179,7 +3198,7 @@
             "f260a9fe60a05e72"
         ],
         "linkType": "static",
-        "timeout": "30",
+        "timeout": "40",
         "x": 440,
         "y": 320,
         "wires": [
@@ -3526,7 +3545,7 @@
         "name": "send report",
         "method": "POST",
         "ret": "obj",
-        "paytoqs": "query",
+        "paytoqs": "ignore",
         "url": "http://proxy:8080/alfresco/s/api/inspection/generate",
         "tls": "",
         "persist": false,
@@ -3566,7 +3585,7 @@
             "396d75052328dabf"
         ],
         "linkType": "static",
-        "timeout": "30",
+        "timeout": "40",
         "x": 860,
         "y": 480,
         "wires": [
@@ -5185,12 +5204,11 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 460,
-        "y": 100,
+        "x": 520,
+        "y": 300,
         "wires": [
             [
-                "27d2d4872fb1b8f6",
-                "1ab5cc53868b0395"
+                "27d2d4872fb1b8f6"
             ]
         ]
     },
@@ -5206,8 +5224,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 750,
-        "y": 100,
+        "x": 770,
+        "y": 300,
         "wires": [
             [
                 "c0a92aa5d3f5ef39"
@@ -5220,8 +5238,8 @@
         "z": "18c3156c77e1c2fb",
         "name": "link alfresco authentication",
         "links": [],
-        "x": 85,
-        "y": 100,
+        "x": 55,
+        "y": 60,
         "wires": [
             [
                 "57edab273be1c845"
@@ -5235,8 +5253,8 @@
         "name": "link out 7",
         "mode": "return",
         "links": [],
-        "x": 935,
-        "y": 100,
+        "x": 915,
+        "y": 180,
         "wires": []
     },
     {
@@ -5244,18 +5262,18 @@
         "type": "function",
         "z": "18c3156c77e1c2fb",
         "name": "set payload",
-        "func": "// Priority 1: forwarded ticket from frontend\nvar ticket = msg.req && msg.req.headers && msg.req.headers[\"x-alfresco-ticket\"];\nif (ticket) {\n    msg.alf_ticket = ticket;\n    msg._skipLogin = true;\n    return msg;\n}\n// Priority 2: env var credentials\nmsg.payload = {\n    \"userId\": env.get(\"ALFRESCO_USERNAME\") || \"admin\",\n    \"password\": env.get(\"ALFRESCO_PASSWORD\") || \"admin\"\n};\nreturn msg;",
+        "func": "// Priority 1: forwarded ticket from frontend\nvar ticket = msg.req && msg.req.headers && msg.req.headers[\"x-alfresco-ticket\"];\nif (ticket) {\n    msg.payload = { \"entry\" : {\"id\" : ticket }};\n    msg.alf_ticket = ticket;\n    msg._skipLogin = true;\n    return msg;\n}\n// Priority 2: env var credentials\nmsg._skipLogin = false;\nmsg.payload = {\n    \"userId\": env.get(\"ALFRESCO_USERNAME\") || \"admin\",\n    \"password\": env.get(\"ALFRESCO_PASSWORD\") || \"admin\"\n};\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 250,
-        "y": 100,
+        "x": 130,
+        "y": 180,
         "wires": [
             [
-                "6f9d06e081f9a39e"
+                "6a61c1d98f5b14e2"
             ]
         ]
     },
@@ -5264,16 +5282,47 @@
         "type": "debug",
         "z": "18c3156c77e1c2fb",
         "name": "debug 2",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 680,
-        "y": 260,
+        "x": 240,
+        "y": 480,
         "wires": []
+    },
+    {
+        "id": "6a61c1d98f5b14e2",
+        "type": "switch",
+        "z": "18c3156c77e1c2fb",
+        "name": "",
+        "property": "_skipLogin",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "27d2d4872fb1b8f6"
+            ],
+            [
+                "6f9d06e081f9a39e",
+                "1ab5cc53868b0395"
+            ]
+        ]
     },
     {
         "id": "b7ef9a6b5d70ce2a",
