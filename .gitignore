@@ -2,3 +2,4 @@ data/.npm
 data/node_modules
 data/*.backup
 data/.config.*.json
+data/.sessions.json
