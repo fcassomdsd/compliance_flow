@@ -1491,7 +1491,8 @@
                 "p": "entityData",
                 "pt": "msg",
                 "to": "req.body",
-                "tot": "msg"
+                "tot": "msg",
+                "dc": true
             },
             {
                 "t": "set",
@@ -2699,7 +2700,7 @@
         "type": "function",
         "z": "aef96e90a1e86beb",
         "name": "Set request parameters",
-        "func": "let whereobj = {\n  \"type\":\"and\",\n  \"value\": []\n};\n\nlet condition;\n\nfor (const [key, value] of Object.entries(msg.entityData || \"\")) {\n  condition = {\"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n               \"attribute\": key,\n               \"value\" : value\n              }\n\n  whereobj.value.push(condition);\n};\n\nmsg.payload = {\n    where : '[' + JSON.stringify(whereobj) + ']'\n};\n\nif (msg.entitySelect) {\n  msg.payload[\"select\"] = msg.entitySelect;\n}\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\n\nreturn msg;",
+        "func": "// function makeWhereValue\n// create a where clause for and atrocore query based on an incoming object.\n// the object has the format:\n// { (\"_andx\" | \"_orx\" | \"fieldname\") : ( array | scalar | object ), ... }\n// _andx and _orx are indicators of a logical and/or, where x represent an identifying number (to avoid key name clashes)\n// if the key is an and/or condition, an object is expected as the value; \n// if the key is a fieldname, an array or a scalar is expected\n// the output is a JSON object (stringified)\nfunction makeWhereValue(valueObj) {\n  let condition;\n  const valueArray = [];\n  for (const [key, value] of Object.entries(valueObj || {})) {\n    if (key.startsWith(\"_and\") || key.startsWith(\"_or\")) {\n      condition = {\n        \"type\": (key.startsWith(\"_and\") ? \"and\" : \"or\"),\n        \"value\": makeWhereValue(value)\n      };\n    } else {\n      condition = {\n        \"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n        \"attribute\": key,\n        \"value\": value\n      };\n    }\n    valueArray.push(condition);\n  }\n  return valueArray;\n}\n\nmsg.payload = msg.payload || {};\n\nif (msg.entityData) {\n  const whereobj = {\n    \"type\": \"and\",\n    \"value\": makeWhereValue(msg.entityData)\n  };\n\n  msg.payload.where = JSON.stringify([whereobj]);\n}\n\nif (msg.entitySelect) {\n  msg.payload[\"select\"] = msg.entitySelect;\n}\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -2769,7 +2770,7 @@
         "type": "debug",
         "z": "aef96e90a1e86beb",
         "name": "getEntityCall",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -2980,8 +2981,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1160,
-        "y": 620,
+        "x": 940,
+        "y": 420,
         "wires": []
     },
     {
@@ -3086,7 +3087,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "construct providers array",
-        "func": "let providers = [];\nlet providerIds = [];\nlet thisOne = 0;\nfor (var provider of msg.payload.list) {\n  thisOne = providers.findIndex((x) => x.name == provider.serviceProviderName);\n  if (thisOne == -1) {\n    thisOne = providers.push({\n        \"id\" : provider.serviceProviderId,\n        \"name\" : provider.serviceProviderName,\n        \"contact\" : {},\n        \"services\" : []\n    });\n    thisOne--;\n    providerIds.push(provider.serviceProviderId);\n  }\n  \n  providers[thisOne].services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.inspectionPlan[\"providers\"] = providers;\nmsg.providerIds = providerIds;\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
+        "func": "let providers = [];\nlet providerIds = [];\nlet contactIds = {};\nlet thisOne = 0;\nlet thisContact = 0;\nfor (var provider of msg.payload.list) {\n\n  // if location service has a point of contact associated to it, save the contact id  \n  if (provider.pointOfContactId) {\n    if (!contactIds[provider.pointOfContactId]) {\n      contactIds[provider.pointOfContactId] = {\n        serviceProviders : []\n      }\n    }\n    thisContact = contactIds[provider.pointOfContactId].serviceProviders.findIndex(\n      (x) => x == provider.serviceProviderName);\n    if (thisContact == -1) {\n      contactIds[provider.pointOfContactId].serviceProviders.push(\n        provider.serviceProviderName\n      );\n    }\n  }\n\n  thisOne = providers.findIndex((x) => x.name == provider.serviceProviderName);\n  if (thisOne == -1) {\n    thisOne = providers.push({\n        \"id\" : provider.serviceProviderId,\n        \"name\" : provider.serviceProviderName,\n        \"contact\" : {},\n        \"services\" : []\n    });\n    thisOne--;\n    if (!provider.pointOfContactId) {\n      providerIds.push(provider.serviceProviderId);\n    }\n  }\n\n  providers[thisOne].services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.inspectionPlan[\"providers\"] = providers;\nmsg.providerIds = providerIds;\nmsg.contactIds = contactIds;\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3212,7 +3213,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "person parameters",
-        "func": "msg.entity = \"Person\";\nmsg.entityData = { \"serviceProviderId\" : msg.providerIds };\nmsg.entitySelect = \"name,workPosition,serviceProviderName\";\nreturn msg;",
+        "func": "msg.entity = \"Person\";\nmsg.entityData = {\n    \"_or\" : {\n      \"serviceProviderId\" : msg.providerIds,\n      \"id\" : Object.keys(msg.contactIds || {}) }\n};\nmsg.entitySelect = \"id,name,workPosition,serviceProviderName\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3223,7 +3224,8 @@
         "y": 480,
         "wires": [
             [
-                "e9a25e0d8e85ac85"
+                "e9a25e0d8e85ac85",
+                "1d55d021874f94ec"
             ]
         ]
     },
@@ -3250,7 +3252,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "add contact info",
-        "func": "let thisOne = 0;\nfor (var person of msg.payload.list) {\n    thisOne = msg.inspectionPlan.providers.findIndex( (x) => x.name == person.serviceProviderName);\n    msg.inspectionPlan.providers[thisOne].contact = {\n        \"name\" : person.name,\n        \"position\" : person.workPosition\n    }\n}\n\nreturn msg;",
+        "func": "let thisOne = 0;\nlet providerName = \"\";\nfor (var person of msg.payload.list) {\n    if (msg.contactIds[person.id]) {\n       providerName = msg.contactIds[person.id].serviceProviders[0];\n    } else {\n       providerName = person.serviceProviderName;\n    }\n    thisOne = msg.inspectionPlan.providers.findIndex( (x) => x.name == providerName);\n    msg.inspectionPlan.providers[thisOne].contact = {\n        \"name\" : person.name,\n        \"position\" : person.workPosition\n    }\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3483,7 +3485,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "location services parameters",
-        "func": "msg.entity = \"LocationService\";\nmsg.entityData = { \"id\" : Object.keys(msg.locationServiceObj) };\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId\";\nreturn msg;",
+        "func": "msg.entity = \"LocationService\";\nmsg.entityData = { \"id\" : Object.keys(msg.locationServiceObj) };\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId,pointOfContactId,pointOfContactName\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3571,8 +3573,7 @@
         "y": 560,
         "wires": [
             [
-                "7cb35d6d0bf3d372",
-                "1d55d021874f94ec"
+                "7cb35d6d0bf3d372"
             ]
         ]
     },
