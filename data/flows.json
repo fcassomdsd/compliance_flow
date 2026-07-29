@@ -302,7 +302,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "add checklist header",
-        "func": "msg.checklist[\"questions\"] = msg.questions;\nmsg.payload = msg.checklist;\nreturn msg;",
+        "func": "msg.checklist[\"severityConfig\"] = [\n    { \"id\": \"A\", \"name\": \"A\", \"daysToSolution\": 7 },\n    { \"id\": \"B\", \"name\": \"B\", \"daysToSolution\": 30 },\n    { \"id\": \"C\", \"name\": \"C\", \"daysToSolution\": 90 }\n];\nmsg.checklist[\"questions\"] = msg.questions;\nmsg.payload = msg.checklist;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
