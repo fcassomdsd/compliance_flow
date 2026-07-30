@@ -2,6 +2,35 @@
 
 All notable changes are documented in this file.
 
+## [0.2.0] - 2026-08-01
+
+### Security
+- Removed hardcoded Alfresco admin/admin credentials — now read from `ALFRESCO_USERNAME`/`ALFRESCO_PASSWORD` env vars
+- Removed hardcoded AtroCore auth — now read from `ATROCORE_USERNAME`/`ATROCORE_PASSWORD` env vars
+- `adminAuth` enabled for Node-RED editor (username/password from env vars)
+- `credentialSecret` set via `NODE_RED_CREDENTIAL_SECRET` env var
+- Backup and runtime config files added to `.gitignore`
+
+### Added
+- `severityConfig` in checklist API response (A/B/C with daysToSolution)
+- AtroCore credential function node (Basic auth header from env vars)
+- Forwarded ticket support in `set payload` function (X-Alfresco-Ticket header)
+- `.env.example` template with all 7 environment variables
+
+### Fixed
+- Fixed `send report` node `paytoqs` from `query` to `ignore` (JSON body instead of query params)
+- Fixed AtroCore auth flow missing credentials (`authType: basic` with no credentials)
+- Fixed `alfresco-net` network marked as external in docker-compose
+- Fixed `get alfresco auth` flow clearing stale headers from calling flows
+- Fixed docker-compose `version: "3.7"` deprecated line removed
+- Fixed `nodered/node-red:latest` pinned to `4.1.10`
+- Fixed unused named `data:` volume removed from docker-compose
+- Fixed stale `checklist.json` reference in README
+
+### Changed
+- Alfresco hostnames standardized to `proxy:8080` across all flows
+- 21 debug nodes deactivated for production (`active: false`)
+
 ## [0.1.0] - 2026-05-23
 
 ### Summary
