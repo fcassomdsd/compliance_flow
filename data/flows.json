@@ -1661,82 +1661,7 @@
         "y": 160,
         "wires": [
             [
-                "32b7e30306b45659"
-            ]
-        ]
-    },
-    {
-        "id": "32b7e30306b45659",
-        "type": "link call",
-        "z": "c865579c6e7f852c",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 530,
-        "y": 160,
-        "wires": [
-            [
-                "0d73f2eaebb17382"
-            ]
-        ]
-    },
-    {
-        "id": "0d73f2eaebb17382",
-        "type": "function",
-        "z": "c865579c6e7f852c",
-        "name": "Set request parameters",
-        "func": "msg.payload = msg.updateData;\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 790,
-        "y": 160,
-        "wires": [
-            [
-                "5f946ecd39880a69"
-            ]
-        ]
-    },
-    {
-        "id": "5f946ecd39880a69",
-        "type": "http request",
-        "z": "c865579c6e7f852c",
-        "name": "Update entity records",
-        "method": "PUT",
-        "ret": "txt",
-        "paytoqs": "query",
-        "url": "http://atro-web/api/v1/{{ entity }}/{{entityId}}",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [
-            {
-                "keyType": "Content-Type",
-                "keyValue": "",
-                "valueType": "application/json",
-                "valueValue": ""
-            },
-            {
-                "keyType": "Accept",
-                "keyValue": "",
-                "valueType": "application/json",
-                "valueValue": ""
-            }
-        ],
-        "x": 220,
-        "y": 320,
-        "wires": [
-            [
-                "89aeadd7e4fef1c0"
+                "46c3c1a18c464621"
             ]
         ]
     },
@@ -1749,8 +1674,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 750,
-        "y": 260,
+        "x": 830,
+        "y": 100,
         "wires": []
     },
     {
@@ -1758,7 +1683,7 @@
         "type": "debug",
         "z": "c865579c6e7f852c",
         "name": "updateEntity",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1766,8 +1691,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 450,
-        "y": 80,
+        "x": 890,
+        "y": 280,
         "wires": []
     },
     {
@@ -1777,8 +1702,8 @@
         "name": "No change",
         "statusCode": "204",
         "headers": {},
-        "x": 770,
-        "y": 320,
+        "x": 830,
+        "y": 160,
         "wires": []
     },
     {
@@ -1806,8 +1731,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 3,
-        "x": 550,
-        "y": 320,
+        "x": 670,
+        "y": 160,
         "wires": [
             [
                 "62f886868fc35281"
@@ -1827,8 +1752,137 @@
         "name": "Error",
         "statusCode": "500",
         "headers": {},
-        "x": 750,
-        "y": 380,
+        "x": 810,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "d00302ab123c5d70",
+        "type": "link call",
+        "z": "c865579c6e7f852c",
+        "name": "Get atrocore auth",
+        "links": [
+            "2cecf651291035ab"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 190,
+        "y": 400,
+        "wires": [
+            [
+                "6ce72d1adedcfd54"
+            ]
+        ]
+    },
+    {
+        "id": "6ce72d1adedcfd54",
+        "type": "function",
+        "z": "c865579c6e7f852c",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.updateData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 400,
+        "wires": [
+            [
+                "04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "04a6d3170f653951",
+        "type": "http request",
+        "z": "c865579c6e7f852c",
+        "name": "Update entity records",
+        "method": "PUT",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}/{{entityId}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 780,
+        "y": 400,
+        "wires": [
+            [
+                "42e5aa734738a44b",
+                "863a44862822b5a9"
+            ]
+        ]
+    },
+    {
+        "id": "08f5d2534ec47de6",
+        "type": "link in",
+        "z": "c865579c6e7f852c",
+        "name": "update entity",
+        "links": [],
+        "x": 75,
+        "y": 340,
+        "wires": [
+            [
+                "d00302ab123c5d70"
+            ]
+        ]
+    },
+    {
+        "id": "42e5aa734738a44b",
+        "type": "link out",
+        "z": "c865579c6e7f852c",
+        "name": "update entity out",
+        "mode": "return",
+        "links": [],
+        "x": 925,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "46c3c1a18c464621",
+        "type": "link call",
+        "z": "c865579c6e7f852c",
+        "name": "",
+        "links": [
+            "08f5d2534ec47de6"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "89aeadd7e4fef1c0"
+            ]
+        ]
+    },
+    {
+        "id": "943c108439f5beb3",
+        "type": "comment",
+        "z": "c865579c6e7f852c",
+        "name": "update entity call",
+        "info": "Update entity call, for reuse",
+        "x": 180,
+        "y": 300,
         "wires": []
     },
     {
@@ -2937,8 +2991,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 900,
-        "y": 560,
+        "x": 880,
+        "y": 600,
         "wires": []
     },
     {
@@ -2981,8 +3035,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 940,
-        "y": 420,
+        "x": 1100,
+        "y": 380,
         "wires": []
     },
     {
@@ -3224,8 +3278,7 @@
         "y": 480,
         "wires": [
             [
-                "e9a25e0d8e85ac85",
-                "1d55d021874f94ec"
+                "e9a25e0d8e85ac85"
             ]
         ]
     },
@@ -3573,7 +3626,8 @@
         "y": 560,
         "wires": [
             [
-                "7cb35d6d0bf3d372"
+                "7cb35d6d0bf3d372",
+                "a043bae1603803a8"
             ]
         ]
     },
@@ -3619,6 +3673,44 @@
         "wires": [
             [
                 "af66b696c5573785"
+            ]
+        ]
+    },
+    {
+        "id": "a043bae1603803a8",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set parameteros for status to Planned",
+        "func": "var inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId);\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Planned\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 540,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "39c0cb52f511d9cb",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "links": [
+            "08f5d2534ec47de6"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 1130,
+        "y": 600,
+        "wires": [
+            [
+                "1d55d021874f94ec"
             ]
         ]
     },
@@ -3727,7 +3819,8 @@
         "wires": [
             [
                 "61f3e4f51ebe920e",
-                "90613ba352af9a02"
+                "90613ba352af9a02",
+                "f8fd0ba84a167fe4"
             ]
         ]
     },
@@ -3960,6 +4053,80 @@
             [
                 "ebac6e5376bc7bbc"
             ]
+        ]
+    },
+    {
+        "id": "f8fd0ba84a167fe4",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "query AtroCore inspection by code",
+        "func": "var inspectionCode = msg.inspectionCode || (msg.req && msg.req.query && msg.req.query.inspection);\nif (!inspectionCode) {\n    node.warn(\"No inspection code for AtroCore status query\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityData = {\"code\" : inspectionCode }\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 140,
+        "wires": [
+            [
+                "82ed4a92c8c8050e"
+            ]
+        ]
+    },
+    {
+        "id": "82ed4a92c8c8050e",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 1040,
+        "y": 220,
+        "wires": [
+            [
+                "638b34fa78135933"
+            ]
+        ]
+    },
+    {
+        "id": "638b34fa78135933",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "transition to Uploaded if Planned",
+        "func": "var list = msg.payload && msg.payload.list;\nif (!list || list.length === 0) {\n    node.warn(\"Inspection not found in AtroCore for status update\");\n    return;\n}\n\nvar inspection = list[0];\nvar currentStatus = inspection.status;\nvar inspectionId = inspection.id;\n\nif (currentStatus !== \"Planned\") {\n    node.warn(\"Inspection status is \" + currentStatus + \", not transitioning to Uploaded\");\n    return;\n}\n\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Uploaded\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 300,
+        "wires": [
+            [
+                "1a3ed13a32e97cc3"
+            ]
+        ]
+    },
+    {
+        "id": "1a3ed13a32e97cc3",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "08f5d2534ec47de6"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 1290,
+        "y": 420,
+        "wires": [
+            []
         ]
     },
     {
@@ -4343,7 +4510,8 @@
         "wires": [
             [
                 "99727fd091645792",
-                "5ed2ab4b88d233a5"
+                "5ed2ab4b88d233a5",
+                "a5534ea92b26fa8a"
             ]
         ]
     },
@@ -4390,6 +4558,42 @@
             [
                 "e3fbb648496dac27"
             ]
+        ]
+    },
+    {
+        "id": "a5534ea92b26fa8a",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "update AtroCore status to Reported",
+        "func": "var inspectionId = msg.inspectionId;\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Reported\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 600,
+        "wires": [
+            [
+                "dc30543fe5a6e743"
+            ]
+        ]
+    },
+    {
+        "id": "dc30543fe5a6e743",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "08f5d2534ec47de6"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 1070,
+        "y": 500,
+        "wires": [
+            []
         ]
     },
     {

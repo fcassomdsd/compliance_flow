@@ -159,15 +159,16 @@ All endpoints are served at `http://<host>:1880`.
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/inspectionPlan` | Retrieve an inspection plan |
-| `GET` | `/inspectionReport` | Generate and retrieve an inspection report |
+| `GET` | `/inspectionPlan` | Generate an inspection plan; after successful generation, transitions AtroCore inspection status to `Planned` |
+| `GET` | `/inspectionReport` | Generate an inspection report; after successful generation, transitions AtroCore inspection status to `Reported` |
 | `POST` | `/importFollowUps` | Import follow-up items into the system |
+| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; after successful import, transitions AtroCore inspection status from `Planned` to `Uploaded` |
 
 ### Alfresco Integration
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco |
+| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; transitions AtroCore status from `Planned` to `Uploaded` |
 | `GET` | `/content/lastSeq` | Get the last content sequence number from Alfresco |
 
 ### Static / Reference Data
@@ -206,9 +207,9 @@ The Node-RED editor organises logic into the following tabs (flows):
 | **Add links** | Creates entity relationship links |
 | **Delete links** | Removes entity relationship links |
 | **Get Entity call** | Lower-level entity retrieval sub-flow |
-| **Inspection plan** | Builds and serves an inspection plan |
-| **import canonical to alfresco** | Exports canonical inspection records to Alfresco |
-| **Inspection report** | Compiles and returns a full inspection report |
+| **Inspection plan** | Builds and serves an inspection plan; updates AtroCore inspection status to `Planned` |
+| **import canonical to alfresco** | Exports canonical inspection records to Alfresco; queries AtroCore and transitions status from `Planned` to `Uploaded` |
+| **Inspection report** | Compiles and returns a full inspection report; updates AtroCore inspection status to `Reported` |
 | **Auth flows** | Shared authentication helper sub-flows |
 | **Static data** | Serves reference / lookup data (inspectors, locations, specialties, groups) |
 | **findings flows** | Manages open findings lifecycle |
