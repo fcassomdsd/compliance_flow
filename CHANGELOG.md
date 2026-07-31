@@ -2,6 +2,15 @@
 
 All notable changes are documented in this file.
 
+## [0.3.0] - 2026-07-30
+
+### Added
+- Status transition sub-flows in 3 endpoints:
+  - `/inspectionPlan` — after Alfresco plan generation, updates AtroCore inspection status to `Planned`
+  - `/importCanonical` — after canonical import, queries AtroCore by inspection code and, if status is `Planned`, transitions to `Uploaded`
+  - `/inspectionReport` — after report generation, updates AtroCore inspection status to `Reported`
+- Each status update flow includes AtroCore auth, HTTP request, and fire-and-forget pattern (response not blocked by status update)
+
 ## [0.2.0] - 2026-08-01
 
 ### Security
