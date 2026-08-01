@@ -544,7 +544,7 @@
                 "t": "set",
                 "p": "inspectionCode",
                 "pt": "msg",
-                "to": "req.query.inspection",
+                "to": "req.query.siteVisit",
                 "tot": "msg"
             },
             {
@@ -573,7 +573,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "inspection parameters",
-        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"code\" : msg.inspectionCode }\nmsg.entitySelect = null;\nreturn msg;",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode }\nmsg.entitySelect = null;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -2948,7 +2948,7 @@
                 "t": "set",
                 "p": "inspectionCode",
                 "pt": "msg",
-                "to": "req.query.inspection",
+                "to": "req.query.siteVisit",
                 "tot": "msg"
             },
             {
@@ -3585,7 +3585,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "set inspection params",
-        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3688,7 +3688,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "set parameteros for status to Planned",
-        "func": "var inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId);\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Planned\" };\nreturn msg;",
+        "func": "var inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId);\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"SiteVisit\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Planned\" };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3748,7 +3748,7 @@
                 "t": "set",
                 "p": "inspectionCode",
                 "pt": "msg",
-                "to": "req.query.inspection",
+                "to": "req.query.siteVisit",
                 "tot": "msg"
             },
             {
@@ -4067,7 +4067,7 @@
         "type": "function",
         "z": "2958c4a9b21da45a",
         "name": "query AtroCore inspection by code",
-        "func": "var inspectionCode = msg.inspectionCode || (msg.req && msg.req.query && msg.req.query.inspection);\nif (!inspectionCode) {\n    node.warn(\"No inspection code for AtroCore status query\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityData = {\"code\" : inspectionCode }\nreturn msg;",
+        "func": "var inspectionCode = msg.inspectionCode || (msg.req && msg.req.query && msg.req.query.inspection);\nif (!inspectionCode) {\n    node.warn(\"No inspection code for AtroCore status query\");\n    return;\n}\n\nmsg.entity = \"SiteVisit\";\nmsg.entityData = {\"code\" : inspectionCode }\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4146,7 +4146,7 @@
                 "t": "set",
                 "p": "inspectionCode",
                 "pt": "msg",
-                "to": "req.query.inspection",
+                "to": "req.query.siteVisit",
                 "tot": "msg"
             },
             {
@@ -4410,7 +4410,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "set inspection params",
-        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4572,7 +4572,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "update AtroCore status to Reported",
-        "func": "var inspectionId = msg.inspectionId;\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Reported\" };\nreturn msg;",
+        "func": "var inspectionId = msg.inspectionId;\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"SiteVisit\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Reported\" };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4805,7 +4805,7 @@
         "type": "function",
         "z": "4462ef5386374bff",
         "name": "set inspector params",
-        "func": "const inspectionId = msg.req.params.inspectionId;\nconst idKey = (inspectionId.substring(0,2) == \"MD\" \n      ? ({ \"code\" : inspectionId }) \n      : ({ \"id\" : inspectionId }));\nmsg.entity = \"Inspection\";\nmsg.entityData = idKey;\nmsg.entitySelect = \"id,code,locationId,locationName,mainInspectorId,mainInspectorName,secondaryInspectorId,secondaryInspectorName,startDate,endDate,status\";\nreturn msg;",
+        "func": "const inspectionId = msg.req.params.inspectionId;\nconst idKey = (inspectionId.substring(0,2) == \"MD\" \n      ? ({ \"code\" : inspectionId }) \n      : ({ \"id\" : inspectionId }));\nmsg.entity = \"SiteVisit\";\nmsg.entityData = idKey;\nmsg.entitySelect = \"id,code,locationId,locationName,mainInspectorId,mainInspectorName,secondaryInspectorId,secondaryInspectorName,startDate,endDate,status\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
