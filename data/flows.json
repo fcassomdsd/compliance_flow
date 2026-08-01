@@ -2953,9 +2953,9 @@
             },
             {
                 "t": "set",
-                "p": "serviceAreaId",
+                "p": "inspectedProviderId",
                 "pt": "msg",
-                "to": "req.query.serviceArea",
+                "to": "req.query.provider",
                 "tot": "msg"
             }
         ],
@@ -3545,7 +3545,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "location services parameters",
-        "func": "msg.entity = \"LocationService\";\nvar ids = Object.keys(msg.locationServiceObj);\nif (ids.length === 0) {\n    msg.payload = { list: [] };\n    return msg;\n}\nmsg.entityData = { \"id\": ids };\nif (msg.serviceAreaId) {\n    msg.entityData[\"serviceAreaId\"] = msg.serviceAreaId;\n}\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId,pointOfContactId,pointOfContactName,serviceAreaId\";\nreturn msg;",
+        "func": "msg.entity = \"LocationService\";\nvar ids = Object.keys(msg.locationServiceObj);\nif (ids.length === 0) {\n    msg.payload = { list: [] };\n    return msg;\n}\nmsg.entityData = { \"id\": ids };\nif (msg.inspectedProviderId) {\n    msg.entityData[\"inspectedProviderId\"] = msg.inspectedProviderId;\n}\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId,pointOfContactId,pointOfContactName,inspectedProviderId\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
