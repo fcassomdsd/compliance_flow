@@ -1182,8 +1182,8 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 260,
-        "y": 160,
+        "x": 420,
+        "y": 180,
         "wires": [
             [
                 "2c42610a8c33a618"
@@ -1203,7 +1203,7 @@
         "finalize": "",
         "libs": [],
         "x": 730,
-        "y": 160,
+        "y": 300,
         "wires": [
             [
                 "3e6981e8eae71675"
@@ -1216,11 +1216,11 @@
         "z": "57efe981d107f25d",
         "name": "Link atrocore authorization",
         "links": [],
-        "x": 85,
-        "y": 160,
+        "x": 35,
+        "y": 220,
         "wires": [
             [
-                "set_atrocore_auth"
+                "d91ff062af570bd6"
             ]
         ]
     },
@@ -1232,7 +1232,7 @@
         "mode": "return",
         "links": [],
         "x": 905,
-        "y": 160,
+        "y": 220,
         "wires": []
     },
     {
@@ -1254,8 +1254,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 490,
-        "y": 160,
+        "x": 570,
+        "y": 80,
         "wires": [
             [
                 "79c7123b33df9145"
@@ -1274,10 +1274,39 @@
         "finalize": "",
         "libs": [],
         "x": 250,
-        "y": 300,
+        "y": 80,
         "wires": [
             [
                 "aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "d91ff062af570bd6",
+        "type": "switch",
+        "z": "57efe981d107f25d",
+        "name": "",
+        "property": "authToken",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "null"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 110,
+        "y": 300,
+        "wires": [
+            [
+                "set_atrocore_auth"
+            ],
+            [
+                "79c7123b33df9145"
             ]
         ]
     },
@@ -2761,12 +2790,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 470,
-        "y": 100,
+        "x": 490,
+        "y": 160,
         "wires": [
             [
-                "6f319e5a075c3efc",
-                "ef1280f979b0ae24"
+                "6f319e5a075c3efc"
             ]
         ]
     },
@@ -2786,11 +2814,12 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 730,
-        "y": 100,
+        "x": 750,
+        "y": 160,
         "wires": [
             [
-                "6fb50185fb3085f4"
+                "6fb50185fb3085f4",
+                "ef1280f979b0ae24"
             ]
         ]
     },
@@ -2800,8 +2829,8 @@
         "z": "aef96e90a1e86beb",
         "name": "linkQuery",
         "links": [],
-        "x": 65,
-        "y": 100,
+        "x": 55,
+        "y": 160,
         "wires": [
             [
                 "f9f0c2c7ec45e373"
@@ -2815,8 +2844,8 @@
         "name": "linkOutQuery",
         "mode": "return",
         "links": [],
-        "x": 905,
-        "y": 100,
+        "x": 925,
+        "y": 160,
         "wires": []
     },
     {
@@ -2832,8 +2861,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 750,
-        "y": 200,
+        "x": 890,
+        "y": 80,
         "wires": []
     },
     {
@@ -2847,7 +2876,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 230,
-        "y": 100,
+        "y": 160,
         "wires": [
             [
                 "0ea3a418e92c6a8a"
@@ -2865,7 +2894,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 250,
-        "y": 100,
+        "y": 120,
         "wires": [
             [
                 "8644c145ead9a057"
@@ -2888,11 +2917,12 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 540,
-        "y": 100,
+        "x": 520,
+        "y": 120,
         "wires": [
             [
-                "86a2eaa7ac22e96d"
+                "86a2eaa7ac22e96d",
+                "46b5cd6f1c76d535"
             ]
         ]
     },
@@ -2902,8 +2932,8 @@
         "z": "0c1f3b47482da83f",
         "name": "linkLinks",
         "links": [],
-        "x": 85,
-        "y": 100,
+        "x": 75,
+        "y": 120,
         "wires": [
             [
                 "508988429242a401"
@@ -2917,8 +2947,8 @@
         "name": "link out 3",
         "mode": "return",
         "links": [],
-        "x": 855,
-        "y": 100,
+        "x": 795,
+        "y": 120,
         "wires": []
     },
     {
@@ -2926,7 +2956,7 @@
         "type": "debug",
         "z": "0c1f3b47482da83f",
         "name": "getLinksCall",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -2934,8 +2964,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 250,
-        "y": 180,
+        "x": 750,
+        "y": 60,
         "wires": []
     },
     {
@@ -2953,7 +2983,7 @@
             },
             {
                 "t": "set",
-                "p": "inspectedProviderId",
+                "p": "providerId",
                 "pt": "msg",
                 "to": "req.query.provider",
                 "tot": "msg"
@@ -2968,7 +2998,7 @@
         "y": 140,
         "wires": [
             [
-                "8b9e287beb212abd"
+                "d937265e26cb1547"
             ]
         ]
     },
@@ -2998,8 +3028,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 880,
-        "y": 600,
+        "x": 700,
+        "y": 620,
         "wires": []
     },
     {
@@ -3042,8 +3072,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1100,
-        "y": 380,
+        "x": 900,
+        "y": 640,
         "wires": []
     },
     {
@@ -3052,32 +3082,12 @@
         "z": "5afaefaae1db46d5",
         "name": "",
         "links": [
-            "9d1c32d934dc0bce"
+            "c12bd594ceedbf45"
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 420,
-        "y": 240,
-        "wires": [
-            [
-                "f038ecdcd8a7bb0f"
-            ]
-        ]
-    },
-    {
-        "id": "f038ecdcd8a7bb0f",
-        "type": "function",
-        "z": "5afaefaae1db46d5",
-        "name": "save inspection data",
-        "func": "msg.inspectionPlan = {\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    \"objective\": msg.payload.list[0].objective,\n    \"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n};\n\nmsg.inspectionId = msg.payload.list[0].id\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 680,
-        "y": 240,
+        "x": 630,
+        "y": 140,
         "wires": [
             [
                 "4454468d93872b2f"
@@ -3117,8 +3127,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 210,
-        "y": 660,
+        "x": 230,
+        "y": 1080,
         "wires": [
             [
                 "3e2c6bf1a1c4cd88"
@@ -3135,8 +3145,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 460,
-        "y": 660,
+        "x": 480,
+        "y": 1080,
         "wires": [
             [
                 "14c4bc83ec3010f5"
@@ -3147,16 +3157,16 @@
         "id": "b56fec9bbbe16305",
         "type": "function",
         "z": "5afaefaae1db46d5",
-        "name": "construct providers array",
-        "func": "let providers = [];\nlet providerIds = [];\nlet contactIds = {};\nlet thisOne = 0;\nlet thisContact = 0;\nfor (var provider of msg.payload.list) {\n\n  // if location service has a point of contact associated to it, save the contact id  \n  if (provider.pointOfContactId) {\n    if (!contactIds[provider.pointOfContactId]) {\n      contactIds[provider.pointOfContactId] = {\n        serviceProviders : []\n      }\n    }\n    thisContact = contactIds[provider.pointOfContactId].serviceProviders.findIndex(\n      (x) => x == provider.serviceProviderName);\n    if (thisContact == -1) {\n      contactIds[provider.pointOfContactId].serviceProviders.push(\n        provider.serviceProviderName\n      );\n    }\n  }\n\n  thisOne = providers.findIndex((x) => x.name == provider.serviceProviderName);\n  if (thisOne == -1) {\n    thisOne = providers.push({\n        \"id\" : provider.serviceProviderId,\n        \"name\" : provider.serviceProviderName,\n        \"contact\" : {},\n        \"services\" : []\n    });\n    thisOne--;\n    if (!provider.pointOfContactId) {\n      providerIds.push(provider.serviceProviderId);\n    }\n  }\n\n  providers[thisOne].services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.inspectionPlan[\"providers\"] = providers;\nmsg.providerIds = providerIds;\nmsg.contactIds = contactIds;\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
+        "name": "get contact name and services",
+        "func": "  let prov = msg.payload.list[0];\n  \n  // if location service has a point of contact associated to it, save the contact id  \n  if (prov.pointOfContactId) {\n    msg.inspectionPlan.provider[\"contact\"] = {};\n    msg.inspectionPlan.provider.contact = {\n      \"id\" : prov.pointOfContactId,\n      \"name\" : prov.pointOfContactName\n    }\n  }\n\n  msg.inspectionPlan.provider[\"services\"] = [];\n\nfor (var provider of msg.payload.list) {\n  msg.inspectionPlan.provider.services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 670,
-        "y": 400,
+        "x": 690,
+        "y": 360,
         "wires": [
             [
                 "865781f26d7879c2"
@@ -3169,8 +3179,8 @@
         "z": "5afaefaae1db46d5",
         "name": "get inspection schedules",
         "links": [],
-        "x": 45,
-        "y": 660,
+        "x": 65,
+        "y": 1080,
         "wires": [
             [
                 "82cb85993f491839"
@@ -3184,8 +3194,8 @@
         "name": "link out 4",
         "mode": "return",
         "links": [],
-        "x": 925,
-        "y": 660,
+        "x": 945,
+        "y": 1080,
         "wires": []
     },
     {
@@ -3195,7 +3205,7 @@
         "name": "get schedules",
         "info": "",
         "x": 130,
-        "y": 600,
+        "y": 1000,
         "wires": []
     },
     {
@@ -3208,8 +3218,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 160,
-        "y": 320,
+        "x": 180,
+        "y": 240,
         "wires": [
             [
                 "33ae3e9bbf98c81b"
@@ -3222,8 +3232,8 @@
         "z": "5afaefaae1db46d5",
         "name": "get inspected services",
         "links": [],
-        "x": 55,
-        "y": 820,
+        "x": 75,
+        "y": 1240,
         "wires": [
             [
                 "cc149b65ad80c5f8"
@@ -3237,8 +3247,8 @@
         "name": "link out 5",
         "mode": "return",
         "links": [],
-        "x": 975,
-        "y": 940,
+        "x": 995,
+        "y": 1360,
         "wires": []
     },
     {
@@ -3247,8 +3257,8 @@
         "z": "5afaefaae1db46d5",
         "name": "get inspected services",
         "info": "",
-        "x": 160,
-        "y": 760,
+        "x": 180,
+        "y": 1180,
         "wires": []
     },
     {
@@ -3262,7 +3272,7 @@
         "linkType": "static",
         "timeout": "40",
         "x": 440,
-        "y": 320,
+        "y": 240,
         "wires": [
             [
                 "80c8ad511bbb29c5"
@@ -3274,7 +3284,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "person parameters",
-        "func": "msg.entity = \"Person\";\nmsg.entityData = {\n    \"_or\" : {\n      \"serviceProviderId\" : msg.providerIds,\n      \"id\" : Object.keys(msg.contactIds || {}) }\n};\nmsg.entitySelect = \"id,name,workPosition,serviceProviderName\";\nreturn msg;",
+        "func": "msg.entity = \"Person\";\nmsg.entityData = {\n    \"_or\" : {\n      \"serviceProviderId\" : msg.inspectionPlan.provider.id,\n      \"id\" : msg.inspectionPlan.provider.contact.id || null }\n};\nmsg.entitySelect = \"id,name,workPosition,serviceProviderName\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3312,7 +3322,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "add contact info",
-        "func": "let thisOne = 0;\nlet providerName = \"\";\nfor (var person of msg.payload.list) {\n    if (msg.contactIds[person.id]) {\n       providerName = msg.contactIds[person.id].serviceProviders[0];\n    } else {\n       providerName = person.serviceProviderName;\n    }\n    thisOne = msg.inspectionPlan.providers.findIndex( (x) => x.name == providerName);\n    msg.inspectionPlan.providers[thisOne].contact = {\n        \"name\" : person.name,\n        \"position\" : person.workPosition\n    }\n}\n\nreturn msg;",
+        "func": "let thisOne = 0;\nlet providerName = \"\";\nconst person = msg.payload.list[0];\nmsg.inspectionPlan.provider.contact = {\n    \"name\" : person.name,\n    \"position\" : person.workPosition\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3360,8 +3370,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 220,
-        "y": 820,
+        "x": 240,
+        "y": 1240,
         "wires": [
             [
                 "04df7fa525d9a95f"
@@ -3378,8 +3388,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 530,
-        "y": 820,
+        "x": 550,
+        "y": 1240,
         "wires": [
             [
                 "19bda6326095de10"
@@ -3398,8 +3408,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 780,
-        "y": 820,
+        "x": 800,
+        "y": 1240,
         "wires": [
             [
                 "e64c6160c6c98b8e"
@@ -3418,8 +3428,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 190,
-        "y": 880,
+        "x": 210,
+        "y": 1300,
         "wires": [
             [
                 "5f8385dc2db746a5"
@@ -3436,8 +3446,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 480,
-        "y": 880,
+        "x": 500,
+        "y": 1300,
         "wires": [
             [
                 "e81e909d1e22987d"
@@ -3456,8 +3466,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 730,
-        "y": 880,
+        "x": 750,
+        "y": 1300,
         "wires": [
             [
                 "eb32e784ba18808a"
@@ -3476,8 +3486,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 190,
-        "y": 940,
+        "x": 210,
+        "y": 1360,
         "wires": [
             [
                 "e58aa12ef472a651"
@@ -3494,8 +3504,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 460,
-        "y": 940,
+        "x": 480,
+        "y": 1360,
         "wires": [
             [
                 "13c22c1a0428f139"
@@ -3514,8 +3524,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 770,
-        "y": 940,
+        "x": 790,
+        "y": 1360,
         "wires": [
             [
                 "399b01971efeb617"
@@ -3533,7 +3543,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 440,
-        "y": 400,
+        "y": 360,
         "wires": [
             [
                 "b56fec9bbbe16305"
@@ -3545,7 +3555,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "location services parameters",
-        "func": "msg.entity = \"LocationService\";\nvar ids = Object.keys(msg.locationServiceObj);\nif (ids.length === 0) {\n    msg.payload = { list: [] };\n    return msg;\n}\nmsg.entityData = { \"id\": ids };\nif (msg.inspectedProviderId) {\n    msg.entityData[\"inspectedProviderId\"] = msg.inspectedProviderId;\n}\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId,pointOfContactId,pointOfContactName,inspectedProviderId\";\nreturn msg;",
+        "func": "msg.entity = \"LocationService\";\nvar ids = Object.keys(msg.locationServiceObj);\nif (ids.length === 0) {\n    msg.payload = { list: [] };\n    return msg;\n}\nmsg.entityData = { \"id\": ids };\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId,pointOfContactId,pointOfContactName\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3553,7 +3563,7 @@
         "finalize": "",
         "libs": [],
         "x": 200,
-        "y": 400,
+        "y": 360,
         "wires": [
             [
                 "ed8c223f8db2c5bb"
@@ -3565,38 +3575,18 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "extract schedules",
-        "func": "function mapSchedule(schedule) {\n    switch (schedule.name) {\n        case \"+\": \n//          msg.inspectionPlan.openingDateTime = schedule.startDate;\n          return undefined;\n        case \"-\":\n//          msg.inspectionPlan.closureDateTime = schedule.startDate;\n          return undefined;\n        default:\n          return ({\n            \"name\" : schedule.name,\n            \"startDateTime\" : schedule.startDateTime,\n            \"endDateTime\" : schedule.endDateTime\n          })\n    }\n}\n\nmsg.inspectionPlan.openingDateTime = msg.payload.list.find((x) => x.name == \"+\").startDateTime;\nmsg.inspectionPlan.closureDateTime = msg.payload.list.find((x) => x.name == \"-\").startDateTime;\nmsg.inspectionPlan[\"schedules\"] = msg.payload.list\n                                    .map(mapSchedule)\n                                    .filter((x) => (x !== undefined));\n\n\nreturn msg;",
+        "func": "const OPENING = \"Opening Meeting\";\nconst CLOSING = \"Closing Meeting\"\nfunction mapSchedule(schedule) {\n    switch (schedule.name) {\n        case OPENING: \n//          msg.inspectionPlan.openingDateTime = schedule.startDate;\n          return undefined;\n        case CLOSING:\n//          msg.inspectionPlan.closureDateTime = schedule.startDate;\n          return undefined;\n        default:\n          return ({\n            \"name\" : schedule.name,\n            \"place\" : schedule.place,\n            \"startDateTime\" : schedule.startDateTime,\n            \"endDateTime\" : schedule.endDateTime\n          })\n    }\n}\n\nmsg.inspectionPlan.openingDateTime = msg.payload.list.find((x) => x.name == OPENING).startDateTime;\nmsg.inspectionPlan.closureDateTime = msg.payload.list.find((x) => x.name == CLOSING).startDateTime;\nmsg.inspectionPlan[\"schedules\"] = msg.payload.list\n                                    .map(mapSchedule)\n                                    .filter((x) => (x !== undefined));\n\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 710,
-        "y": 660,
+        "x": 730,
+        "y": 1080,
         "wires": [
             [
                 "c87e9d0e4351825b"
-            ]
-        ]
-    },
-    {
-        "id": "8b9e287beb212abd",
-        "type": "function",
-        "z": "5afaefaae1db46d5",
-        "name": "set inspection params",
-        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 180,
-        "y": 240,
-        "wires": [
-            [
-                "d937265e26cb1547"
             ]
         ]
     },
@@ -3629,11 +3619,10 @@
                 "valueValue": ""
             }
         ],
-        "x": 550,
+        "x": 370,
         "y": 560,
         "wires": [
             [
-                "7cb35d6d0bf3d372",
                 "a043bae1603803a8"
             ]
         ]
@@ -3675,11 +3664,12 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 320,
+        "x": 160,
         "y": 560,
         "wires": [
             [
-                "af66b696c5573785"
+                "af66b696c5573785",
+                "1d55d021874f94ec"
             ]
         ]
     },
@@ -3695,8 +3685,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 950,
-        "y": 540,
+        "x": 630,
+        "y": 560,
         "wires": [
             [
                 "39c0cb52f511d9cb"
@@ -3713,13 +3703,222 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 1130,
-        "y": 600,
+        "x": 890,
+        "y": 560,
         "wires": [
             [
-                "1d55d021874f94ec"
+                "7cb35d6d0bf3d372"
             ]
         ]
+    },
+    {
+        "id": "e46defc71ae102c5",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set inspection params",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = {\n    \"inspectedProviderId\" : msg.providerId\n    };\nmsg.entitySelect = null;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 860,
+        "wires": [
+            [
+                "ffcc34884cd3e4d7"
+            ]
+        ]
+    },
+    {
+        "id": "ffcc34884cd3e4d7",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 480,
+        "y": 860,
+        "wires": [
+            [
+                "8c1d0e3854ae8978"
+            ]
+        ]
+    },
+    {
+        "id": "8c1d0e3854ae8978",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "save inspection data",
+        "func": "msg.inspectionPlan[\"scope\"] = msg.payload.list[0].scope; \nmsg.inspectionPlan[\"objective\"] = msg.payload.list[0].objective;\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 860,
+        "wires": [
+            [
+                "7381a223ce258a66"
+            ]
+        ]
+    },
+    {
+        "id": "074e147ee74a13c5",
+        "type": "comment",
+        "z": "5afaefaae1db46d5",
+        "name": "get provider data",
+        "info": "",
+        "x": 180,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "9191fda0d08afafc",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set site visit params",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 700,
+        "wires": [
+            [
+                "35becf515ebcf047"
+            ]
+        ]
+    },
+    {
+        "id": "35becf515ebcf047",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 440,
+        "y": 700,
+        "wires": [
+            [
+                "bcc17094dcb92785"
+            ]
+        ]
+    },
+    {
+        "id": "bcc17094dcb92785",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "save site visit data",
+        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 700,
+        "wires": [
+            [
+                "8603139ea2b69407"
+            ]
+        ]
+    },
+    {
+        "id": "8603139ea2b69407",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set inspected provider params",
+        "func": "msg.entity = \"InspectedProvider\";\nmsg.entityData = {\n    \"id\" : msg.providerId\n    };\nmsg.entitySelect = \"serviceProviderId,serviceProviderName\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 780,
+        "wires": [
+            [
+                "3213533424412f9f"
+            ]
+        ]
+    },
+    {
+        "id": "3213533424412f9f",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 480,
+        "y": 780,
+        "wires": [
+            [
+                "c9f46601581cf055"
+            ]
+        ]
+    },
+    {
+        "id": "c9f46601581cf055",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "save provider data",
+        "func": "msg.inspectionPlan[\"provider\"] = {\n    \"id\" : msg.payload.list[0].serviceProviderId,\n    \"name\" : msg.payload.list[0].serviceProviderName\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 780,
+        "wires": [
+            [
+                "e46defc71ae102c5"
+            ]
+        ]
+    },
+    {
+        "id": "c12bd594ceedbf45",
+        "type": "link in",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspection data",
+        "links": [],
+        "x": 35,
+        "y": 700,
+        "wires": [
+            [
+                "9191fda0d08afafc"
+            ]
+        ]
+    },
+    {
+        "id": "7381a223ce258a66",
+        "type": "link out",
+        "z": "5afaefaae1db46d5",
+        "name": "link out 11",
+        "mode": "return",
+        "links": [],
+        "x": 865,
+        "y": 860,
+        "wires": []
     },
     {
         "id": "4b1f9e2113621dd8",
@@ -5401,6 +5600,120 @@
         ]
     },
     {
+        "id": "6323c46a8f7693e5",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get service areas",
+        "url": "/serviceAreas",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 540,
+        "wires": [
+            [
+                "6a2ad5f8c76403f8"
+            ]
+        ]
+    },
+    {
+        "id": "6a2ad5f8c76403f8",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "set service area params",
+        "func": "msg.entity=\"ServiceArea\";\nmsg.entitySelect=\"id,code,name\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 540,
+        "wires": [
+            [
+                "7e9f53e2c9ffa007"
+            ]
+        ]
+    },
+    {
+        "id": "7e9f53e2c9ffa007",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 560,
+        "y": 540,
+        "wires": [
+            [
+                "d16140583c0346c5"
+            ]
+        ]
+    },
+    {
+        "id": "d16140583c0346c5",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "map service areas",
+        "func": "var list = (msg.payload && msg.payload.list) ? msg.payload.list : [];\nmsg.payload = list.map(function(x) {\n  return {\n    \"id\": x.id,\n    \"code\": x.code,\n    \"name\": x.name\n  };\n});\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 540,
+        "wires": [
+            [
+                "be2d9b961222238c"
+            ]
+        ]
+    },
+    {
+        "id": "be2d9b961222238c",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1000,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "cd1d2149036d6651",
+        "type": "catch",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 600,
+        "wires": [
+            [
+                "eeb674aa4db3ca34"
+            ]
+        ]
+    },
+    {
+        "id": "eeb674aa4db3ca34",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 600,
+        "wires": []
+    },
+    {
         "id": "6f9d06e081f9a39e",
         "type": "http request",
         "z": "18c3156c77e1c2fb",
@@ -6030,119 +6343,5 @@
                 "dd22dfeb1cbdd77c"
             ]
         ]
-    },
-    {
-        "id": "6323c46a8f7693e5",
-        "type": "http in",
-        "z": "dbdd767669d57957",
-        "name": "Get service areas",
-        "url": "/serviceAreas",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 120,
-        "y": 540,
-        "wires": [
-            [
-                "6a2ad5f8c76403f8"
-            ]
-        ]
-    },
-    {
-        "id": "6a2ad5f8c76403f8",
-        "type": "function",
-        "z": "dbdd767669d57957",
-        "name": "set service area params",
-        "func": "msg.entity=\"ServiceArea\";\nmsg.entitySelect=\"id,code,name\";\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 340,
-        "y": 540,
-        "wires": [
-            [
-                "7e9f53e2c9ffa007"
-            ]
-        ]
-    },
-    {
-        "id": "7e9f53e2c9ffa007",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 560,
-        "y": 540,
-        "wires": [
-            [
-                "d16140583c0346c5"
-            ]
-        ]
-    },
-    {
-        "id": "d16140583c0346c5",
-        "type": "function",
-        "z": "dbdd767669d57957",
-        "name": "map service areas",
-        "func": "var list = (msg.payload && msg.payload.list) ? msg.payload.list : [];\nmsg.payload = list.map(function(x) {\n  return {\n    \"id\": x.id,\n    \"code\": x.code,\n    \"name\": x.name\n  };\n});\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 780,
-        "y": 540,
-        "wires": [
-            [
-                "be2d9b961222238c"
-            ]
-        ]
-    },
-    {
-        "id": "be2d9b961222238c",
-        "type": "http response",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "statusCode": "200",
-        "headers": {
-            "content-type": "application/json"
-        },
-        "x": 1000,
-        "y": 540,
-        "wires": []
-    },
-    {
-        "id": "cd1d2149036d6651",
-        "type": "catch",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "scope": null,
-        "uncaught": false,
-        "x": 120,
-        "y": 600,
-        "wires": [
-            [
-                "eeb674aa4db3ca34"
-            ]
-        ]
-    },
-    {
-        "id": "eeb674aa4db3ca34",
-        "type": "http response",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "statusCode": "400",
-        "headers": {},
-        "x": 340,
-        "y": 600,
-        "wires": []
     }
 ]
