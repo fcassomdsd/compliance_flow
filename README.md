@@ -175,8 +175,11 @@ All endpoints are served at `http://<host>:1880`.
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/inspector/:externalId` | Get inspector details by external ID |
-| `GET` | `/inspection/:inspectionId` | Get inspection details by inspection ID |
+| `GET` | `/serviceAreas` | List all service areas with linked specialties |
+| `GET` | `/inspectionProvider` | List per-provider inspections with provider data (filterable by `?status=`) |
+| `GET` | `/siteVisits` | List site visits eligible for checklist upload |
+| `GET` | `/inspector/:externalId` | Get inspector details by external ID (includes `serviceAreaId`) |
+| `GET` | `/siteVisit/:inspectionId` | Get site visit details by ID or code |
 | `GET` | `/assignmentGroup/:externalGroup` | Get assignment group by external group identifier |
 | `GET` | `/specialties` | List all available inspection specialties |
 | `GET` | `/location` | List available inspection locations |
