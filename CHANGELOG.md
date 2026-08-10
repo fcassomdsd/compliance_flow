@@ -2,6 +2,26 @@
 
 All notable changes are documented in this file.
 
+## [0.4.0] - 2026-08-02
+
+### Added
+- **`/serviceAreas` endpoint**: Returns all service areas with linked specialties from AtroCore.
+- **`/inspectionProvider` endpoint**: Returns per-provider Inspection records with `inspectionId`, `inspectedProviderId`, `siteVisitId`, `code`, `status`, `serviceProviderName`. Filterable by status parameter. Used by checklist app for import provider selection.
+- **`/siteVisits` endpoint**: Returns site visits with upload-eligible status (Planned/Uploaded/Reported/Complete).
+- **Per-provider Inspection queries**: Inspection report flow now queries `InspectedProvider` by `siteVisitId`+`serviceProviderId`, then queries `Inspection` by `inspectedProviderId`. Resolves ambiguity of shared inspection codes.
+- **Service area scoping on inspector profile**: `/inspector/:externalId` now includes `serviceAreaId` and `serviceAreaName` for planner authorization scoping.
+
+### Changed
+- **Inspection → SiteVisit rename**: All entity queries in function nodes changed from `"Inspection"` to `"SiteVisit"`. `/inspection/:inspectionId` route renamed to `/siteVisit/:inspectionId`.
+- **URL parameter renames**: Inspection plan/report flows capture `req.query.siteVisit` instead of `req.query.inspection`. Frontend API calls aligned (`?siteVisit=` instead of `?inspection=`).
+- **Inspection Plan provider filter**: `/inspectionPlan` accepts `provider` parameter (was `serviceArea`). Filters by `inspectedProviderId` for per-provider plan generation.
+- **Inspection Report enhanced**: Flow now includes `objective`, `scope`, `inspectionType`, `description`, `conclusion` from per-provider Inspection entity in report JSON. `email` field added to person query for future email delivery.
+- **Status transitions updated**: `/inspectionPlan`, `/importCanonical`, `/inspectionReport` status update flows now reference `SiteVisit` entity (was `Inspection`).
+
+### Fixed
+- Fixed `/inspectionReport` using `req.query.siteVisit` (was `req.query.inspection` after rename).
+- Fixed inspection plan `serviceArea` filter removed in favor of `inspectedProviderId`.
+
 ## [0.3.0] - 2026-07-30
 
 ### Added

@@ -367,8 +367,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 680,
-        "y": 960,
+        "x": 780,
+        "y": 60,
         "wires": []
     },
     {
@@ -542,9 +542,9 @@
         "rules": [
             {
                 "t": "set",
-                "p": "inspectionCode",
+                "p": "inspectionId",
                 "pt": "msg",
-                "to": "req.query.siteVisit",
+                "to": "req.query.inspectionId",
                 "tot": "msg"
             },
             {
@@ -552,6 +552,20 @@
                 "p": "specialtyCode",
                 "pt": "msg",
                 "to": "req.query.specialty",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "providerId",
+                "pt": "msg",
+                "to": "req.query.inspectedProviderId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "siteVisitId",
+                "pt": "msg",
+                "to": "req.query.siteVisitId",
                 "tot": "msg"
             }
         ],
@@ -573,7 +587,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "inspection parameters",
-        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode }\nmsg.entitySelect = null;\nreturn msg;",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"id\" : msg.siteVisitId }\nmsg.entitySelect = null;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -758,28 +772,7 @@
         "y": 1000,
         "wires": [
             [
-                "5552e88df9693eeb",
-                "2852a7a7c4aebcb9"
-            ]
-        ]
-    },
-    {
-        "id": "ef8c59d1fa3aac09",
-        "type": "function",
-        "z": "f6f2187d.f17ca8",
-        "name": "set location service params",
-        "func": "msg.entity = \"LocationService\";\nmsg.entityData = {\n    \"id\" : msg.payload.list[0].id\n}\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 200,
-        "y": 1380,
-        "wires": [
-            [
-                "54ab4c24fabc1f59"
+                "5552e88df9693eeb"
             ]
         ]
     },
@@ -788,7 +781,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "save inspection data",
-        "func": "msg.inspectionId = msg.payload.list[0].id;\nmsg.checklist = {\n    \"inspection\": msg.payload.list[0].code,\n    \"inspectionId\" : msg.payload.list[0].id,\n    \"locationName\": msg.payload.list[0].locationName,\n    \"locationId\": msg.payload.list[0].locationId,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n}\nreturn msg;",
+        "func": "msg.inspectionId = msg.inspectionId;\nmsg.checklist = {\n    \"inspection\": msg.payload.list[0].code,\n    \"inspectionId\" : msg.inspectionId,\n    \"locationName\": msg.payload.list[0].locationName,\n    \"locationId\": msg.payload.list[0].locationId,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -824,24 +817,6 @@
         ]
     },
     {
-        "id": "54ab4c24fabc1f59",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 440,
-        "y": 1380,
-        "wires": [
-            [
-                "660c57bd0c256f45"
-            ]
-        ]
-    },
-    {
         "id": "660c57bd0c256f45",
         "type": "function",
         "z": "f6f2187d.f17ca8",
@@ -853,8 +828,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 670,
-        "y": 1380,
+        "x": 730,
+        "y": 1300,
         "wires": [
             [
                 "c244ac031e1523e4"
@@ -862,61 +837,20 @@
         ]
     },
     {
-        "id": "ef6c9caf77b46989",
-        "type": "change",
-        "z": "f6f2187d.f17ca8",
-        "name": "set inspected service params",
-        "rules": [
-            {
-                "t": "set",
-                "p": "entity",
-                "pt": "msg",
-                "to": "InspectedService",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "entityId",
-                "pt": "msg",
-                "to": "msg.iService",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "entityLink",
-                "pt": "msg",
-                "to": "locationService",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 280,
-        "y": 1300,
-        "wires": [
-            [
-                "fd38fce11ec9265e"
-            ]
-        ]
-    },
-    {
         "id": "fd38fce11ec9265e",
         "type": "link call",
         "z": "f6f2187d.f17ca8",
-        "name": "get inspected service",
+        "name": "get inspected provider",
         "links": [
-            "76b977314bdff87c"
+            "9d1c32d934dc0bce"
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 580,
+        "x": 500,
         "y": 1300,
         "wires": [
             [
-                "ef8c59d1fa3aac09"
+                "660c57bd0c256f45"
             ]
         ]
     },
@@ -926,11 +860,11 @@
         "z": "f6f2187d.f17ca8",
         "name": "inspected provider",
         "links": [],
-        "x": 95,
+        "x": 55,
         "y": 1300,
         "wires": [
             [
-                "ef6c9caf77b46989"
+                "3f1c7d460f296919"
             ]
         ]
     },
@@ -941,8 +875,8 @@
         "name": "link out 6",
         "mode": "return",
         "links": [],
-        "x": 835,
-        "y": 1380,
+        "x": 885,
+        "y": 1300,
         "wires": []
     },
     {
@@ -1163,6 +1097,26 @@
         "wires": [
             [
                 "7ebff2d241b99fec"
+            ]
+        ]
+    },
+    {
+        "id": "3f1c7d460f296919",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "inspected provider params",
+        "func": "msg.entity = \"InspectedProvider\";\nmsg.entityData = {\"id\" : msg.providerId };\nmsg.entitySelect = null;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 1300,
+        "wires": [
+            [
+                "fd38fce11ec9265e"
             ]
         ]
     },
@@ -3072,8 +3026,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 640,
+        "x": 440,
+        "y": 620,
         "wires": []
     },
     {
@@ -3929,8 +3883,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 190,
-        "y": 80,
+        "x": 130,
+        "y": 100,
         "wires": [
             [
                 "05bb6c09918f3b7b"
@@ -3945,9 +3899,9 @@
         "rules": [
             {
                 "t": "set",
-                "p": "inspectionCode",
+                "p": "inspectionId",
                 "pt": "msg",
-                "to": "req.query.siteVisit",
+                "to": "req.query.inspectionId",
                 "tot": "msg"
             },
             {
@@ -3963,11 +3917,11 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 280,
-        "y": 180,
+        "x": 380,
+        "y": 100,
         "wires": [
             [
-                "7a3c382c54194732"
+                "7a8f9837bbcd7b27"
             ]
         ]
     },
@@ -3983,8 +3937,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 250,
-        "y": 260,
+        "x": 890,
+        "y": 160,
         "wires": [
             [
                 "4f450e00fab88e37"
@@ -4020,12 +3974,11 @@
                 "valueValue": ""
             }
         ],
-        "x": 590,
+        "x": 110,
         "y": 260,
         "wires": [
             [
                 "61f3e4f51ebe920e",
-                "90613ba352af9a02",
                 "f8fd0ba84a167fe4"
             ]
         ]
@@ -4039,8 +3992,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 880,
-        "y": 240,
+        "x": 240,
+        "y": 380,
         "wires": []
     },
     {
@@ -4051,7 +4004,7 @@
         "scope": null,
         "uncaught": false,
         "x": 120,
-        "y": 340,
+        "y": 40,
         "wires": [
             [
                 "3220f3f3f70fa16f"
@@ -4063,7 +4016,7 @@
         "type": "debug",
         "z": "2958c4a9b21da45a",
         "name": "import canonical",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -4071,8 +4024,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 880,
-        "y": 300,
+        "x": 700,
+        "y": 80,
         "wires": []
     },
     {
@@ -4082,22 +4035,22 @@
         "name": "",
         "statusCode": "304",
         "headers": {},
-        "x": 380,
-        "y": 340,
+        "x": 360,
+        "y": 40,
         "wires": []
     },
     {
         "id": "7a3c382c54194732",
         "type": "link call",
         "z": "2958c4a9b21da45a",
-        "name": "",
+        "name": "alfresco auth",
         "links": [
             "396d75052328dabf"
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 560,
-        "y": 180,
+        "x": 670,
+        "y": 160,
         "wires": [
             [
                 "085b06de7f20dbf3"
@@ -4113,8 +4066,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 160,
-        "y": 420,
+        "x": 140,
+        "y": 520,
         "wires": [
             [
                 "ca7f8df347dd7beb"
@@ -4140,8 +4093,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 280,
-        "y": 520,
+        "x": 200,
+        "y": 600,
         "wires": [
             [
                 "dbd3043502f149d4"
@@ -4177,8 +4130,8 @@
                 "valueValue": ""
             }
         ],
-        "x": 590,
-        "y": 600,
+        "x": 450,
+        "y": 700,
         "wires": [
             [
                 "d2f2602a5ec15194",
@@ -4195,8 +4148,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 880,
-        "y": 580,
+        "x": 680,
+        "y": 700,
         "wires": []
     },
     {
@@ -4212,8 +4165,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 440,
+        "x": 840,
+        "y": 620,
         "wires": []
     },
     {
@@ -4226,8 +4179,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 560,
-        "y": 520,
+        "x": 480,
+        "y": 600,
         "wires": [
             [
                 "01e297ebbd9d42ec"
@@ -4253,8 +4206,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 260,
-        "y": 600,
+        "x": 200,
+        "y": 700,
         "wires": [
             [
                 "ebac6e5376bc7bbc"
@@ -4265,16 +4218,16 @@
         "id": "f8fd0ba84a167fe4",
         "type": "function",
         "z": "2958c4a9b21da45a",
-        "name": "query AtroCore inspection by code",
-        "func": "var inspectionCode = msg.inspectionCode || (msg.req && msg.req.query && msg.req.query.inspection);\nif (!inspectionCode) {\n    node.warn(\"No inspection code for AtroCore status query\");\n    return;\n}\n\nmsg.entity = \"SiteVisit\";\nmsg.entityData = {\"code\" : inspectionCode }\nreturn msg;",
+        "name": "set site visit params",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = {\"id\" : msg.siteVisitId }\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 900,
-        "y": 140,
+        "x": 350,
+        "y": 260,
         "wires": [
             [
                 "82ed4a92c8c8050e"
@@ -4291,8 +4244,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 1040,
-        "y": 220,
+        "x": 400,
+        "y": 320,
         "wires": [
             [
                 "638b34fa78135933"
@@ -4304,15 +4257,15 @@
         "type": "function",
         "z": "2958c4a9b21da45a",
         "name": "transition to Uploaded if Planned",
-        "func": "var list = msg.payload && msg.payload.list;\nif (!list || list.length === 0) {\n    node.warn(\"Inspection not found in AtroCore for status update\");\n    return;\n}\n\nvar inspection = list[0];\nvar currentStatus = inspection.status;\nvar inspectionId = inspection.id;\n\nif (currentStatus !== \"Planned\") {\n    node.warn(\"Inspection status is \" + currentStatus + \", not transitioning to Uploaded\");\n    return;\n}\n\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Uploaded\" };\nreturn msg;",
+        "func": "var list = msg.payload && msg.payload.list;\nif (!list || list.length === 0) {\n    node.warn(\"Site visit not found in AtroCore for status update\");\n    return;\n}\n\nvar siteVisit = list[0];\nvar currentStatus = siteVisit.status;\nvar siteVisitId = msg.siteVisitId;\n\n/*if (currentStatus !== \"Planned\") {\n    node.warn(\"Site visit status is \" + currentStatus + \", not transitioning to Uploaded\");\n    return;\n}\n*/\nmsg.entityId = siteVisitId;\nmsg.updateData = { status: \"Uploaded\" };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1170,
-        "y": 300,
+        "x": 650,
+        "y": 320,
         "wires": [
             [
                 "1a3ed13a32e97cc3"
@@ -4329,8 +4282,126 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 1290,
-        "y": 420,
+        "x": 910,
+        "y": 320,
+        "wires": [
+            [
+                "f5779d026901d5c1"
+            ]
+        ]
+    },
+    {
+        "id": "7a8f9837bbcd7b27",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "inspection parameters",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = {\"id\" : msg.inspectionId };\nmsg.entitySelect=\"code, status, inspectedProvider\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "81d455892af199df"
+            ]
+        ]
+    },
+    {
+        "id": "81d455892af199df",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 320,
+        "y": 160,
+        "wires": [
+            [
+                "952946db67cb59ba",
+                "90613ba352af9a02"
+            ]
+        ]
+    },
+    {
+        "id": "952946db67cb59ba",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": " inspection data",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "payload.list[0].code",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "inspectionStatus",
+                "pt": "msg",
+                "to": "payload.list[0].status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "siteVisitId",
+                "pt": "msg",
+                "to": "payload.list[0].inspectedProvider.siteVisitId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 160,
+        "wires": [
+            [
+                "7a3c382c54194732"
+            ]
+        ]
+    },
+    {
+        "id": "f5779d026901d5c1",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "transition to Uploaded if Planned",
+        "func": "var currentStatus = msg.inspectionStatus;\n\nif (currentStatus !== \"Planned\") {\n    node.warn(\"Inspection status is \" + currentStatus + \", not transitioning to Uploaded\");\n    return;\n}\n\nmsg.entityId = msg.siteVisitId;\nmsg.updateData = { status: \"Uploaded\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 380,
+        "wires": [
+            [
+                "6c8ff1ae1abd95eb"
+            ]
+        ]
+    },
+    {
+        "id": "6c8ff1ae1abd95eb",
+        "type": "link call",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "links": [
+            "08f5d2534ec47de6"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 910,
+        "y": 380,
         "wires": [
             []
         ]
@@ -4368,8 +4439,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 370,
-        "y": 180,
+        "x": 390,
+        "y": 100,
         "wires": [
             [
                 "ee96d9c8e4a422c0"
@@ -4385,8 +4456,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 140,
-        "y": 180,
+        "x": 160,
+        "y": 100,
         "wires": [
             [
                 "bd82a7a67ef6d40c"
@@ -4402,8 +4473,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 860,
-        "y": 680,
+        "x": 740,
+        "y": 820,
         "wires": []
     },
     {
@@ -4415,7 +4486,7 @@
         "scope": null,
         "uncaught": false,
         "x": 120,
-        "y": 100,
+        "y": 40,
         "wires": [
             [
                 "b0a2994c799fd3dc"
@@ -4430,7 +4501,7 @@
         "statusCode": "400",
         "headers": {},
         "x": 340,
-        "y": 100,
+        "y": 40,
         "wires": []
     },
     {
@@ -4438,7 +4509,7 @@
         "type": "debug",
         "z": "041ce3d9cda14530",
         "name": "inspectionReport",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -4446,8 +4517,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 930,
-        "y": 320,
+        "x": 910,
+        "y": 460,
         "wires": []
     },
     {
@@ -4460,8 +4531,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 420,
-        "y": 280,
+        "x": 440,
+        "y": 180,
         "wires": [
             [
                 "5c497290c30a0c70"
@@ -4472,19 +4543,19 @@
         "id": "5c497290c30a0c70",
         "type": "function",
         "z": "041ce3d9cda14530",
-        "name": "save inspection data",
-        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName\n};\n\nmsg.inspectionId = msg.payload.list[0].id;\nmsg.locationId = msg.payload.list[0].locationId;\n\nreturn msg;",
+        "name": "save site visit data",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 680,
-        "y": 280,
+        "x": 690,
+        "y": 180,
         "wires": [
             [
-                "91bbed2b3cda5bd5"
+                "8d6083b09a8aabee"
             ]
         ]
     },
@@ -4493,7 +4564,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "construct services array",
-        "func": "let serviceIds = [];\nfor (var locationService of msg.payload.list) {\n  for (var inspectedService of locationService.inspectedServices) {\n    if (inspectedService.inspectionId == msg.inspectionId ) {\n      serviceIds.push(inspectedService.id);\n    }\n  }\n}\n\nmsg.serviceIds = serviceIds;\n\nreturn msg;",
+        "func": "let serviceIds = [];\nlet thisOne = -1;\nfor (var locationService of msg.payload.list) {\n  for (var inspectedService of locationService.inspectedServices) {\n    if (inspectedService.inspectionId == msg.inspectionId ) {\n      serviceIds.push({\n        \"id\" : inspectedService.id,\n        \"name\" : inspectedService.name\n      })\n    }\n  }\n}\n\nmsg.serviceIds = serviceIds;\nmsg.inspectionReport[\"services\"] = serviceIds;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4501,7 +4572,7 @@
         "finalize": "",
         "libs": [],
         "x": 690,
-        "y": 380,
+        "y": 420,
         "wires": [
             [
                 "eced5631dd2e7842"
@@ -4513,7 +4584,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "inspected specialty parameters",
-        "func": "msg.entity = \"InspectedSpecialty\";\nmsg.entityData = { \"inspectedServiceId\" : msg.serviceIds };\nmsg.entitySelect = \"id\";\nreturn msg;",
+        "func": "msg.entity = \"InspectedSpecialty\";\nmsg.entityData = { \"inspectedServiceId\" : msg.serviceIds.map((x) => x.id) };\nmsg.entitySelect = \"id, inspectedServiceId\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4551,7 +4622,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "get specialty info",
-        "func": "var specialties = [];\nfor (var specialty of msg.payload.list) {\n  specialties.push(specialty.id);\n}\n\nmsg.specialties = specialties;\n\nreturn msg;",
+        "func": "var specialtyIds = [];\nfor (var specialty of msg.payload.list) {\n  specialtyIds.push(specialty.id);\n}\n\nmsg.specialties = specialtyIds;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4577,7 +4648,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 440,
-        "y": 380,
+        "y": 420,
         "wires": [
             [
                 "9b5aaa79e9d78dc4"
@@ -4597,7 +4668,7 @@
         "finalize": "",
         "libs": [],
         "x": 200,
-        "y": 380,
+        "y": 420,
         "wires": [
             [
                 "3670efee8fa9cb90"
@@ -4608,7 +4679,7 @@
         "id": "ee96d9c8e4a422c0",
         "type": "function",
         "z": "041ce3d9cda14530",
-        "name": "set inspection params",
+        "name": "set site visit params",
         "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
@@ -4616,8 +4687,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
-        "y": 280,
+        "x": 190,
+        "y": 180,
         "wires": [
             [
                 "af055080076259f2"
@@ -4716,7 +4787,6 @@
         "wires": [
             [
                 "99727fd091645792",
-                "5ed2ab4b88d233a5",
                 "a5534ea92b26fa8a"
             ]
         ]
@@ -4762,7 +4832,8 @@
         "y": 680,
         "wires": [
             [
-                "e3fbb648496dac27"
+                "e3fbb648496dac27",
+                "5ed2ab4b88d233a5"
             ]
         ]
     },
@@ -4800,6 +4871,122 @@
         "y": 500,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "203492bb6f7e76b3",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save inspection data",
+        "func": "msg.inspectionReport[\"objective\"] = msg.payload.list[0].objective,\nmsg.inspectionReport[\"scope\"] = msg.payload.list[0].scope,\nmsg.inspectionReport[\"inspectionType\"] = msg.payload.list[0].inspectionType\nmsg.inspectionReport[\"description\"] = msg.payload.list[0].description\nmsg.inspectionReport[\"conclusion\"] = msg.payload.list[0].conclusion\n\n\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 320,
+        "wires": [
+            [
+                "91bbed2b3cda5bd5"
+            ]
+        ]
+    },
+    {
+        "id": "253d2c0e579f37bc",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 440,
+        "y": 320,
+        "wires": [
+            [
+                "203492bb6f7e76b3"
+            ]
+        ]
+    },
+    {
+        "id": "efbde6c92a59a13a",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set inspection params",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \n    \"code\" : msg.inspectionCode,\n    \"inspectedProviderId\" : msg.inspectedProviderId\n };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "253d2c0e579f37bc"
+            ]
+        ]
+    },
+    {
+        "id": "73df7b197aabe7c9",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save inspected provider data",
+        "func": "msg.inspectionReport[\"providerName\"] = msg.payload.list[0].serviceProviderName\nmsg.inspectedProviderId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 260,
+        "wires": [
+            [
+                "efbde6c92a59a13a"
+            ]
+        ]
+    },
+    {
+        "id": "8e99b735bbb21d34",
+        "type": "link call",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 460,
+        "y": 260,
+        "wires": [
+            [
+                "73df7b197aabe7c9"
+            ]
+        ]
+    },
+    {
+        "id": "8d6083b09a8aabee",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set inspected provider params",
+        "func": "msg.entity = \"InspectedProvider\";\nmsg.entityData = {\n    \"siteVisitId\" : msg.siteVisitId,\n    \"serviceProviderId\" : msg.providerId\n };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 260,
+        "wires": [
+            [
+                "8e99b735bbb21d34"
+            ]
         ]
     },
     {
@@ -5202,33 +5389,6 @@
         "wires": []
     },
     {
-        "id": "66865b51e6acfcf0",
-        "type": "catch",
-        "z": "dbdd767669d57957",
-        "d": true,
-        "name": "",
-        "scope": null,
-        "uncaught": false,
-        "x": 100,
-        "y": 60,
-        "wires": [
-            [
-                "cc74b3a907939c68"
-            ]
-        ]
-    },
-    {
-        "id": "cc74b3a907939c68",
-        "type": "http response",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "statusCode": "400",
-        "headers": {},
-        "x": 340,
-        "y": 60,
-        "wires": []
-    },
-    {
         "id": "3ff525e760c2d85e",
         "type": "debug",
         "z": "dbdd767669d57957",
@@ -5290,8 +5450,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 150,
-        "y": 500,
+        "x": 130,
+        "y": 460,
         "wires": [
             [
                 "be53fd4a382031bb"
@@ -5392,8 +5552,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 280,
-        "y": 420,
+        "x": 320,
+        "y": 400,
         "wires": [
             [
                 "701257e88ccbd7b5"
@@ -5506,7 +5666,7 @@
         "to": "",
         "reg": false,
         "x": 140,
-        "y": 280,
+        "y": 320,
         "wires": [
             [
                 "f103a4ce0a691d1a"
@@ -5688,29 +5848,364 @@
         "wires": []
     },
     {
-        "id": "cd1d2149036d6651",
+        "id": "eeb674aa4db3ca34",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 720,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "c53d17892a8d0f2d",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get providers for site visit",
+        "url": "/providers",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 740,
+        "wires": [
+            [
+                "8d251c8331387b1d"
+            ]
+        ]
+    },
+    {
+        "id": "8d251c8331387b1d",
+        "type": "change",
+        "z": "dbdd767669d57957",
+        "name": "Capture siteVisit param",
+        "rules": [
+            {
+                "t": "set",
+                "p": "siteVisitCode",
+                "pt": "msg",
+                "to": "req.query.siteVisit",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 740,
+        "wires": [
+            [
+                "fbbd171c817c81e0"
+            ]
+        ]
+    },
+    {
+        "id": "fbbd171c817c81e0",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "set provider query params",
+        "func": "msg.entity = \"InspectedProvider\";\nmsg.entityData = { \"deleted\": false };\nif (msg.siteVisitCode) {\n    msg.entityData[\"siteVisitId\"] = msg.siteVisitCode;\n}\nmsg.entitySelect = \"id,serviceProviderId,serviceProviderName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 740,
+        "wires": [
+            [
+                "dfcf837bc6f0705f"
+            ]
+        ]
+    },
+    {
+        "id": "dfcf837bc6f0705f",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 840,
+        "y": 740,
+        "wires": [
+            [
+                "1feb07b141deec90"
+            ]
+        ]
+    },
+    {
+        "id": "1feb07b141deec90",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "map providers",
+        "func": "var list = (msg.payload && msg.payload.list) ? msg.payload.list : [];\nmsg.payload = list.map(function(x) {\n  return {\n    \"id\": x.id,\n    \"serviceProviderId\": x.serviceProviderId,\n    \"serviceProviderName\": x.serviceProviderName || x.serviceProviderId\n  };\n});\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 800,
+        "wires": [
+            [
+                "7cc001e167e24c12"
+            ]
+        ]
+    },
+    {
+        "id": "7cc001e167e24c12",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 860,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "63ea8bda2f1226a2",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get site visits for upload",
+        "url": "/siteVisits",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 900,
+        "wires": [
+            [
+                "27d0e3e3effafc07"
+            ]
+        ]
+    },
+    {
+        "id": "27d0e3e3effafc07",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "set site visit params",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entitySelect = \"id,code,locationName,status\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 900,
+        "wires": [
+            [
+                "66876264d02814bf"
+            ]
+        ]
+    },
+    {
+        "id": "66876264d02814bf",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 540,
+        "y": 900,
+        "wires": [
+            [
+                "50755965a8957afc"
+            ]
+        ]
+    },
+    {
+        "id": "50755965a8957afc",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "map site visits",
+        "func": "var list = (msg.payload && msg.payload.list) ? msg.payload.list : [];\nmsg.payload = list.filter(function(x) {\n  var s = x.status || \"\";\n  return s === \"Planned\" || s === \"Uploaded\" || s === \"Reported\" || s === \"Complete\";\n}).map(function(x) {\n  return { \"id\": x.id, \"code\": x.code, \"locationName\": x.locationName, \"status\": x.status };\n});\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 900,
+        "wires": [
+            [
+                "ed0537cb104083fa"
+            ]
+        ]
+    },
+    {
+        "id": "ed0537cb104083fa",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 920,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "b6726ffba2fe494e",
         "type": "catch",
         "z": "dbdd767669d57957",
         "name": "",
         "scope": null,
         "uncaught": false,
         "x": 120,
-        "y": 600,
+        "y": 980,
         "wires": [
             [
-                "eeb674aa4db3ca34"
+                "4ee3b05369286bb3"
             ]
         ]
     },
     {
-        "id": "eeb674aa4db3ca34",
+        "id": "4ee3b05369286bb3",
         "type": "http response",
         "z": "dbdd767669d57957",
         "name": "",
         "statusCode": "400",
         "headers": {},
         "x": 340,
-        "y": 600,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "c93de37ae28f9bc8",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "merge provider names",
+        "func": "var result = [];\nfor ( var item of msg.payload.list ) {\n  result.push({\n    \"inspectionId\" : item.id,\n    \"code\" : item.code,\n    \"status\" : item.status,\n    \"inspectedProviderId\" : item.inspectedProvider.id,\n    \"serviceProviderId\" : item.inspectedProvider.serviceProviderId,\n    \"serviceProviderName\" : item.inspectedProvider.serviceProviderName,\n    \"siteVisitId\" : item.inspectedProvider.siteVisitId\n  })\n}\n\nmsg.payload = result;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1140,
+        "wires": [
+            [
+                "eeb674aa4db3ca34",
+                "df26cc502a47fe85"
+            ]
+        ]
+    },
+    {
+        "id": "5ead88b7e9c44be1",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get inspections / providers",
+        "url": "/inspectionProvider",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 1060,
+        "wires": [
+            [
+                "7e44dfd48d05a09a"
+            ]
+        ]
+    },
+    {
+        "id": "f899da7d4784aa3d",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "set inspection params",
+        "func": "const statusArray = [\"Created\",\"Defined\",\"Assigned\",\"Planned\",\"Uploaded\",\"Reported\",\"Complete\",\"Inactive\"];\n\nmsg.entity = \"Inspection\";\nmsg.entitySelect = \"id,code,status,inspectedProvider\"\nif (msg.status) {\n    var idx = statusArray.findIndex((x) => x == msg.status);\n    if (idx > 0) {\n        msg.entityData = {\"status\" : statusArray.map((x, i) => (i < idx ? x : undefined)) }\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 1060,
+        "wires": [
+            [
+                "27cbb6c8170ef54c"
+            ]
+        ]
+    },
+    {
+        "id": "7e44dfd48d05a09a",
+        "type": "change",
+        "z": "dbdd767669d57957",
+        "name": "set params",
+        "rules": [
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "msg",
+                "to": "req.query.status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 1060,
+        "wires": [
+            [
+                "f899da7d4784aa3d"
+            ]
+        ]
+    },
+    {
+        "id": "27cbb6c8170ef54c",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 140,
+        "y": 1140,
+        "wires": [
+            [
+                "c93de37ae28f9bc8"
+            ]
+        ]
+    },
+    {
+        "id": "df26cc502a47fe85",
+        "type": "debug",
+        "z": "dbdd767669d57957",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 1040,
         "wires": []
     },
     {
@@ -5733,7 +6228,8 @@
         "y": 300,
         "wires": [
             [
-                "27d2d4872fb1b8f6"
+                "27d2d4872fb1b8f6",
+                "1ab5cc53868b0395"
             ]
         ]
     },
@@ -5844,8 +6340,7 @@
                 "27d2d4872fb1b8f6"
             ],
             [
-                "6f9d06e081f9a39e",
-                "1ab5cc53868b0395"
+                "6f9d06e081f9a39e"
             ]
         ]
     },
