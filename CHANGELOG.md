@@ -2,6 +2,64 @@
 
 All notable changes are documented in this file.
 
+## [0.4.0] - 2026-08-02
+
+### Added
+- **`/serviceAreas` endpoint**: Returns all service areas with linked specialties from AtroCore.
+- **`/inspectionProvider` endpoint**: Returns per-provider Inspection records with `inspectionId`, `inspectedProviderId`, `siteVisitId`, `code`, `status`, `serviceProviderName`. Filterable by status parameter. Used by checklist app for import provider selection.
+- **`/siteVisits` endpoint**: Returns site visits with upload-eligible status (Planned/Uploaded/Reported/Complete).
+- **Per-provider Inspection queries**: Inspection report flow now queries `InspectedProvider` by `siteVisitId`+`serviceProviderId`, then queries `Inspection` by `inspectedProviderId`. Resolves ambiguity of shared inspection codes.
+- **Service area scoping on inspector profile**: `/inspector/:externalId` now includes `serviceAreaId` and `serviceAreaName` for planner authorization scoping.
+
+### Changed
+- **Inspection → SiteVisit rename**: All entity queries in function nodes changed from `"Inspection"` to `"SiteVisit"`. `/inspection/:inspectionId` route renamed to `/siteVisit/:inspectionId`.
+- **URL parameter renames**: Inspection plan/report flows capture `req.query.siteVisit` instead of `req.query.inspection`. Frontend API calls aligned (`?siteVisit=` instead of `?inspection=`).
+- **Inspection Plan provider filter**: `/inspectionPlan` accepts `provider` parameter (was `serviceArea`). Filters by `inspectedProviderId` for per-provider plan generation.
+- **Inspection Report enhanced**: Flow now includes `objective`, `scope`, `inspectionType`, `description`, `conclusion` from per-provider Inspection entity in report JSON. `email` field added to person query for future email delivery.
+- **Status transitions updated**: `/inspectionPlan`, `/importCanonical`, `/inspectionReport` status update flows now reference `SiteVisit` entity (was `Inspection`).
+
+### Fixed
+- Fixed `/inspectionReport` using `req.query.siteVisit` (was `req.query.inspection` after rename).
+- Fixed inspection plan `serviceArea` filter removed in favor of `inspectedProviderId`.
+
+## [0.3.0] - 2026-07-30
+
+### Added
+- Status transition sub-flows in 3 endpoints:
+  - `/inspectionPlan` — after Alfresco plan generation, updates AtroCore inspection status to `Planned`
+  - `/importCanonical` — after canonical import, queries AtroCore by inspection code and, if status is `Planned`, transitions to `Uploaded`
+  - `/inspectionReport` — after report generation, updates AtroCore inspection status to `Reported`
+- Each status update flow includes AtroCore auth, HTTP request, and fire-and-forget pattern (response not blocked by status update)
+
+## [0.2.0] - 2026-08-01
+
+### Security
+- Removed hardcoded Alfresco admin/admin credentials — now read from `ALFRESCO_USERNAME`/`ALFRESCO_PASSWORD` env vars
+- Removed hardcoded AtroCore auth — now read from `ATROCORE_USERNAME`/`ATROCORE_PASSWORD` env vars
+- `adminAuth` enabled for Node-RED editor (username/password from env vars)
+- `credentialSecret` set via `NODE_RED_CREDENTIAL_SECRET` env var
+- Backup and runtime config files added to `.gitignore`
+
+### Added
+- `severityConfig` in checklist API response (A/B/C with daysToSolution)
+- AtroCore credential function node (Basic auth header from env vars)
+- Forwarded ticket support in `set payload` function (X-Alfresco-Ticket header)
+- `.env.example` template with all 7 environment variables
+
+### Fixed
+- Fixed `send report` node `paytoqs` from `query` to `ignore` (JSON body instead of query params)
+- Fixed AtroCore auth flow missing credentials (`authType: basic` with no credentials)
+- Fixed `alfresco-net` network marked as external in docker-compose
+- Fixed `get alfresco auth` flow clearing stale headers from calling flows
+- Fixed docker-compose `version: "3.7"` deprecated line removed
+- Fixed `nodered/node-red:latest` pinned to `4.1.10`
+- Fixed unused named `data:` volume removed from docker-compose
+- Fixed stale `checklist.json` reference in README
+
+### Changed
+- Alfresco hostnames standardized to `proxy:8080` across all flows
+- 21 debug nodes deactivated for production (`active: false`)
+
 ## [0.1.0] - 2026-05-23
 
 ### Summary

@@ -4,13 +4,20 @@
 # docker stack deploy node-red --compose-file docker-compose-node-red.yml
 # docker-compose -f docker-compose-node-red.yml -p myNoderedProject up
 ################################################################################
-version: "3.7"
 
 services:
   node-red:
-    image: nodered/node-red:latest
+    image: nodered/node-red:4.1.10
     environment:
       - TZ=Europe/Amsterdam
+      - ALFRESCO_USERNAME=${ALFRESCO_USERNAME:-admin}
+      - ALFRESCO_PASSWORD=${ALFRESCO_PASSWORD:-admin}
+      - ATROCORE_USERNAME=${ATROCORE_USERNAME:-admin}
+      - ATROCORE_PASSWORD=${ATROCORE_PASSWORD:-Omegados2}
+      - NODE_RED_CREDENTIAL_SECRET=${NODE_RED_CREDENTIAL_SECRET:-a-secret-key}
+      - API_KEY=${API_KEY}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
     ports:
       - "1880:1880"
     networks:
@@ -20,9 +27,6 @@ services:
       - import-net
     volumes:
       - ./data:/data
-
-volumes:
-  data:
 
 networks:
   node-red-net:

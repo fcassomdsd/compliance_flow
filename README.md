@@ -104,21 +104,27 @@ docker network create import-backend
 | `data/flows.json` | All Node-RED flow definitions (source of truth for the API) |
 | `data/flows_cred.json` | Encrypted credentials used by flows (do **not** commit plaintext secrets) |
 | `data/package.json` | Node-RED project metadata and custom node dependencies |
-| `checklist.json` | Seed data — inspection checklist questions for the surveillance specialty |
+| `.env.example` | Environment variable template (copy to `.env` before deployment) |
 
 ### Key settings (`data/settings.js`)
 
 - **Port**: `1880` (overridable via the `PORT` environment variable)
 - **Flow file**: `flows.json`
-- **Credential encryption**: uses a generated key by default. Set `credentialSecret` to a fixed value in production to prevent credentials from being lost on container rebuild.
-- **Authentication**: admin auth is disabled by default. Enable `adminAuth` in `settings.js` for production deployments.
+- **Credential encryption**: `credentialSecret` is set via `NODE_RED_CREDENTIAL_SECRET` env var with a dev default
+- **Editor auth**: `adminAuth` is enabled — login required to access the Node-RED editor
+- **API auth**: All 19 REST endpoints route through an API key check subflow — when `API_KEY` is set, requests require `X-API-Key` header
 
 ### Environment variables
 
 | Variable | Default | Description |
 |---|---|---|
 | `TZ` | `Europe/Amsterdam` | Container timezone |
-| `PORT` | `1880` | HTTP port for the Node-RED server |
+| `ALFRESCO_USERNAME` | `admin` | Alfresco credentials (used when frontend does not forward a user ticket) |
+| `ALFRESCO_PASSWORD` | `admin` | Alfresco credentials |
+| `API_KEY` | *(unset)* | Shared secret for REST endpoint protection; unset = no auth (dev mode) |
+| `ADMIN_USERNAME` | `admin` | Node-RED editor login username |
+| `ADMIN_PASSWORD_HASH` | *(bcrypt hash)* | Node-RED editor login password (bcrypt hash) |
+| `NODE_RED_CREDENTIAL_SECRET` | `a-secret-key` | Encryption key for flow credentials — change in production |
 
 ---
 
@@ -153,23 +159,27 @@ All endpoints are served at `http://<host>:1880`.
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/inspectionPlan` | Retrieve an inspection plan |
-| `GET` | `/inspectionReport` | Generate and retrieve an inspection report |
+| `GET` | `/inspectionPlan` | Generate an inspection plan; after successful generation, transitions AtroCore inspection status to `Planned` |
+| `GET` | `/inspectionReport` | Generate an inspection report; after successful generation, transitions AtroCore inspection status to `Reported` |
 | `POST` | `/importFollowUps` | Import follow-up items into the system |
+| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; after successful import, transitions AtroCore inspection status from `Planned` to `Uploaded` |
 
 ### Alfresco Integration
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco |
+| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; transitions AtroCore status from `Planned` to `Uploaded` |
 | `GET` | `/content/lastSeq` | Get the last content sequence number from Alfresco |
 
 ### Static / Reference Data
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/inspector/:externalId` | Get inspector details by external ID |
-| `GET` | `/inspection/:inspectionId` | Get inspection details by inspection ID |
+| `GET` | `/serviceAreas` | List all service areas with linked specialties |
+| `GET` | `/inspectionProvider` | List per-provider inspections with provider data (filterable by `?status=`) |
+| `GET` | `/siteVisits` | List site visits eligible for checklist upload |
+| `GET` | `/inspector/:externalId` | Get inspector details by external ID (includes `serviceAreaId`) |
+| `GET` | `/siteVisit/:inspectionId` | Get site visit details by ID or code |
 | `GET` | `/assignmentGroup/:externalGroup` | Get assignment group by external group identifier |
 | `GET` | `/specialties` | List all available inspection specialties |
 | `GET` | `/location` | List available inspection locations |
@@ -200,9 +210,9 @@ The Node-RED editor organises logic into the following tabs (flows):
 | **Add links** | Creates entity relationship links |
 | **Delete links** | Removes entity relationship links |
 | **Get Entity call** | Lower-level entity retrieval sub-flow |
-| **Inspection plan** | Builds and serves an inspection plan |
-| **import canonical to alfresco** | Exports canonical inspection records to Alfresco |
-| **Inspection report** | Compiles and returns a full inspection report |
+| **Inspection plan** | Builds and serves an inspection plan; updates AtroCore inspection status to `Planned` |
+| **import canonical to alfresco** | Exports canonical inspection records to Alfresco; queries AtroCore and transitions status from `Planned` to `Uploaded` |
+| **Inspection report** | Compiles and returns a full inspection report; updates AtroCore inspection status to `Reported` |
 | **Auth flows** | Shared authentication helper sub-flows |
 | **Static data** | Serves reference / lookup data (inspectors, locations, specialties, groups) |
 | **findings flows** | Manages open findings lifecycle |
@@ -228,6 +238,9 @@ node-red/
 
 ## Security Notes
 
-- **Do not commit `flows_cred.json` with plaintext secrets.** Credentials are encrypted at rest by Node-RED using the `credentialSecret` value in `settings.js`.
-- Enable `adminAuth` in `settings.js` before exposing the Node-RED editor to any non-local network.
+- **`adminAuth` is enabled** — the Node-RED editor requires login (username/password from `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH` env vars).
+- **API key protection**: when `API_KEY` env var is set, all 19 REST endpoints require `X-API-Key` header.
+- **`credentialSecret`** is managed via `NODE_RED_CREDENTIAL_SECRET` env var — set a unique value in production.
+- **Alfresco credentials** are read from `ALFRESCO_USERNAME`/`ALFRESCO_PASSWORD` env vars. Frontend apps can forward user-specific Alfresco tickets via the `X-Alfresco-Ticket` header, which the auth flow will use preferentially over env var credentials.
+- **`.gitignore`** excludes backup files (`.backup`), runtime configs (`.config.*.json`), and `node_modules/`.
 - Consider placing Node-RED behind a reverse proxy (e.g., nginx) with TLS for production deployments.
