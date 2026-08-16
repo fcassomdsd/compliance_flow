@@ -220,8 +220,8 @@
         "stream": false,
         "addname": "",
         "property": "payload",
-        "x": 170,
-        "y": 1060,
+        "x": 130,
+        "y": 1120,
         "wires": [
             [
                 "222a0d72d1228084"
@@ -249,7 +249,7 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 210,
+        "x": 870,
         "y": 1120,
         "wires": [
             [
@@ -269,8 +269,8 @@
         "stream": false,
         "addname": "",
         "property": "payload",
-        "x": 400,
-        "y": 1060,
+        "x": 340,
+        "y": 1120,
         "wires": [
             [
                 "851e9b7e0566dddc"
@@ -282,15 +282,15 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Convert to checklist format",
-        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"code\" : msg.payload.code,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : {\n                        \"id\": msg.payload.normativas[0]?.id,\n                        \"reglamento\": msg.payload.normativas[0]?.reglamentoName,\n                        \"articulo\": msg.payload.normativas[0]?.name,\n                        \"texto\": msg.payload.normativas[0]?.texto,\n                        \"ICAOref\": msg.payload.normativas[0]?.acapitesOACIName\n                     },\n                     \"guidance\" : msg.payload.references\n                  },\n                  \"riskLevel\" : msg.payload.riskLevelName\n                };\nreturn msg;",
+        "func": "msg.payload = {   \"id\" : msg.payload.id,\n                  \"code\" : msg.payload.code,\n                  \"topic\" : msg.payload.topicName,\n                  \"sequence\" : msg.payload.sequence.toString().padStart(5,\"0\"),\n                  \"question\" : msg.payload.texto, \n                  \"verification\" : msg.payload.verification,\n                  \"reference\" : {\n                     \"normativa\" : {\n                        \"id\": msg.payload.normativas[0]?.id,\n                        \"reglamento\": msg.payload.normativas[0]?.reglamentoName,\n                        \"articulo\": msg.payload.normativas[0]?.name,\n                        \"texto\": msg.payload.normativas[0]?.texto,\n                        \"ICAOref\": msg.payload.normativas[0]?.acapitesOACIName,\n                        \"usoapPqReference\": msg.payload.normativas[0]?.usoapPqReference || []\n                     },\n                     \"guidance\" : msg.payload.references\n                  },\n                  \"riskLevel\" : msg.payload.riskLevelName\n                };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 640,
-        "y": 1060,
+        "x": 580,
+        "y": 1120,
         "wires": [
             [
                 "1aa0da4621262a93"
@@ -346,8 +346,8 @@
         "msgKeyType": "jsonata",
         "seqKey": "payload",
         "seqKeyType": "msg",
-        "x": 430,
-        "y": 1120,
+        "x": 390,
+        "y": 1200,
         "wires": [
             [
                 "33fe8eec4d8b8b7d"
@@ -450,8 +450,8 @@
         "name": "checklist created",
         "mode": "return",
         "links": [],
-        "x": 805,
-        "y": 1120,
+        "x": 795,
+        "y": 1200,
         "wires": []
     },
     {
@@ -492,7 +492,7 @@
         "to": "",
         "reg": false,
         "x": 600,
-        "y": 1120,
+        "y": 1200,
         "wires": [
             [
                 "5bcda936ac856077"
@@ -768,8 +768,69 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 300,
+        "x": 240,
         "y": 1000,
+        "wires": [
+            [
+                "9f2a17c3b6e4d801"
+            ]
+        ]
+    },
+    {
+        "id": "9f2a17c3b6e4d801",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "collect acapitesOACI ids",
+        "func": "msg.pqList = msg.payload.list || [];\nconst ids = [...new Set(msg.pqList\n  .map(q => q.normativas && q.normativas[0] && q.normativas[0].acapitesOACIId)\n  .filter(Boolean))];\nmsg.acapiteIds = ids;\n\nif (ids.length === 0) {\n    msg.payload = { list: [] };\n    return [null, msg];\n}\n\n// Query from the AcapiteOACI side and embed usoapProtocolQuestions -\n// AtroCore's linkMultiple where-filter does not support filtering directly\n// by a many-to-many attribute (e.g. acapitesOACI IN [...] on\n// UsoapProtocolQuestion), but a single-level embedded select from the\n// owning side (AcapiteOACI.usoapProtocolQuestions) works, same as the\n// existing normativas embedding above.\nmsg.entity = \"AcapiteOACI\";\nmsg.entityData = { \"id\": ids };\nmsg.entitySelect = \"usoapProtocolQuestions\";\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 1000,
+        "wires": [
+            [
+                "9f2a17c3b6e4d802"
+            ],
+            [
+                "9f2a17c3b6e4d803"
+            ]
+        ]
+    },
+    {
+        "id": "9f2a17c3b6e4d802",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get acapite usoap PQs",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 820,
+        "y": 980,
+        "wires": [
+            [
+                "9f2a17c3b6e4d803"
+            ]
+        ]
+    },
+    {
+        "id": "9f2a17c3b6e4d803",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "merge usoap pq into questions",
+        "func": "const acapiteList = (msg.payload && msg.payload.list) || [];\nconst byAcapite = {};\nfor (const acapite of acapiteList) {\n  const pqs = acapite.usoapProtocolQuestions || [];\n  byAcapite[acapite.id] = pqs.map((pq) => ({\n    code: pq.code,\n    criticalElement: pq.criticalElementName,\n    areaCode: pq.areaCodeName\n  }));\n}\n\nfor (const q of (msg.pqList || [])) {\n  const n = q.normativas && q.normativas[0];\n  if (n) {\n    n.usoapPqReference = byAcapite[n.acapitesOACIId] || [];\n  }\n}\n\nmsg.payload = { list: msg.pqList, total: msg.pqList.length };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 1040,
         "wires": [
             [
                 "5552e88df9693eeb"
@@ -3026,8 +3087,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 440,
-        "y": 620,
+        "x": 640,
+        "y": 380,
         "wires": []
     },
     {
@@ -3119,8 +3180,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 690,
-        "y": 360,
+        "x": 710,
+        "y": 320,
         "wires": [
             [
                 "865781f26d7879c2"
@@ -3238,18 +3299,19 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "person parameters",
-        "func": "msg.entity = \"Person\";\nmsg.entityData = {\n    \"_or\" : {\n      \"serviceProviderId\" : msg.inspectionPlan.provider.id,\n      \"id\" : msg.inspectionPlan.provider.contact.id || null }\n};\nmsg.entitySelect = \"id,name,workPosition,serviceProviderName\";\nreturn msg;",
+        "func": "msg.entity = \"Person\";\nmsg.entityData = {\n    \"_or\" : {\n      \"serviceProviderId\" : msg.inspectionPlan.provider.id,\n      \"id\" : msg.inspectionPlan.provider.contact?.id || null }\n};\nmsg.entitySelect = \"id,name,workPosition,serviceProviderName\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 170,
-        "y": 480,
+        "x": 190,
+        "y": 440,
         "wires": [
             [
-                "e9a25e0d8e85ac85"
+                "e9a25e0d8e85ac85",
+                "1d55d021874f94ec"
             ]
         ]
     },
@@ -3263,8 +3325,8 @@
         ],
         "linkType": "static",
         "timeout": "30",
-        "x": 390,
-        "y": 480,
+        "x": 410,
+        "y": 440,
         "wires": [
             [
                 "0985ff675aba9a60"
@@ -3284,7 +3346,7 @@
         "finalize": "",
         "libs": [],
         "x": 600,
-        "y": 480,
+        "y": 440,
         "wires": [
             [
                 "bded2a99204287bd"
@@ -3497,7 +3559,7 @@
         "linkType": "static",
         "timeout": "30",
         "x": 440,
-        "y": 360,
+        "y": 320,
         "wires": [
             [
                 "b56fec9bbbe16305"
@@ -3517,7 +3579,7 @@
         "finalize": "",
         "libs": [],
         "x": 200,
-        "y": 360,
+        "y": 320,
         "wires": [
             [
                 "ed8c223f8db2c5bb"
@@ -3592,7 +3654,7 @@
         "linkType": "static",
         "timeout": "40",
         "x": 860,
-        "y": 480,
+        "y": 440,
         "wires": [
             [
                 "2a46f207dd799e40"
@@ -3622,8 +3684,7 @@
         "y": 560,
         "wires": [
             [
-                "af66b696c5573785",
-                "1d55d021874f94ec"
+                "af66b696c5573785"
             ]
         ]
     },
@@ -3727,9 +3788,9 @@
         "id": "074e147ee74a13c5",
         "type": "comment",
         "z": "5afaefaae1db46d5",
-        "name": "get provider data",
+        "name": "get inspection data",
         "info": "",
-        "x": 180,
+        "x": 190,
         "y": 640,
         "wires": []
     },
