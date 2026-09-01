@@ -4939,7 +4939,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "save inspection data",
-        "func": "msg.inspectionReport[\"objective\"] = msg.payload.list[0].objective,\nmsg.inspectionReport[\"scope\"] = msg.payload.list[0].scope,\nmsg.inspectionReport[\"inspectionType\"] = msg.payload.list[0].inspectionType\nmsg.inspectionReport[\"description\"] = msg.payload.list[0].description\nmsg.inspectionReport[\"conclusion\"] = msg.payload.list[0].conclusion\n\n\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "msg.inspectionReport[\"objective\"] = msg.payload.list[0].objective,\nmsg.inspectionReport[\"scope\"] = msg.payload.list[0].scope,\nmsg.inspectionReport[\"activityTypeId\"] = msg.payload.list[0].activityTypeId,\nmsg.inspectionReport[\"activityTypeCode\"] = msg.payload.list[0].activityTypeCode,\nmsg.inspectionReport[\"activityTypeName\"] = msg.payload.list[0].activityTypeName\nmsg.inspectionReport[\"description\"] = msg.payload.list[0].description\nmsg.inspectionReport[\"conclusion\"] = msg.payload.list[0].conclusion\n\n\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -5819,6 +5819,94 @@
                 "9fb0b0ad48e00844"
             ]
         ]
+    },
+    {
+        "id": "091869a1d717553b",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get activity types",
+        "url": "/activityTypes",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 760,
+        "wires": [
+            [
+                "a9ffc1324cf63fc0"
+            ]
+        ]
+    },
+    {
+        "id": "a9ffc1324cf63fc0",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "activity type parameters",
+        "func": "msg.entity=\"ActivityType\";\nmsg.entitySelect=\"id,code,name\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 760,
+        "wires": [
+            [
+                "2fc2d3ae75858424"
+            ]
+        ]
+    },
+    {
+        "id": "2fc2d3ae75858424",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 580,
+        "y": 760,
+        "wires": [
+            [
+                "130557f25a0681b5"
+            ]
+        ]
+    },
+    {
+        "id": "130557f25a0681b5",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "shape activity types",
+        "func": "let activityTypeList = msg.payload.list.map((x) => ({\n    \"id\" : x.id,\n    \"code\" : x.code,\n    \"name\" : x.name\n}));\nmsg.payload = activityTypeList;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 760,
+        "wires": [
+            [
+                "3d8fb2ca615b88ae"
+            ]
+        ]
+    },
+    {
+        "id": "3d8fb2ca615b88ae",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 960,
+        "y": 760,
+        "wires": []
     },
     {
         "id": "6323c46a8f7693e5",
