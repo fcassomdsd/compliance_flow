@@ -2,6 +2,20 @@
 
 All notable changes are documented in this file.
 
+## [Unreleased]
+
+### Added
+- **`/activityTypes` endpoint**: Returns the Nomenclatura oversight-activity-type catalog (`id`/`code`/`name`, e.g. `A`/`Auditoría`), mirroring the `/location` route pattern.
+
+### Changed
+- **Inspection Report**: `inspectionType` field replaced with `activityTypeId`/`activityTypeCode`/`activityTypeName`, matching the Inspection entity's new `ActivityType` link (was a free-text field). Supersedes the `inspectionType` field added in `[0.4.0]` below.
+- **`/inspectionPlan` and `/inspectionReport`**: now overwrite the plan/report identifier with the per-provider Inspection's own Activity code after resolving it, instead of leaving it as the SiteVisit code captured earlier in the flow. Activity codes are independently sequenced from their parent SiteVisit's code as of this change (a sibling `compliance_web` refactor), so the two are no longer interchangeable — generated plan/report documents were being named after the site visit.
+- **`/checklist`**: now queries the Inspection record directly (using the `inspectionId` already passed in the request) for the `inspection` code field returned to the checklist app, instead of reusing the parent SiteVisit's code.
+- **`/inspectionReport`**'s Inspection lookup ("set inspection params") no longer filters by a captured SiteVisit-code variable alongside `inspectedProviderId` — that filter could never match once Activity/SiteVisit codes were decoupled, so report generation was failing outright for every request.
+
+### Fixed
+- **Alfresco ticket authentication**: the shared auth subflow (used by `/findings/open`, canonical-import triggers, and inspection plan/report generation) built an invalid Basic-auth header when logging in fresh rather than forwarding a caller's ticket (missing the required trailing colon), and separately, the legacy Alfresco webscript runtime backing these routes needs the ticket passed as an `alf_ticket` query parameter rather than a Basic-auth header. Both fixed.
+
 ## [0.4.0] - 2026-08-02
 
 ### Added
