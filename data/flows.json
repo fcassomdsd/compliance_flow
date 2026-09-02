@@ -5035,7 +5035,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "set inspection params",
-        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \n    \"code\" : msg.inspectionCode,\n    \"inspectedProviderId\" : msg.inspectedProviderId\n };\nreturn msg;",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \n    \"inspectedProviderId\" : msg.inspectedProviderId\n };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
