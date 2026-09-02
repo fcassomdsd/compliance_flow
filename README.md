@@ -182,6 +182,7 @@ All endpoints are served at `http://<host>:1880`.
 | `GET` | `/siteVisit/:inspectionId` | Get site visit details by ID or code |
 | `GET` | `/assignmentGroup/:externalGroup` | Get assignment group by external group identifier |
 | `GET` | `/specialties` | List all available inspection specialties |
+| `GET` | `/activityTypes` | List all available activity types (`id`, `code`, `name`) |
 | `GET` | `/location` | List available inspection locations |
 
 ### Findings
