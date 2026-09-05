@@ -6,6 +6,7 @@ All notable changes are documented in this file.
 
 ### Added
 - **`/activityTypes` endpoint**: Returns the Nomenclatura oversight-activity-type catalog (`id`/`code`/`name`, e.g. `A`/`Auditoría`), mirroring the `/location` route pattern.
+- **`locale` parameter on `/inspectionPlan` and `/inspectionReport`**: forwarded (default `es`) into the payload posted to the Alfresco report-generation webscripts, so a caller's UI locale reaches the generated document. Completes the localization work landing in `compliance_web` and `compliance_cmis` in the same change set.
 
 ### Changed
 - **Inspection Report**: `inspectionType` field replaced with `activityTypeId`/`activityTypeCode`/`activityTypeName`, matching the Inspection entity's new `ActivityType` link (was a free-text field). Supersedes the `inspectionType` field added in `[0.4.0]` below.
