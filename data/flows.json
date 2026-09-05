@@ -3060,6 +3060,13 @@
                 "pt": "msg",
                 "to": "req.query.provider",
                 "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locale",
+                "pt": "msg",
+                "to": "req.query.locale",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -3895,7 +3902,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save site visit data",
-        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
+        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4551,6 +4558,13 @@
                 "pt": "msg",
                 "to": "req.query.reportDate",
                 "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locale",
+                "pt": "msg",
+                "to": "req.query.locale",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -4663,7 +4677,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "save site visit data",
-        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
