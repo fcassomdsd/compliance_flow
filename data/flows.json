@@ -853,6 +853,64 @@
         "y": 160,
         "wires": [
             [
+                "b3c6f1a9e2d47058"
+            ]
+        ]
+    },
+    {
+        "id": "b3c6f1a9e2d47058",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "inspection code parameters",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \"id\" : msg.inspectionId };\nmsg.entitySelect = \"code\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 200,
+        "wires": [
+            [
+                "c4d7a2e0f1b58369"
+            ]
+        ]
+    },
+    {
+        "id": "c4d7a2e0f1b58369",
+        "type": "link call",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspection code",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 920,
+        "y": 240,
+        "wires": [
+            [
+                "d5e8b3f102c69470"
+            ]
+        ]
+    },
+    {
+        "id": "d5e8b3f102c69470",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "save inspection code",
+        "func": "msg.checklist[\"inspection\"] = msg.payload.list[0].code;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 280,
+        "wires": [
+            [
                 "9a7d1d5dbbd2eb97"
             ]
         ]
@@ -3002,6 +3060,13 @@
                 "pt": "msg",
                 "to": "req.query.provider",
                 "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locale",
+                "pt": "msg",
+                "to": "req.query.locale",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -3614,7 +3679,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "http://proxy:8080/alfresco/s/api/inspection/generate",
+        "url": "http://proxy:8080/alfresco/s/api/inspection/generate?alf_ticket={{alf_ticket}}",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -3769,7 +3834,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save inspection data",
-        "func": "msg.inspectionPlan[\"scope\"] = msg.payload.list[0].scope; \nmsg.inspectionPlan[\"objective\"] = msg.payload.list[0].objective;\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "msg.inspectionPlan[\"inspectionNo\"] = msg.payload.list[0].code;\nmsg.inspectionPlan[\"scope\"] = msg.payload.list[0].scope; \nmsg.inspectionPlan[\"objective\"] = msg.payload.list[0].objective;\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -3837,7 +3902,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save site visit data",
-        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
+        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4014,7 +4079,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "query",
-        "url": "http://proxy:8080/alfresco/s/api/inspection/import-canonical",
+        "url": "http://proxy:8080/alfresco/s/api/inspection/import-canonical?alf_ticket={{alf_ticket}}",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -4170,7 +4235,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "query",
-        "url": "http://proxy:8080/alfresco/s/api/inspection/import-canonical",
+        "url": "http://proxy:8080/alfresco/s/api/inspection/import-canonical?alf_ticket={{alf_ticket}}",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -4493,6 +4558,13 @@
                 "pt": "msg",
                 "to": "req.query.reportDate",
                 "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locale",
+                "pt": "msg",
+                "to": "req.query.locale",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -4605,7 +4677,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "save site visit data",
-        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4822,7 +4894,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "query",
-        "url": "http://proxy:8080/alfresco/s/api/inspection/report/generate",
+        "url": "http://proxy:8080/alfresco/s/api/inspection/report/generate?alf_ticket={{alf_ticket}}",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -4939,7 +5011,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "save inspection data",
-        "func": "msg.inspectionReport[\"objective\"] = msg.payload.list[0].objective,\nmsg.inspectionReport[\"scope\"] = msg.payload.list[0].scope,\nmsg.inspectionReport[\"inspectionType\"] = msg.payload.list[0].inspectionType\nmsg.inspectionReport[\"description\"] = msg.payload.list[0].description\nmsg.inspectionReport[\"conclusion\"] = msg.payload.list[0].conclusion\n\n\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "msg.inspectionReport[\"inspectionCode\"] = msg.payload.list[0].code;\nmsg.inspectionReport[\"objective\"] = msg.payload.list[0].objective,\nmsg.inspectionReport[\"scope\"] = msg.payload.list[0].scope,\nmsg.inspectionReport[\"activityTypeId\"] = msg.payload.list[0].activityTypeId,\nmsg.inspectionReport[\"activityTypeCode\"] = msg.payload.list[0].activityTypeCode,\nmsg.inspectionReport[\"activityTypeName\"] = msg.payload.list[0].activityTypeName\nmsg.inspectionReport[\"description\"] = msg.payload.list[0].description\nmsg.inspectionReport[\"conclusion\"] = msg.payload.list[0].conclusion\n\n\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -4977,7 +5049,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "set inspection params",
-        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \n    \"code\" : msg.inspectionCode,\n    \"inspectedProviderId\" : msg.inspectedProviderId\n };\nreturn msg;",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \n    \"inspectedProviderId\" : msg.inspectedProviderId\n };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -5821,6 +5893,94 @@
         ]
     },
     {
+        "id": "091869a1d717553b",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Get activity types",
+        "url": "/activityTypes",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 760,
+        "wires": [
+            [
+                "a9ffc1324cf63fc0"
+            ]
+        ]
+    },
+    {
+        "id": "a9ffc1324cf63fc0",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "activity type parameters",
+        "func": "msg.entity=\"ActivityType\";\nmsg.entitySelect=\"id,code,name\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 760,
+        "wires": [
+            [
+                "2fc2d3ae75858424"
+            ]
+        ]
+    },
+    {
+        "id": "2fc2d3ae75858424",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 580,
+        "y": 760,
+        "wires": [
+            [
+                "130557f25a0681b5"
+            ]
+        ]
+    },
+    {
+        "id": "130557f25a0681b5",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "shape activity types",
+        "func": "let activityTypeList = msg.payload.list.map((x) => ({\n    \"id\" : x.id,\n    \"code\" : x.code,\n    \"name\" : x.name\n}));\nmsg.payload = activityTypeList;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 760,
+        "wires": [
+            [
+                "3d8fb2ca615b88ae"
+            ]
+        ]
+    },
+    {
+        "id": "3d8fb2ca615b88ae",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 960,
+        "y": 760,
+        "wires": []
+    },
+    {
         "id": "6323c46a8f7693e5",
         "type": "http in",
         "z": "dbdd767669d57957",
@@ -6299,7 +6459,7 @@
         "type": "function",
         "z": "18c3156c77e1c2fb",
         "name": "Set authorization header",
-        "func": "msg.headers = { \"Authorization\": \"Basic \" + Buffer.from(msg.payload.entry.id).toString('base64') };\nreturn msg;",
+        "func": "msg.alf_ticket = msg.payload.entry.id;\nmsg.headers = { \"Authorization\": \"Basic \" + Buffer.from(msg.payload.entry.id + \":\").toString('base64') };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -6496,7 +6656,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "http://proxy:8080/alfresco/s/api/findings/open/query",
+        "url": "http://proxy:8080/alfresco/s/api/findings/open/query?alf_ticket={{alf_ticket}}",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -6737,7 +6897,7 @@
         "method": "GET",
         "ret": "obj",
         "paytoqs": "query",
-        "url": "http://proxy:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children",
+        "url": "http://proxy:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children?alf_ticket={{alf_ticket}}",
         "tls": "",
         "persist": false,
         "proxy": "",
