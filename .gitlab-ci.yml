@@ -1,5 +1,19 @@
 stages:
+  - validate
   - release
+
+# data/flows.json is the entire service, so a duplicate id or a wire/link that
+# points at a node that no longer exists only surfaces at runtime. Validate the
+# structure on every merge request instead.
+validate:flows:
+  stage: validate
+  image: node:20-alpine
+  script:
+    - node scripts/validate-flows.mjs
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 compute_release_tag:
   stage: release
