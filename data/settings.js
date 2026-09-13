@@ -20,6 +20,37 @@
  *
  **/
 
+var crypto = require("crypto");
+
+/**
+ * Fail fast on an insecure production configuration.
+ *
+ * The development defaults used elsewhere in this file (and the sample .env)
+ * are not safe to run in production, so refuse to start when a required
+ * variable is missing.
+ */
+var REQUIRED_IN_PRODUCTION = [
+    "API_KEY",
+    "NODE_RED_CREDENTIAL_SECRET",
+    "ADMIN_PASSWORD_HASH",
+    "ALFRESCO_USERNAME",
+    "ALFRESCO_PASSWORD",
+    "ATROCORE_USERNAME",
+    "ATROCORE_PASSWORD"
+];
+
+if (process.env.NODE_ENV === "production") {
+    var missing = REQUIRED_IN_PRODUCTION.filter(function (name) {
+        return !process.env[name];
+    });
+    if (missing.length) {
+        throw new Error(
+            "Refusing to start: NODE_ENV=production requires these environment " +
+            "variables to be set: " + missing.join(", ")
+        );
+    }
+}
+
 module.exports = {
 
 /*******************************************************************************
@@ -41,7 +72,7 @@ module.exports = {
      * node-red from being able to decrypt your existing credentials and they will be
      * lost.
      */
-    credentialSecret: process.env.NODE_RED_CREDENTIAL_SECRET || "a-secret-key",
+    credentialSecret: process.env.NODE_RED_CREDENTIAL_SECRET,
 
     /** By default, the flow JSON will be formatted over multiple lines making
      * it easier to compare changes when using version control.
@@ -77,7 +108,7 @@ module.exports = {
         type: "credentials",
         users: [{
             username: process.env.ADMIN_USERNAME || "admin",
-            password: process.env.ADMIN_PASSWORD_HASH || "$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN.",
+            password: process.env.ADMIN_PASSWORD_HASH,
             permissions: "*"
         }]
     },
@@ -216,12 +247,29 @@ module.exports = {
      * applied to all http in nodes, or any other sort of common request processing.
      * It can be a single function or an array of middleware functions.
      */
-    //httpNodeMiddleware: function(req,res,next) {
-    //    // Handle/reject the request, or pass it on to the http in node by calling next();
-    //    // Optionally skip our rawBodyParser by setting this to true;
-    //    //req.skipRawBodyParser = true;
-    //    next();
-    //},
+    httpNodeMiddleware: function(req,res,next) {
+        // When API_KEY is set, every node-defined REST endpoint (HTTP In node)
+        // requires a matching X-API-Key header. The editor and admin API are
+        // protected separately by adminAuth above. Production startup fails when
+        // API_KEY is unset, so this guard cannot be left open by accident.
+        var requiredKey = process.env.API_KEY;
+        if (!requiredKey) {
+            // Development only: without API_KEY the gateway is intentionally open.
+            return next();
+        }
+        var providedKey = req.get("X-API-Key") || "";
+        var expected = Buffer.from(requiredKey);
+        var actual = Buffer.from(providedKey);
+        if (expected.length === actual.length && crypto.timingSafeEqual(expected, actual)) {
+            return next();
+        }
+        res.status(401).json({
+            error: {
+                code: "UNAUTHORIZED",
+                message: "A valid X-API-Key header is required."
+            }
+        });
+    },
 
     /** When httpAdminRoot is used to move the UI to a different root path, the
      * following property can be used to identify a directory of static content

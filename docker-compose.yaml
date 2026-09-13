@@ -10,14 +10,17 @@ services:
     image: nodered/node-red:4.1.10
     environment:
       - TZ=Europe/Amsterdam
-      - ALFRESCO_USERNAME=${ALFRESCO_USERNAME:-admin}
-      - ALFRESCO_PASSWORD=${ALFRESCO_PASSWORD:-admin}
-      - ATROCORE_USERNAME=${ATROCORE_USERNAME:-admin}
-      - ATROCORE_PASSWORD=${ATROCORE_PASSWORD:-Omegados2}
-      - NODE_RED_CREDENTIAL_SECRET=${NODE_RED_CREDENTIAL_SECRET:-a-secret-key}
-      - API_KEY=${API_KEY}
+      # Credentials have no fallback: copy .env.example to .env and supply real
+      # values. compose refuses to start if any of these is unset.
+      - ALFRESCO_USERNAME=${ALFRESCO_USERNAME:?ALFRESCO_USERNAME must be set}
+      - ALFRESCO_PASSWORD=${ALFRESCO_PASSWORD:?ALFRESCO_PASSWORD must be set}
+      - ATROCORE_USERNAME=${ATROCORE_USERNAME:?ATROCORE_USERNAME must be set}
+      - ATROCORE_PASSWORD=${ATROCORE_PASSWORD:?ATROCORE_PASSWORD must be set}
+      - NODE_RED_CREDENTIAL_SECRET=${NODE_RED_CREDENTIAL_SECRET:?NODE_RED_CREDENTIAL_SECRET must be set}
+      - API_KEY=${API_KEY:-}
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
-      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH:?ADMIN_PASSWORD_HASH must be set}
+      - NODE_ENV=${NODE_ENV:-development}
     ports:
       - "1880:1880"
     networks:

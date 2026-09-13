@@ -3,3 +3,7 @@ data/node_modules
 data/*.backup
 data/.config.*.json
 data/.sessions.json
+data/flows_cred.json
+.env
+.env.*
+!.env.example
