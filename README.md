@@ -163,12 +163,12 @@ All endpoints are served at `http://<host>:1880`.
 | `GET` | `/inspectionReport` | Generate an inspection report; after successful generation, transitions AtroCore inspection status to `Reported` |
 | `POST` | `/importFollowUps` | Import follow-up items into the system |
 | `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; after successful import, transitions AtroCore inspection status from `Planned` to `Uploaded` |
+| `GET` | `/inspection/:inspectionId` | Query a single inspection entity by id (also accepts its `code`) |
 
 ### Alfresco Integration
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; transitions AtroCore status from `Planned` to `Uploaded` |
 | `GET` | `/content/lastSeq` | Get the last content sequence number from Alfresco |
 
 ### Static / Reference Data
@@ -177,9 +177,9 @@ All endpoints are served at `http://<host>:1880`.
 |---|---|---|
 | `GET` | `/serviceAreas` | List all service areas with linked specialties |
 | `GET` | `/inspectionProvider` | List per-provider inspections with provider data (filterable by `?status=`) |
+| `GET` | `/providers` | List providers for a site visit |
 | `GET` | `/siteVisits` | List site visits eligible for checklist upload |
 | `GET` | `/inspector/:externalId` | Get inspector details by external ID (includes `serviceAreaId`) |
-| `GET` | `/siteVisit/:inspectionId` | Get site visit details by ID or code |
 | `GET` | `/assignmentGroup/:externalGroup` | Get assignment group by external group identifier |
 | `GET` | `/specialties` | List all available inspection specialties |
 | `GET` | `/inspectors?specialty=<code>` | List the inspectors linked to a specialty code (`id`, `name`, `externalUserID`) |
