@@ -222,18 +222,41 @@ The Node-RED editor organises logic into the following tabs (flows):
 
 ---
 
+## Smoke testing
+
+`scripts/smoke-flows.mjs` is a read-only smoke harness that calls the safe HTTP endpoints against a running stack and asserts each returns HTTP 200 with a JSON body (and, for list endpoints, a non-empty array). Endpoints that mutate state (`addEntity`, `updateEntity`, `deleteEntity`, `addLinks`, `deleteLinks`, `importCanonical`, `importFollowUps`, `inspectionPlan`, `inspectionReport`) are listed but not exercised — they need throwaway data and cleanup — so they are skipped, not failed.
+
+```bash
+# stack up first (see the runbook), then:
+BASE=http://localhost:1880 \
+SPECIALTY_CODE=MET \
+INSPECTOR_EXTERNAL_ID=osvaldo.delgadillo \
+SITE_VISIT_ID=<siteVisitId> \
+INSPECTION_ID=<inspectionId> \
+INSPECTED_PROVIDER_ID=<inspectedProviderId> \
+node scripts/smoke-flows.mjs
+```
+
+`/content/lastSeq` is opt-in (it scans an Alfresco folder, and a broad path is slow): set `FOLLOWUP_PREFIX` and `FOLLOWUP_RELATIVE_PATH` to include it. The harness needs `curl`-free Node 18+ only (it uses global `fetch`), exits `0` when all run tests pass and `2` on any assertion failure. Because `compliance_flow`'s CI has no live stack, this is a local/documented gate — CI still enforces `validate-flows.mjs` (structure) and `verify-endpoints.mjs` (endpoint manifest).
+
+---
+
 ## Project Structure
 
 ```
 node-red/
 ├── docker-compose.yaml       # Docker service definition
-└── data/                     # Mounted into the container as /data
-    ├── flows.json            # All Node-RED flow definitions
-    ├── flows_cred.json       # Encrypted flow credentials
-    ├── package.json          # Project metadata / custom node deps
-    ├── settings.js           # Node-RED runtime configuration
-    └── lib/
-        └── flows/            # (reserved for reusable sub-flow libraries)
+├── data/                     # Mounted into the container as /data
+│   ├── flows.json            # All Node-RED flow definitions
+│   ├── flows_cred.json       # Encrypted flow credentials
+│   ├── package.json          # Project metadata / custom node deps
+│   ├── settings.js           # Node-RED runtime configuration
+│   └── lib/
+│       └── flows/            # (reserved for reusable sub-flow libraries)
+└── scripts/                  # Validation and smoke tooling (run on the host, not in the container)
+    ├── validate-flows.mjs    # Structural flow validation (CI)
+    ├── verify-endpoints.mjs  # README endpoint manifest check (CI)
+    └── smoke-flows.mjs       # Read-only live smoke harness (local)
 ```
 
 ---
