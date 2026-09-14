@@ -239,6 +239,15 @@ node scripts/smoke-flows.mjs
 
 `/content/lastSeq` is opt-in (it scans an Alfresco folder, and a broad path is slow): set `FOLLOWUP_PREFIX` and `FOLLOWUP_RELATIVE_PATH` to include it. The harness needs `curl`-free Node 18+ only (it uses global `fetch`), exits `0` when all run tests pass and `2` on any assertion failure. Because `compliance_flow`'s CI has no live stack, this is a local/documented gate — CI still enforces `validate-flows.mjs` (structure) and `verify-endpoints.mjs` (endpoint manifest).
 
+### Error-envelope audit
+
+`scripts/audit-error-envelope.mjs` reports how error responses currently behave and is the gate for the P2.1 "one error envelope" work. A "proper" error is **HTTP ≥ 400 with a JSON body `{ "success": false, "error": … }`**. Today several endpoints return HTTP 200 with a raw error string or an empty body (the `http request` nodes do not throw on upstream failure by default), so the audit reports `0 pass / 5 fail` until that is fixed in the editor:
+
+```bash
+node scripts/audit-error-envelope.mjs            # report only (exit 0)
+node scripts/audit-error-envelope.mjs --enforce  # exit 1 until every probe passes
+```
+
 ---
 
 ## Project Structure
@@ -254,9 +263,10 @@ node-red/
 │   └── lib/
 │       └── flows/            # (reserved for reusable sub-flow libraries)
 └── scripts/                  # Validation and smoke tooling (run on the host, not in the container)
-    ├── validate-flows.mjs    # Structural flow validation (CI)
-    ├── verify-endpoints.mjs  # README endpoint manifest check (CI)
-    └── smoke-flows.mjs       # Read-only live smoke harness (local)
+    ├── validate-flows.mjs        # Structural flow validation (CI)
+    ├── verify-endpoints.mjs      # README endpoint manifest check (CI)
+    ├── smoke-flows.mjs           # Read-only live smoke harness (local)
+    └── audit-error-envelope.mjs  # Error-response audit / envelope gate (local)
 ```
 
 ---
