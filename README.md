@@ -112,7 +112,7 @@ docker network create import-backend
 - **Flow file**: `flows.json`
 - **Credential encryption**: `credentialSecret` is set via `NODE_RED_CREDENTIAL_SECRET` env var with a dev default
 - **Editor auth**: `adminAuth` is enabled — login required to access the Node-RED editor
-- **API auth**: All 19 REST endpoints route through an API key check subflow — when `API_KEY` is set, requests require `X-API-Key` header
+- **API auth**: all REST endpoints are gated by `httpNodeMiddleware` — when `API_KEY` is set, requests require the `X-API-Key` header
 
 ### Environment variables
 
@@ -182,6 +182,7 @@ All endpoints are served at `http://<host>:1880`.
 | `GET` | `/siteVisit/:inspectionId` | Get site visit details by ID or code |
 | `GET` | `/assignmentGroup/:externalGroup` | Get assignment group by external group identifier |
 | `GET` | `/specialties` | List all available inspection specialties |
+| `GET` | `/inspectors?specialty=<code>` | List the inspectors linked to a specialty code (`id`, `name`, `externalUserID`) |
 | `GET` | `/activityTypes` | List all available activity types (`id`, `code`, `name`) |
 | `GET` | `/location` | List available inspection locations |
 
@@ -240,7 +241,7 @@ node-red/
 ## Security Notes
 
 - **`adminAuth` is enabled** — the Node-RED editor requires login (username/password from `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH` env vars).
-- **API key protection**: when `API_KEY` env var is set, all 19 REST endpoints require `X-API-Key` header.
+- **API key protection**: when `API_KEY` env var is set, every REST endpoint requires the `X-API-Key` header.
 - **`credentialSecret`** is managed via `NODE_RED_CREDENTIAL_SECRET` env var — set a unique value in production.
 - **Alfresco credentials** are read from `ALFRESCO_USERNAME`/`ALFRESCO_PASSWORD` env vars. Frontend apps can forward user-specific Alfresco tickets via the `X-Alfresco-Ticket` header, which the auth flow will use preferentially over env var credentials.
 - **`.gitignore`** excludes backup files (`.backup`), runtime configs (`.config.*.json`), and `node_modules/`.
