@@ -7059,5 +7059,96 @@
                 "dd22dfeb1cbdd77c"
             ]
         ]
+    },
+    {
+        "id": "c6d4b2c5e36a4f5f",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Query inspectors by specialty",
+        "url": "/inspectors",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 700,
+        "wires": [
+            [
+                "0d370debd8d24302"
+            ]
+        ]
+    },
+    {
+        "id": "0d370debd8d24302",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "set inspectors-by-specialty params",
+        "func": "const query = (msg.req && msg.req.query) || {};\nconst raw = query.specialty || query.specialtyCode || \"\";\nconst code = String(raw).trim().toUpperCase();\n\nif (!code) {\n  msg.statusCode = 400;\n  if (msg.res) { msg.res.statusCode = 400; }\n  msg.payload = { error: \"specialty query parameter is required\" };\n  return [null, msg];\n}\n\nmsg.specialtyCode = code;\nmsg.entity = \"Inspector\";\nmsg.entityData = { deleted: false };\nmsg.entitySelect = \"id,name,externalUserID,specialty\";\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 700,
+        "wires": [
+            [
+                "60a54e35886d4430"
+            ],
+            [
+                "4ca8207a3cd84f95"
+            ]
+        ]
+    },
+    {
+        "id": "60a54e35886d4430",
+        "type": "link call",
+        "z": "dbdd767669d57957",
+        "name": "query inspectors",
+        "links": [
+            "9d1c32d934dc0bce"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 710,
+        "y": 780,
+        "wires": [
+            [
+                "a488c6d53f464a9c"
+            ]
+        ]
+    },
+    {
+        "id": "a488c6d53f464a9c",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "map inspectors by specialty",
+        "func": "const code = String(msg.specialtyCode || \"\").toUpperCase();\nconst rows = (msg.payload && Array.isArray(msg.payload.list)) ? msg.payload.list : [];\n\n// AtroCore cannot filter a many-to-many link in a where clause, so the\n// Specialty relation (Inspector.specialty, the same link /inspector/:id uses)\n// is matched here on the rows the query returned.\nmsg.payload = rows\n  .filter((row) => Array.isArray(row.specialty) &&\n    row.specialty.some((entry) => String((entry && entry.code) || \"\").toUpperCase() === code))\n  .map((row) => ({\n    id: row.id,\n    name: row.name,\n    externalUserID: row.externalUserID || null\n  }));\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 780,
+        "wires": [
+            [
+                "4ca8207a3cd84f95"
+            ]
+        ]
+    },
+    {
+        "id": "4ca8207a3cd84f95",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1200,
+        "y": 700,
+        "wires": []
     }
 ]
