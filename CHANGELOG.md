@@ -8,6 +8,7 @@ All notable changes are documented in this file.
 
 - **Versioning and tagging standardised across the platform.** Releases are tagged `YYYY-MM-DD` (CalVer) after the date of the newest `## [YYYY-MM-DD]` CHANGELOG section, with `YYYY-MM-DD.2` for a second release on the same day. The release jobs now run `scripts/release-tag.sh`, which fails when that section is missing, when `CHANGELOG.md` is unchanged since the previous release, or when the tag already exists; `scripts/release-tag.test.sh` is its self-test. See CONTRIBUTING.md, "Versioning and releases".
 - **README endpoint manifest now CI-checked.** `scripts/verify-endpoints.mjs` (run by the `validate:flows` job) fails when the README's API Reference table and `data/flows.json`'s `http in` nodes drift. Fixed the drift it found: removed the duplicate `/importCanonical` row, removed the non-existent `GET /siteVisit/:inspectionId`, and documented `GET /providers` and `GET /inspection/:inspectionId`.
+- **Added a read-only smoke harness.** `scripts/smoke-flows.mjs` exercises the safe HTTP endpoints against a running stack (15 read-only checks: list endpoints, parametrised lookups, `POST /queryEntity`) and documents the 9 destructive endpoints as skipped rather than failed. It is the regression net for the P2.1 `flows.json` restructuring. See README "Smoke testing".
 
 ## [2026-09-06]
 
