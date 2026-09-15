@@ -102,6 +102,26 @@ for (const node of flows) {
   }
 }
 
+// Node-RED delivers an error to EVERY matching catch node, so two unscoped catch
+// nodes in one flow mean two responses: the second trips
+// ERR_HTTP_HEADERS_SENT, that error is caught again, and the flow wedges. The
+// Auth flows tab had exactly this pair and it took a request hanging to find.
+const unscopedByFlow = new Map();
+for (const node of flows) {
+  if (node && node.type === 'catch' && !Array.isArray(node.scope)) {
+    unscopedByFlow.set(node.z, (unscopedByFlow.get(node.z) || 0) + 1);
+  }
+}
+for (const [flowId, count] of unscopedByFlow) {
+  if (count > 1) {
+    const parent = byId.get(flowId);
+    problems.push(
+      `${count} unscoped catch nodes in tab "${parent ? parent.label : flowId}" — ` +
+        'each error would be answered more than once',
+    );
+  }
+}
+
 // A disabled catch node is worse than a missing one: Node-RED only logs an
 // error when no catch node handles it, so every failure in that tab leaves the
 // HTTP request unanswered — the client hangs instead of getting the envelope.

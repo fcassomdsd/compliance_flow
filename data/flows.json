@@ -4884,32 +4884,6 @@
         "wires": []
     },
     {
-        "id": "51538052113f82c0",
-        "type": "catch",
-        "z": "4462ef5386374bff",
-        "name": "",
-        "scope": null,
-        "uncaught": false,
-        "x": 140,
-        "y": 840,
-        "wires": [
-            [
-                "p21env-ba30a1d3a6d9a47e"
-            ]
-        ]
-    },
-    {
-        "id": "ba30a1d3a6d9a47e",
-        "type": "http response",
-        "z": "4462ef5386374bff",
-        "name": "",
-        "statusCode": "400",
-        "headers": {},
-        "x": 360,
-        "y": 840,
-        "wires": []
-    },
-    {
         "id": "b7cc0a622e4cc39b",
         "type": "debug",
         "z": "4462ef5386374bff",
@@ -5042,25 +5016,6 @@
         "wires": [
             [
                 "3800a06e3170345b"
-            ]
-        ]
-    },
-    {
-        "id": "p21env-ba30a1d3a6d9a47e",
-        "type": "function",
-        "z": "4462ef5386374bff",
-        "name": "error envelope",
-        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 840,
-        "wires": [
-            [
-                "ba30a1d3a6d9a47e"
             ]
         ]
     },
