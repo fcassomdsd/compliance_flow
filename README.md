@@ -8,6 +8,7 @@ A Node-RED service that acts as the integration middleware for an aviation compl
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
+- [Whole-Platform Demo Quickstart](#whole-platform-demo-quickstart)
 - [Configuration](#configuration)
 - [API Reference](#api-reference)
 - [Flows](#flows)
@@ -92,6 +93,19 @@ docker network create import-backend
    ```bash
    docker-compose down
    ```
+
+---
+
+## Whole-Platform Demo Quickstart
+
+Taking a running stack to a demonstrable dataset and a walked finding-closure
+workflow means exercising every service, so the canonical sequence lives once, in
+the `atrocore-docker` repository: §7 of
+`../atrocore-docker/docs/COMPLIANCE_INTEGRATION_RUNBOOK.md`
+("Demo Quickstart — clean clone to a demonstrable system"), executable as
+`atrocore-docker/scripts/demo-quickstart.sh`. This service is a step in it (the
+inspection plan/report and canonical-import endpoints); the runbook also records
+the failure-isolation cues for when a flow misbehaves.
 
 ---
 
