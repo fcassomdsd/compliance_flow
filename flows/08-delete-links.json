@@ -1,0 +1,258 @@
+[
+    {
+        "id": "1151e4755687bce1",
+        "type": "tab",
+        "label": "Delete links",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b83dcc225c7eb88d",
+        "type": "http in",
+        "z": "1151e4755687bce1",
+        "name": "Delete Entity Links",
+        "url": "/deleteLinks",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "f621ee193228d87d"
+            ]
+        ]
+    },
+    {
+        "id": "f621ee193228d87d",
+        "type": "change",
+        "z": "1151e4755687bce1",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "req.query.link",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "rmData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "4bc096c007b83a9f"
+            ]
+        ]
+    },
+    {
+        "id": "65bcb3492b0bda31",
+        "type": "http request",
+        "z": "1151e4755687bce1",
+        "name": "Delete links for entity instance",
+        "method": "DELETE",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "{{{atrocoreBaseUrl}}}/{{entity}}/{{entityId}}/{{entityLink}}?ids={{ids}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 530,
+        "y": 220,
+        "wires": [
+            [
+                "p21chk-65bcb3492b0bda31"
+            ]
+        ]
+    },
+    {
+        "id": "f4c72dd42ee97418",
+        "type": "http response",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 820,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "00daa90e1d4b157f",
+        "type": "catch",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "p21env-a101b1a1587ce7f9"
+            ]
+        ]
+    },
+    {
+        "id": "bdb2e47c471e98e4",
+        "type": "debug",
+        "z": "1151e4755687bce1",
+        "name": "deleteLinks",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "a101b1a1587ce7f9",
+        "type": "http response",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "statusCode": "500",
+        "headers": {},
+        "x": 300,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "b70f9835e7dad017",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "Set request parameters",
+        "func": "msg.ids = msg.rmData.ids.reduce( (prev, curr) => prev + (curr ? \",\"+curr : \"\") );\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 220,
+        "wires": [
+            [
+                "p22env-65bcb3492b0bda31"
+            ]
+        ]
+    },
+    {
+        "id": "4bc096c007b83a9f",
+        "type": "subflow:fb76825dc7301958",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "x": 490,
+        "y": 140,
+        "wires": [
+            [
+                "b70f9835e7dad017"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-a101b1a1587ce7f9",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 280,
+        "wires": [
+            [
+                "a101b1a1587ce7f9"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-65bcb3492b0bda31",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 220,
+        "wires": [
+            [
+                "f4c72dd42ee97418"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-65bcb3492b0bda31",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 220,
+        "wires": [
+            [
+                "65bcb3492b0bda31"
+            ]
+        ]
+    }
+]

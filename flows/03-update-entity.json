@@ -1,0 +1,155 @@
+[
+    {
+        "id": "c865579c6e7f852c",
+        "type": "tab",
+        "label": "Update entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2b0948e5048c1d42",
+        "type": "http in",
+        "z": "c865579c6e7f852c",
+        "name": "Update Entity",
+        "url": "/updateEntity",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "e54b49132b990229"
+            ]
+        ]
+    },
+    {
+        "id": "e54b49132b990229",
+        "type": "change",
+        "z": "c865579c6e7f852c",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "updateData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 160,
+        "wires": [
+            [
+                "c8d7e4150ce6efb1"
+            ]
+        ]
+    },
+    {
+        "id": "62f886868fc35281",
+        "type": "http response",
+        "z": "c865579c6e7f852c",
+        "name": "Good",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 830,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "c680dd9cfe15db3d",
+        "type": "http response",
+        "z": "c865579c6e7f852c",
+        "name": "No change",
+        "statusCode": "204",
+        "headers": {},
+        "x": 830,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "89aeadd7e4fef1c0",
+        "type": "switch",
+        "z": "c865579c6e7f852c",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "304",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 670,
+        "y": 160,
+        "wires": [
+            [
+                "62f886868fc35281"
+            ],
+            [
+                "c680dd9cfe15db3d"
+            ],
+            [
+                "13ae05addc05b1d2"
+            ]
+        ]
+    },
+    {
+        "id": "13ae05addc05b1d2",
+        "type": "http response",
+        "z": "c865579c6e7f852c",
+        "name": "Error",
+        "statusCode": "500",
+        "headers": {},
+        "x": 810,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "c8d7e4150ce6efb1",
+        "type": "subflow:368084b92cefec18",
+        "z": "c865579c6e7f852c",
+        "name": "",
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "89aeadd7e4fef1c0"
+            ]
+        ]
+    }
+]

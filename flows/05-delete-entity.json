@@ -1,0 +1,218 @@
+[
+    {
+        "id": "15c8a1dad7c49d22",
+        "type": "tab",
+        "label": "Delete entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c4daafefcacb6c5c",
+        "type": "http in",
+        "z": "15c8a1dad7c49d22",
+        "name": "Delete Entity",
+        "url": "/deleteEntity",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "3d4a96a7c52cc266"
+            ]
+        ]
+    },
+    {
+        "id": "3d4a96a7c52cc266",
+        "type": "change",
+        "z": "15c8a1dad7c49d22",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 180,
+        "wires": [
+            [
+                "5760bd73ca8d3cd6"
+            ]
+        ]
+    },
+    {
+        "id": "20e115303a0a641e",
+        "type": "http request",
+        "z": "15c8a1dad7c49d22",
+        "name": "Delete entity record",
+        "method": "DELETE",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "{{{atrocoreBaseUrl}}}/{{ entity }}/{{entityId}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "permanently",
+                "valueType": "other",
+                "valueValue": "false"
+            }
+        ],
+        "x": 710,
+        "y": 180,
+        "wires": [
+            [
+                "p21chk-20e115303a0a641e"
+            ]
+        ]
+    },
+    {
+        "id": "a81113143222e840",
+        "type": "http response",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 940,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "d952c21d294f39b1",
+        "type": "catch",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 140,
+        "y": 260,
+        "wires": [
+            [
+                "p21env-985233363769dfb3"
+            ]
+        ]
+    },
+    {
+        "id": "659207996fc8eeec",
+        "type": "debug",
+        "z": "15c8a1dad7c49d22",
+        "name": "deleteEntity",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "985233363769dfb3",
+        "type": "http response",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "statusCode": "500",
+        "headers": {},
+        "x": 340,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "5760bd73ca8d3cd6",
+        "type": "subflow:fb76825dc7301958",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "p22env-20e115303a0a641e"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-985233363769dfb3",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "985233363769dfb3"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-20e115303a0a641e",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 180,
+        "wires": [
+            [
+                "a81113143222e840"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-20e115303a0a641e",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 180,
+        "wires": [
+            [
+                "20e115303a0a641e"
+            ]
+        ]
+    }
+]

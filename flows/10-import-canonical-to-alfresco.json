@@ -1,0 +1,607 @@
+[
+    {
+        "id": "2958c4a9b21da45a",
+        "type": "tab",
+        "label": "import canonical to alfresco",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4b1f9e2113621dd8",
+        "type": "http in",
+        "z": "2958c4a9b21da45a",
+        "name": "Import Canonical Models",
+        "url": "/importCanonical",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "05bb6c09918f3b7b"
+            ]
+        ]
+    },
+    {
+        "id": "05bb6c09918f3b7b",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionId",
+                "pt": "msg",
+                "to": "req.query.inspectionId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyName",
+                "pt": "msg",
+                "to": "req.query.specialty",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "7a8f9837bbcd7b27"
+            ]
+        ]
+    },
+    {
+        "id": "085b06de7f20dbf3",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "Set request parameters",
+        "func": "msg.payload = {\n    \"specialtyName\" : msg.specialtyName,\n    \"inspectionCode\" : msg.inspectionCode\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 180,
+        "wires": [
+            [
+                "p22env-4f450e00fab88e37"
+            ]
+        ]
+    },
+    {
+        "id": "4f450e00fab88e37",
+        "type": "http request",
+        "z": "2958c4a9b21da45a",
+        "name": "import data",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "{{{alfrescoBaseUrl}}}/s/api/inspection/import-canonical?alf_ticket={{alf_ticket}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "p21chk-4f450e00fab88e37"
+            ]
+        ]
+    },
+    {
+        "id": "61f3e4f51ebe920e",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 240,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "2daee083b5f63ed6",
+        "type": "catch",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 40,
+        "wires": [
+            [
+                "p21env-3220f3f3f70fa16f"
+            ]
+        ]
+    },
+    {
+        "id": "90613ba352af9a02",
+        "type": "debug",
+        "z": "2958c4a9b21da45a",
+        "name": "import canonical",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3220f3f3f70fa16f",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "500",
+        "headers": {},
+        "x": 360,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0f7dc8a7cf76071a",
+        "type": "http in",
+        "z": "2958c4a9b21da45a",
+        "name": "Import Follow ups",
+        "url": "/importFollowUps",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 520,
+        "wires": [
+            [
+                "ca7f8df347dd7beb"
+            ]
+        ]
+    },
+    {
+        "id": "ca7f8df347dd7beb",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "followUp",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 600,
+        "wires": [
+            [
+                "c2844da92658a347"
+            ]
+        ]
+    },
+    {
+        "id": "ebac6e5376bc7bbc",
+        "type": "http request",
+        "z": "2958c4a9b21da45a",
+        "name": "import data",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "{{{alfrescoBaseUrl}}}/s/api/inspection/import-canonical?alf_ticket={{alf_ticket}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 450,
+        "y": 700,
+        "wires": [
+            [
+                "p21chk-ebac6e5376bc7bbc"
+            ]
+        ]
+    },
+    {
+        "id": "d2f2602a5ec15194",
+        "type": "http response",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 680,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "2f70858160b486f1",
+        "type": "debug",
+        "z": "2958c4a9b21da45a",
+        "name": "import follow up",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "01e297ebbd9d42ec",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "followUp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 700,
+        "wires": [
+            [
+                "p22env-ebac6e5376bc7bbc"
+            ]
+        ]
+    },
+    {
+        "id": "f8fd0ba84a167fe4",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "set site visit params",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = {\"id\" : msg.siteVisitId }\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 260,
+        "wires": [
+            [
+                "4f11c2af825a2065"
+            ]
+        ]
+    },
+    {
+        "id": "638b34fa78135933",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "transition to Uploaded if Planned",
+        "func": "var list = msg.payload && msg.payload.list;\nif (!list || list.length === 0) {\n    node.warn(\"Site visit not found in AtroCore for status update\");\n    return;\n}\n\nvar siteVisit = list[0];\nvar currentStatus = siteVisit.status;\nvar siteVisitId = msg.siteVisitId;\n\n/*if (currentStatus !== \"Planned\") {\n    node.warn(\"Site visit status is \" + currentStatus + \", not transitioning to Uploaded\");\n    return;\n}\n*/\nmsg.entityId = siteVisitId;\nmsg.updateData = { status: \"Uploaded\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 320,
+        "wires": [
+            [
+                "5d0378d7d1ad8d9f"
+            ]
+        ]
+    },
+    {
+        "id": "7a8f9837bbcd7b27",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "inspection parameters",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = {\"id\" : msg.inspectionId };\nmsg.entitySelect=\"code, status, inspectedProvider\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 100,
+        "wires": [
+            [
+                "41cfd1cd666e3d80"
+            ]
+        ]
+    },
+    {
+        "id": "952946db67cb59ba",
+        "type": "change",
+        "z": "2958c4a9b21da45a",
+        "name": " inspection data",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "payload.list[0].code",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "inspectionStatus",
+                "pt": "msg",
+                "to": "payload.list[0].status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "siteVisitId",
+                "pt": "msg",
+                "to": "payload.list[0].inspectedProvider.siteVisitId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "63a03945d4e882a6"
+            ]
+        ]
+    },
+    {
+        "id": "f5779d026901d5c1",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "transition to Uploaded if Planned",
+        "func": "var currentStatus = msg.inspectionStatus;\n\nif (currentStatus !== \"Planned\") {\n    node.warn(\"Inspection status is \" + currentStatus + \", not transitioning to Uploaded\");\n    return;\n}\n\nmsg.entityId = msg.siteVisitId;\nmsg.updateData = { status: \"Uploaded\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 380,
+        "wires": [
+            [
+                "49d5e1fb66e70f5f"
+            ]
+        ]
+    },
+    {
+        "id": "c2844da92658a347",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "x": 490,
+        "y": 600,
+        "wires": [
+            [
+                "01e297ebbd9d42ec"
+            ]
+        ]
+    },
+    {
+        "id": "41cfd1cd666e3d80",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "2958c4a9b21da45a",
+        "name": "get inspections",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "952946db67cb59ba",
+                "90613ba352af9a02"
+            ]
+        ]
+    },
+    {
+        "id": "63a03945d4e882a6",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "x": 610,
+        "y": 180,
+        "wires": [
+            [
+                "085b06de7f20dbf3"
+            ]
+        ]
+    },
+    {
+        "id": "4f11c2af825a2065",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "2958c4a9b21da45a",
+        "name": "get site visit",
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "638b34fa78135933"
+            ]
+        ]
+    },
+    {
+        "id": "5d0378d7d1ad8d9f",
+        "type": "subflow:368084b92cefec18",
+        "z": "2958c4a9b21da45a",
+        "name": "update site visit",
+        "x": 900,
+        "y": 320,
+        "wires": [
+            [
+                "f5779d026901d5c1"
+            ]
+        ]
+    },
+    {
+        "id": "49d5e1fb66e70f5f",
+        "type": "subflow:368084b92cefec18",
+        "z": "2958c4a9b21da45a",
+        "name": "update site visit again",
+        "x": 920,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "p21env-3220f3f3f70fa16f",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 40,
+        "wires": [
+            [
+                "3220f3f3f70fa16f"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-4f450e00fab88e37",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "61f3e4f51ebe920e",
+                "f8fd0ba84a167fe4"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-ebac6e5376bc7bbc",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 700,
+        "wires": [
+            [
+                "d2f2602a5ec15194",
+                "2f70858160b486f1"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-4f450e00fab88e37",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": -90,
+        "y": 260,
+        "wires": [
+            [
+                "4f450e00fab88e37"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-ebac6e5376bc7bbc",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 700,
+        "wires": [
+            [
+                "ebac6e5376bc7bbc"
+            ]
+        ]
+    }
+]

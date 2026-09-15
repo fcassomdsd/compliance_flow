@@ -1,0 +1,401 @@
+[
+    {
+        "id": "4462ef5386374bff",
+        "type": "tab",
+        "label": "Auth flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d6a9d7aecd4fd3fc",
+        "type": "http in",
+        "z": "4462ef5386374bff",
+        "name": "Query Inspector",
+        "url": "/inspector/:externalId",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "f35160c07e027e6c"
+            ]
+        ]
+    },
+    {
+        "id": "dfd7d1126c27028f",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "65dfa012d755fa8a",
+        "type": "catch",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "p21env-3800a06e3170345b"
+            ]
+        ]
+    },
+    {
+        "id": "3800a06e3170345b",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 360,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "017b7d2c2761d8f3",
+        "type": "debug",
+        "z": "4462ef5386374bff",
+        "name": "queryInspector",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f35160c07e027e6c",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "set inspector params",
+        "func": "msg.entity = \"Inspector\";\nmsg.entityData = {\n    \"externalUserID\" : msg.req.params.externalId\n}\nmsg.entitySelect = \"id,name,specialty,serviceAreaId,serviceAreaName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "8a611ac168b8bb2c"
+            ]
+        ]
+    },
+    {
+        "id": "7251cf3fe6b2a510",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "Create inspection object",
+        "func": "var list = (msg.payload && msg.payload.list) || [];\nif (list.length === 0) {\n    // A lookup by id with no match is a 404, not a 200 full of nulls.\n    msg.statusCode = 404;\n    if (msg.res) { msg.res.statusCode = 404; }\n    var wanted = (msg.req && msg.req.params && msg.req.params.externalId) || \"\";\n    msg.payload = { success: false, error: \"Inspector not found: \" + wanted };\n    return msg;\n}\nmsg.inspector = {\n    \"id\" : list[0]?.id,\n    \"name\" : list[0]?.name,\n    \"serviceAreaId\" : list[0]?.serviceAreaId || null,\n    \"serviceAreaName\" : list[0]?.serviceAreaName || null,\n    \"specialties\" : list[0]?.specialty?.map((x) =>\n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.inspector;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 100,
+        "wires": [
+            [
+                "dfd7d1126c27028f"
+            ]
+        ]
+    },
+    {
+        "id": "3ae4599a923f2d89",
+        "type": "http in",
+        "z": "4462ef5386374bff",
+        "name": "Query Inspection",
+        "url": "/inspection/:inspectionId",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "b119067bf8ac10b3"
+            ]
+        ]
+    },
+    {
+        "id": "be64af621c41a7a5",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 940,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "c82e5739d9f96f39",
+        "type": "debug",
+        "z": "4462ef5386374bff",
+        "name": "queryInspection",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "b119067bf8ac10b3",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "set inspector params",
+        "func": "const inspectionId = msg.req.params.inspectionId;\nconst idKey = (inspectionId.substring(0,2) == \"MD\" \n      ? ({ \"code\" : inspectionId }) \n      : ({ \"id\" : inspectionId }));\nmsg.entity = \"SiteVisit\";\nmsg.entityData = idKey;\nmsg.entitySelect = \"id,code,locationId,locationName,mainInspectorId,mainInspectorName,secondaryInspectorId,secondaryInspectorName,startDate,endDate,status\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 400,
+        "wires": [
+            [
+                "e264581785747118"
+            ]
+        ]
+    },
+    {
+        "id": "8f286dc5d019636e",
+        "type": "http in",
+        "z": "4462ef5386374bff",
+        "name": "Query Assigner group",
+        "url": "/assignmentGroup/:externalGroup",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 720,
+        "wires": [
+            [
+                "971b8b9418905d87"
+            ]
+        ]
+    },
+    {
+        "id": "50e8db1efcf2b4e3",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 880,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "51538052113f82c0",
+        "type": "catch",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 140,
+        "y": 840,
+        "wires": [
+            [
+                "p21env-ba30a1d3a6d9a47e"
+            ]
+        ]
+    },
+    {
+        "id": "ba30a1d3a6d9a47e",
+        "type": "http response",
+        "z": "4462ef5386374bff",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 360,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "b7cc0a622e4cc39b",
+        "type": "debug",
+        "z": "4462ef5386374bff",
+        "name": "queryAssignment",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "971b8b9418905d87",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "set assigner group params",
+        "func": "msg.entity = \"AssignmentGroup\";\nmsg.entityData = {\n    \"externalGroup\" : msg.req.params.externalGroup\n}\nmsg.entitySelect = \"id,name,specialty\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 720,
+        "wires": [
+            [
+                "c3737e378539beb4"
+            ]
+        ]
+    },
+    {
+        "id": "f214c53eba0d1c22",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "Create group object",
+        "func": "msg.assignment = {\n    \"id\" : msg.payload.list[0]?.id,\n    \"name\" : msg.payload.list[0]?.name,\n    \"specialties\" : msg.payload.list[0]?.specialty?.map((x) => \n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.assignment;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 720,
+        "wires": [
+            [
+                "50e8db1efcf2b4e3"
+            ]
+        ]
+    },
+    {
+        "id": "f274d07e82b8dbc1",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "create inspection object",
+        "func": "const inspection = msg.payload.list[0];\nmsg.payload = inspection;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 400,
+        "wires": [
+            [
+                "be64af621c41a7a5"
+            ]
+        ]
+    },
+    {
+        "id": "8a611ac168b8bb2c",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "4462ef5386374bff",
+        "name": "get inspector",
+        "x": 590,
+        "y": 100,
+        "wires": [
+            [
+                "7251cf3fe6b2a510",
+                "017b7d2c2761d8f3"
+            ]
+        ]
+    },
+    {
+        "id": "e264581785747118",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "4462ef5386374bff",
+        "name": "get inspection",
+        "x": 600,
+        "y": 400,
+        "wires": [
+            [
+                "f274d07e82b8dbc1"
+            ]
+        ]
+    },
+    {
+        "id": "c3737e378539beb4",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "4462ef5386374bff",
+        "name": "get assigner group",
+        "x": 650,
+        "y": 720,
+        "wires": [
+            [
+                "f214c53eba0d1c22"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-3800a06e3170345b",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "3800a06e3170345b"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-ba30a1d3a6d9a47e",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 840,
+        "wires": [
+            [
+                "ba30a1d3a6d9a47e"
+            ]
+        ]
+    }
+]

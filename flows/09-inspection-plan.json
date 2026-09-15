@@ -1,0 +1,971 @@
+[
+    {
+        "id": "5afaefaae1db46d5",
+        "type": "tab",
+        "label": "Inspection plan",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d6c972992eb7e4af",
+        "type": "change",
+        "z": "5afaefaae1db46d5",
+        "name": "Store request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.siteVisit",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "providerId",
+                "pt": "msg",
+                "to": "req.query.provider",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locale",
+                "pt": "msg",
+                "to": "req.query.locale",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 140,
+        "wires": [
+            [
+                "d937265e26cb1547"
+            ]
+        ]
+    },
+    {
+        "id": "46b38a91403704ca",
+        "type": "http in",
+        "z": "5afaefaae1db46d5",
+        "name": "Inspection Plan",
+        "url": "/inspectionPlan",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 140,
+        "wires": [
+            [
+                "d6c972992eb7e4af"
+            ]
+        ]
+    },
+    {
+        "id": "7cb35d6d0bf3d372",
+        "type": "http response",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 700,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "2be5748704a547b9",
+        "type": "catch",
+        "z": "5afaefaae1db46d5",
+        "d": true,
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "p21env-ed694127efde2c16"
+            ]
+        ]
+    },
+    {
+        "id": "ed694127efde2c16",
+        "type": "http response",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1d55d021874f94ec",
+        "type": "debug",
+        "z": "5afaefaae1db46d5",
+        "name": "inspectionPlan",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "d937265e26cb1547",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "links": [
+            "c12bd594ceedbf45"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 630,
+        "y": 140,
+        "wires": [
+            [
+                "4454468d93872b2f"
+            ]
+        ]
+    },
+    {
+        "id": "82cb85993f491839",
+        "type": "change",
+        "z": "5afaefaae1db46d5",
+        "name": "set schedule parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "Inspection",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "inspectionId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "inspectionSchedules",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 230,
+        "y": 1080,
+        "wires": [
+            [
+                "d1fc60f56d89d6ed"
+            ]
+        ]
+    },
+    {
+        "id": "b56fec9bbbe16305",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "get contact name and services",
+        "func": "  let prov = msg.payload.list[0];\n  \n  // if location service has a point of contact associated to it, save the contact id  \n  if (prov.pointOfContactId) {\n    msg.inspectionPlan.provider[\"contact\"] = {};\n    msg.inspectionPlan.provider.contact = {\n      \"id\" : prov.pointOfContactId,\n      \"name\" : prov.pointOfContactName\n    }\n  }\n\n  msg.inspectionPlan.provider[\"services\"] = [];\n\nfor (var provider of msg.payload.list) {\n  msg.inspectionPlan.provider.services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 320,
+        "wires": [
+            [
+                "865781f26d7879c2"
+            ]
+        ]
+    },
+    {
+        "id": "206239f6d88cab7a",
+        "type": "link in",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspection schedules",
+        "links": [],
+        "x": 65,
+        "y": 1080,
+        "wires": [
+            [
+                "82cb85993f491839"
+            ]
+        ]
+    },
+    {
+        "id": "c87e9d0e4351825b",
+        "type": "link out",
+        "z": "5afaefaae1db46d5",
+        "name": "link out 4",
+        "mode": "return",
+        "links": [],
+        "x": 945,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "0e2125319015bd2e",
+        "type": "comment",
+        "z": "5afaefaae1db46d5",
+        "name": "get schedules",
+        "info": "",
+        "x": 130,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "4454468d93872b2f",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "get schedules",
+        "links": [
+            "206239f6d88cab7a"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 180,
+        "y": 240,
+        "wires": [
+            [
+                "33ae3e9bbf98c81b"
+            ]
+        ]
+    },
+    {
+        "id": "f260a9fe60a05e72",
+        "type": "link in",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected services",
+        "links": [],
+        "x": 75,
+        "y": 1240,
+        "wires": [
+            [
+                "cc149b65ad80c5f8"
+            ]
+        ]
+    },
+    {
+        "id": "399b01971efeb617",
+        "type": "link out",
+        "z": "5afaefaae1db46d5",
+        "name": "link out 5",
+        "mode": "return",
+        "links": [],
+        "x": 995,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "709e7ddcdeba6540",
+        "type": "comment",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected services",
+        "info": "",
+        "x": 180,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "33ae3e9bbf98c81b",
+        "type": "link call",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected services",
+        "links": [
+            "f260a9fe60a05e72"
+        ],
+        "linkType": "static",
+        "timeout": "40",
+        "x": 440,
+        "y": 240,
+        "wires": [
+            [
+                "80c8ad511bbb29c5"
+            ]
+        ]
+    },
+    {
+        "id": "865781f26d7879c2",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "person parameters",
+        "func": "msg.entity = \"Person\";\nmsg.entityData = {\n    \"_or\" : {\n      \"serviceProviderId\" : msg.inspectionPlan.provider.id,\n      \"id\" : msg.inspectionPlan.provider.contact?.id || null }\n};\nmsg.entitySelect = \"id,name,workPosition,serviceProviderName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 440,
+        "wires": [
+            [
+                "1d55d021874f94ec",
+                "93d185bb62227f0d"
+            ]
+        ]
+    },
+    {
+        "id": "0985ff675aba9a60",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "add contact info",
+        "func": "let thisOne = 0;\nlet providerName = \"\";\nconst person = msg.payload.list[0];\nmsg.inspectionPlan.provider.contact = {\n    \"name\" : person.name,\n    \"position\" : person.workPosition\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 440,
+        "wires": [
+            [
+                "9303c38011e447ec"
+            ]
+        ]
+    },
+    {
+        "id": "cc149b65ad80c5f8",
+        "type": "change",
+        "z": "5afaefaae1db46d5",
+        "name": "inspected specialty params",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "Inspection",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "inspectionId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "inspectedSpecialties",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 1240,
+        "wires": [
+            [
+                "81d630685e15ede4"
+            ]
+        ]
+    },
+    {
+        "id": "19bda6326095de10",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "get specialty ids",
+        "func": "msg.specialtyIds = msg.payload.list.map((x) => ({ \n    \"id\" : x.id,\n    \"serviceId\" : x.inspectedServiceId \n}));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 1240,
+        "wires": [
+            [
+                "e64c6160c6c98b8e"
+            ]
+        ]
+    },
+    {
+        "id": "e64c6160c6c98b8e",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "inspector params",
+        "func": "msg.entity = \"InspectedSpecialtyInspector\";\nmsg.entityData = {\"inspectedSpecialtyId\" : msg.specialtyIds.map((x) => x.id)};\nmsg.entitySelect = \"inspectedSpecialtyId,inspectedSpecialtyName,inspectorName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 1300,
+        "wires": [
+            [
+                "831ab4790b303803"
+            ]
+        ]
+    },
+    {
+        "id": "e81e909d1e22987d",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "construct specialties object",
+        "func": "let serviceObj = {};\nlet serviceId = {};\nlet thisOne = 0;\nfor (var inspector of msg.payload.list) {\n    serviceId = msg.specialtyIds.find((x) => x.id == inspector.inspectedSpecialtyId);\n    if (!serviceObj[serviceId.serviceId]) {\n        serviceObj[serviceId.serviceId] = [];\n    }\n    thisOne = serviceObj[serviceId.serviceId].findIndex( (x) => x.name == inspector.inspectedSpecialtyName );\n    if (thisOne == -1) {\n        serviceObj[serviceId.serviceId].push({\n            \"name\" : inspector.inspectedSpecialtyName,\n            \"inspectors\" : [inspector.inspectorName]\n        })\n    } else {\n        serviceObj[serviceId.serviceId][thisOne].inspectors.push(\n            inspector.inspectorName\n        );\n    }\n}\n\nmsg.serviceObj = serviceObj;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1300,
+        "wires": [
+            [
+                "eb32e784ba18808a"
+            ]
+        ]
+    },
+    {
+        "id": "eb32e784ba18808a",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set service params",
+        "func": "msg.entity = \"InspectedService\";\nmsg.entityData = {\"id\" : msg.specialtyIds.map((x) => x.serviceId)};\nmsg.entitySelect = \"id,locationServiceId\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 1360,
+        "wires": [
+            [
+                "1b3ef9819f4ea74a"
+            ]
+        ]
+    },
+    {
+        "id": "13c22c1a0428f139",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "construct location service object",
+        "func": "let locationServiceObj = {}\nfor (var service of msg.payload.list) {\n    locationServiceObj[service.locationServiceId] = msg.serviceObj[service.id];\n}\nmsg.locationServiceObj = locationServiceObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 1360,
+        "wires": [
+            [
+                "399b01971efeb617"
+            ]
+        ]
+    },
+    {
+        "id": "80c8ad511bbb29c5",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "location services parameters",
+        "func": "msg.entity = \"LocationService\";\nvar ids = Object.keys(msg.locationServiceObj);\nif (ids.length === 0) {\n    msg.payload = { list: [] };\n    return msg;\n}\nmsg.entityData = { \"id\": ids };\nmsg.entitySelect = \"id,serviceProviderName,shortName,serviceProviderId,pointOfContactId,pointOfContactName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "1d612cf625083f29"
+            ]
+        ]
+    },
+    {
+        "id": "14c4bc83ec3010f5",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "extract schedules",
+        "func": "const OPENING = \"Opening Meeting\";\nconst CLOSING = \"Closing Meeting\"\nfunction mapSchedule(schedule) {\n    switch (schedule.name) {\n        case OPENING: \n//          msg.inspectionPlan.openingDateTime = schedule.startDate;\n          return undefined;\n        case CLOSING:\n//          msg.inspectionPlan.closureDateTime = schedule.startDate;\n          return undefined;\n        default:\n          return ({\n            \"name\" : schedule.name,\n            \"place\" : schedule.place,\n            \"startDateTime\" : schedule.startDateTime,\n            \"endDateTime\" : schedule.endDateTime\n          })\n    }\n}\n\nmsg.inspectionPlan.openingDateTime = msg.payload.list.find((x) => x.name == OPENING).startDateTime;\nmsg.inspectionPlan.closureDateTime = msg.payload.list.find((x) => x.name == CLOSING).startDateTime;\nmsg.inspectionPlan[\"schedules\"] = msg.payload.list\n                                    .map(mapSchedule)\n                                    .filter((x) => (x !== undefined));\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 1080,
+        "wires": [
+            [
+                "c87e9d0e4351825b"
+            ]
+        ]
+    },
+    {
+        "id": "af66b696c5573785",
+        "type": "http request",
+        "z": "5afaefaae1db46d5",
+        "name": "send report",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "{{{alfrescoBaseUrl}}}/s/api/inspection/generate?alf_ticket={{alf_ticket}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 370,
+        "y": 560,
+        "wires": [
+            [
+                "p21chk-af66b696c5573785"
+            ]
+        ]
+    },
+    {
+        "id": "2a46f207dd799e40",
+        "type": "change",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "inspectionPlan",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 160,
+        "y": 560,
+        "wires": [
+            [
+                "p22env-af66b696c5573785"
+            ]
+        ]
+    },
+    {
+        "id": "a043bae1603803a8",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set parameteros for status to Planned",
+        "func": "var inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId);\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"SiteVisit\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Planned\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 560,
+        "wires": [
+            [
+                "c55e50354b7ed99e"
+            ]
+        ]
+    },
+    {
+        "id": "e46defc71ae102c5",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set inspection params",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = {\n    \"inspectedProviderId\" : msg.providerId\n    };\nmsg.entitySelect = null;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 860,
+        "wires": [
+            [
+                "6f6662d330569c75"
+            ]
+        ]
+    },
+    {
+        "id": "8c1d0e3854ae8978",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "save inspection data",
+        "func": "msg.inspectionPlan[\"inspectionNo\"] = msg.payload.list[0].code;\nmsg.inspectionPlan[\"scope\"] = msg.payload.list[0].scope; \nmsg.inspectionPlan[\"objective\"] = msg.payload.list[0].objective;\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 860,
+        "wires": [
+            [
+                "7381a223ce258a66"
+            ]
+        ]
+    },
+    {
+        "id": "074e147ee74a13c5",
+        "type": "comment",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspection data",
+        "info": "",
+        "x": 190,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "9191fda0d08afafc",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set site visit params",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 700,
+        "wires": [
+            [
+                "3caf5495edae2dd4"
+            ]
+        ]
+    },
+    {
+        "id": "bcc17094dcb92785",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "save site visit data",
+        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 700,
+        "wires": [
+            [
+                "8603139ea2b69407"
+            ]
+        ]
+    },
+    {
+        "id": "8603139ea2b69407",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set inspected provider params",
+        "func": "msg.entity = \"InspectedProvider\";\nmsg.entityData = {\n    \"id\" : msg.providerId\n    };\nmsg.entitySelect = \"serviceProviderId,serviceProviderName\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 780,
+        "wires": [
+            [
+                "60400cf026ee7f65"
+            ]
+        ]
+    },
+    {
+        "id": "c9f46601581cf055",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "save provider data",
+        "func": "msg.inspectionPlan[\"provider\"] = {\n    \"id\" : msg.payload.list[0].serviceProviderId,\n    \"name\" : msg.payload.list[0].serviceProviderName\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 780,
+        "wires": [
+            [
+                "e46defc71ae102c5"
+            ]
+        ]
+    },
+    {
+        "id": "c12bd594ceedbf45",
+        "type": "link in",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspection data",
+        "links": [],
+        "x": 35,
+        "y": 700,
+        "wires": [
+            [
+                "9191fda0d08afafc"
+            ]
+        ]
+    },
+    {
+        "id": "7381a223ce258a66",
+        "type": "link out",
+        "z": "5afaefaae1db46d5",
+        "name": "link out 11",
+        "mode": "return",
+        "links": [],
+        "x": 865,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "9303c38011e447ec",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "x": 850,
+        "y": 440,
+        "wires": [
+            [
+                "2a46f207dd799e40"
+            ]
+        ]
+    },
+    {
+        "id": "1d612cf625083f29",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get location services",
+        "x": 480,
+        "y": 320,
+        "wires": [
+            [
+                "b56fec9bbbe16305"
+            ]
+        ]
+    },
+    {
+        "id": "93d185bb62227f0d",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get contacts",
+        "x": 410,
+        "y": 440,
+        "wires": [
+            [
+                "0985ff675aba9a60"
+            ]
+        ]
+    },
+    {
+        "id": "3caf5495edae2dd4",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get site visit",
+        "x": 430,
+        "y": 700,
+        "wires": [
+            [
+                "bcc17094dcb92785"
+            ]
+        ]
+    },
+    {
+        "id": "60400cf026ee7f65",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected providers",
+        "x": 530,
+        "y": 780,
+        "wires": [
+            [
+                "c9f46601581cf055"
+            ]
+        ]
+    },
+    {
+        "id": "6f6662d330569c75",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspections",
+        "x": 460,
+        "y": 860,
+        "wires": [
+            [
+                "8c1d0e3854ae8978"
+            ]
+        ]
+    },
+    {
+        "id": "831ab4790b303803",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspectors",
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "e81e909d1e22987d"
+            ]
+        ]
+    },
+    {
+        "id": "1b3ef9819f4ea74a",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected services",
+        "x": 480,
+        "y": 1360,
+        "wires": [
+            [
+                "13c22c1a0428f139"
+            ]
+        ]
+    },
+    {
+        "id": "d1fc60f56d89d6ed",
+        "type": "subflow:e2896ea94901dc8c",
+        "z": "5afaefaae1db46d5",
+        "name": "get linked schedules",
+        "x": 500,
+        "y": 1080,
+        "wires": [
+            [
+                "14c4bc83ec3010f5"
+            ]
+        ]
+    },
+    {
+        "id": "81d630685e15ede4",
+        "type": "subflow:e2896ea94901dc8c",
+        "z": "5afaefaae1db46d5",
+        "name": "get linked inspected specialties",
+        "x": 550,
+        "y": 1240,
+        "wires": [
+            [
+                "19bda6326095de10"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-ed694127efde2c16",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 60,
+        "wires": [
+            [
+                "ed694127efde2c16"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-af66b696c5573785",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 560,
+        "wires": [
+            [
+                "a043bae1603803a8"
+            ]
+        ]
+    },
+    {
+        "id": "c55e50354b7ed99e",
+        "type": "subflow:368084b92cefec18",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "x": 890,
+        "y": 560,
+        "wires": [
+            [
+                "7cb35d6d0bf3d372"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-af66b696c5573785",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 560,
+        "wires": [
+            [
+                "af66b696c5573785"
+            ]
+        ]
+    }
+]

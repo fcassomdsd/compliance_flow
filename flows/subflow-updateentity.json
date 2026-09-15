@@ -1,0 +1,169 @@
+[
+    {
+        "id": "368084b92cefec18",
+        "type": "subflow",
+        "name": "updateEntity",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "27475d591c4aef7c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 980,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "p21chk-04a6d3170f653951",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "6ce72d1adedcfd54",
+        "type": "function",
+        "z": "368084b92cefec18",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.updateData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "p22env-04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "27475d591c4aef7c",
+        "type": "subflow:fb76825dc7301958",
+        "z": "368084b92cefec18",
+        "name": "",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "6ce72d1adedcfd54"
+            ]
+        ]
+    },
+    {
+        "id": "04a6d3170f653951",
+        "type": "http request",
+        "z": "368084b92cefec18",
+        "name": "Update entity records",
+        "method": "PUT",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "{{{atrocoreBaseUrl}}}/{{ entity }}/{{entityId}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 800,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-04a6d3170f653951",
+        "type": "function",
+        "z": "368084b92cefec18",
+        "name": "check upstream status",
+        "func": "// Upstream failures arrive on the normal output. Retry server/transport\n// failures a bounded number of times (msg.delay -> the \"retry backoff\" delay\n// node -> back into the request), then raise so the flow's catch handler\n// returns the error envelope.\nvar transportFailure = isNaN(parseInt(msg.statusCode, 10));\nvar status = transportFailure ? 0 : parseInt(msg.statusCode, 10);\nif (status >= 400 || transportFailure) {\n    var maxRetries = parseInt(env.get(\"HTTP_MAX_RETRIES\"), 10);\n    if (isNaN(maxRetries) || maxRetries < 0) { maxRetries = 2; }\n    var attempt = parseInt(msg.retry_04a6d3170f653951, 10) || 0;\n    var retryable = transportFailure || status >= 500;\n    if (retryable && attempt < maxRetries) {\n        msg.retry_04a6d3170f653951 = attempt + 1;\n        var backoff = parseInt(env.get(\"HTTP_RETRY_BACKOFF_MS\"), 10);\n        if (isNaN(backoff) || backoff < 0) { backoff = 500; }\n        msg.delay = backoff * msg.retry_04a6d3170f653951;\n        return [null, msg];\n    }\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + (transportFailure ? \"transport failure\" : status) + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "p22retry-04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-04a6d3170f653951",
+        "type": "function",
+        "z": "368084b92cefec18",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 80,
+        "wires": [
+            [
+                "04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "p22retry-04a6d3170f653951",
+        "type": "delay",
+        "z": "368084b92cefec18",
+        "name": "retry backoff",
+        "pauseType": "delayv",
+        "timeout": "500",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 960,
+        "y": 200,
+        "wires": [
+            [
+                "04a6d3170f653951"
+            ]
+        ]
+    }
+]

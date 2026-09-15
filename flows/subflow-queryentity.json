@@ -1,0 +1,156 @@
+[
+    {
+        "id": "17a5a86e5107e286",
+        "type": "subflow",
+        "name": "queryEntity",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "444824c43d7fd6c4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 940,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "p21chk-6f319e5a075c3efc",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "0ea3a418e92c6a8a",
+        "type": "function",
+        "z": "17a5a86e5107e286",
+        "name": "Set request parameters",
+        "func": "// function makeWhereValue\n// create a where clause for and atrocore query based on an incoming object.\n// the object has the format:\n// { (\"_andx\" | \"_orx\" | \"fieldname\") : ( array | scalar | object ), ... }\n// _andx and _orx are indicators of a logical and/or, where x represent an identifying number (to avoid key name clashes)\n// if the key is an and/or condition, an object is expected as the value; \n// if the key is a fieldname, an array or a scalar is expected\n// the output is a JSON object (stringified)\nfunction makeWhereValue(valueObj) {\n  let condition;\n  const valueArray = [];\n  for (const [key, value] of Object.entries(valueObj || {})) {\n    if (key.startsWith(\"_and\") || key.startsWith(\"_or\")) {\n      condition = {\n        \"type\": (key.startsWith(\"_and\") ? \"and\" : \"or\"),\n        \"value\": makeWhereValue(value)\n      };\n    } else {\n      condition = {\n        \"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n        \"attribute\": key,\n        \"value\": value\n      };\n    }\n    valueArray.push(condition);\n  }\n  return valueArray;\n}\n\nmsg.payload = msg.payload || {};\n\nif (msg.entityData) {\n  const whereobj = {\n    \"type\": \"and\",\n    \"value\": makeWhereValue(msg.entityData)\n  };\n\n  msg.payload.where = JSON.stringify([whereobj]);\n}\n\nif (msg.entitySelect) {\n  msg.payload[\"select\"] = msg.entitySelect;\n}\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "p22env-6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "444824c43d7fd6c4",
+        "type": "subflow:fb76825dc7301958",
+        "z": "17a5a86e5107e286",
+        "name": "",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "0ea3a418e92c6a8a"
+            ]
+        ]
+    },
+    {
+        "id": "6f319e5a075c3efc",
+        "type": "http request",
+        "z": "17a5a86e5107e286",
+        "name": "Get entity records",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "{{{atrocoreBaseUrl}}}/{{ entity }}?{{ select }}maxSize=200",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 750,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-6f319e5a075c3efc",
+        "type": "function",
+        "z": "17a5a86e5107e286",
+        "name": "check upstream status",
+        "func": "// Upstream failures arrive on the normal output. Retry server/transport\n// failures a bounded number of times (msg.delay -> the \"retry backoff\" delay\n// node -> back into the request), then raise so the flow's catch handler\n// returns the error envelope.\nvar transportFailure = isNaN(parseInt(msg.statusCode, 10));\nvar status = transportFailure ? 0 : parseInt(msg.statusCode, 10);\nif (status >= 400 || transportFailure) {\n    var maxRetries = parseInt(env.get(\"HTTP_MAX_RETRIES\"), 10);\n    if (isNaN(maxRetries) || maxRetries < 0) { maxRetries = 2; }\n    var attempt = parseInt(msg.retry_6f319e5a075c3efc, 10) || 0;\n    var retryable = transportFailure || status >= 500;\n    if (retryable && attempt < maxRetries) {\n        msg.retry_6f319e5a075c3efc = attempt + 1;\n        var backoff = parseInt(env.get(\"HTTP_RETRY_BACKOFF_MS\"), 10);\n        if (isNaN(backoff) || backoff < 0) { backoff = 500; }\n        msg.delay = backoff * msg.retry_6f319e5a075c3efc;\n        return [null, msg];\n    }\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + (transportFailure ? \"transport failure\" : status) + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "p22retry-6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-6f319e5a075c3efc",
+        "type": "function",
+        "z": "17a5a86e5107e286",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 80,
+        "wires": [
+            [
+                "6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "p22retry-6f319e5a075c3efc",
+        "type": "delay",
+        "z": "17a5a86e5107e286",
+        "name": "retry backoff",
+        "pauseType": "delayv",
+        "timeout": "500",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 910,
+        "y": 200,
+        "wires": [
+            [
+                "6f319e5a075c3efc"
+            ]
+        ]
+    }
+]

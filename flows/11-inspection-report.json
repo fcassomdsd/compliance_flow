@@ -1,0 +1,617 @@
+[
+    {
+        "id": "041ce3d9cda14530",
+        "type": "tab",
+        "label": "Inspection report",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "bd82a7a67ef6d40c",
+        "type": "change",
+        "z": "041ce3d9cda14530",
+        "name": "Store request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "inspectionCode",
+                "pt": "msg",
+                "to": "req.query.siteVisit",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "providerId",
+                "pt": "msg",
+                "to": "req.query.provider",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "reportDate",
+                "pt": "msg",
+                "to": "req.query.reportDate",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locale",
+                "pt": "msg",
+                "to": "req.query.locale",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 100,
+        "wires": [
+            [
+                "ee96d9c8e4a422c0"
+            ]
+        ]
+    },
+    {
+        "id": "f81e490b9c063162",
+        "type": "http in",
+        "z": "041ce3d9cda14530",
+        "name": "Inspection Report",
+        "url": "/inspectionReport",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "bd82a7a67ef6d40c"
+            ]
+        ]
+    },
+    {
+        "id": "99727fd091645792",
+        "type": "http response",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "b42e3ed47a787122",
+        "type": "catch",
+        "z": "041ce3d9cda14530",
+        "d": true,
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 40,
+        "wires": [
+            [
+                "p21env-b0a2994c799fd3dc"
+            ]
+        ]
+    },
+    {
+        "id": "b0a2994c799fd3dc",
+        "type": "http response",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "5ed2ab4b88d233a5",
+        "type": "debug",
+        "z": "041ce3d9cda14530",
+        "name": "inspectionReport",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "5c497290c30a0c70",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save site visit data",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 180,
+        "wires": [
+            [
+                "8d6083b09a8aabee"
+            ]
+        ]
+    },
+    {
+        "id": "9b5aaa79e9d78dc4",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "construct services array",
+        "func": "let serviceIds = [];\nlet thisOne = -1;\nfor (var locationService of msg.payload.list) {\n  for (var inspectedService of locationService.inspectedServices) {\n    if (inspectedService.inspectionId == msg.inspectionId ) {\n      serviceIds.push({\n        \"id\" : inspectedService.id,\n        \"name\" : inspectedService.name\n      })\n    }\n  }\n}\n\nmsg.serviceIds = serviceIds;\nmsg.inspectionReport[\"services\"] = serviceIds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 420,
+        "wires": [
+            [
+                "eced5631dd2e7842"
+            ]
+        ]
+    },
+    {
+        "id": "eced5631dd2e7842",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "inspected specialty parameters",
+        "func": "msg.entity = \"InspectedSpecialty\";\nmsg.entityData = { \"inspectedServiceId\" : msg.serviceIds.map((x) => x.id) };\nmsg.entitySelect = \"id, inspectedServiceId\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 520,
+        "wires": [
+            [
+                "ad5afef60f24495f"
+            ]
+        ]
+    },
+    {
+        "id": "fffc0b7e8f13e374",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "get specialty info",
+        "func": "var specialtyIds = [];\nfor (var specialty of msg.payload.list) {\n  specialtyIds.push(specialty.id);\n}\n\nmsg.specialties = specialtyIds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 520,
+        "wires": [
+            [
+                "0ac20b5ee6e67291"
+            ]
+        ]
+    },
+    {
+        "id": "91bbed2b3cda5bd5",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "location services parameters",
+        "func": "msg.entity = \"LocationService\";\nmsg.entityData = {\n    \"locationId\" : msg.locationId,\n    \"serviceProviderId\" : msg.providerId\n};\nmsg.entitySelect = \"inspectedServices\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 420,
+        "wires": [
+            [
+                "3710523db1823685"
+            ]
+        ]
+    },
+    {
+        "id": "ee96d9c8e4a422c0",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set site visit params",
+        "func": "msg.entity = \"SiteVisit\";\nmsg.entityData = { \"code\" : msg.inspectionCode };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "180ad190d54dc47b"
+            ]
+        ]
+    },
+    {
+        "id": "0ac20b5ee6e67291",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "inspector parameters",
+        "func": "msg.entity = \"InspectedSpecialtyInspector\";\nmsg.entityData = { \"inspectedSpecialtyId\" : msg.specialties };\nmsg.entitySelect = \"inspectorName, inspectedSpecialtyName\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 600,
+        "wires": [
+            [
+                "93f0ce5a2b57a210"
+            ]
+        ]
+    },
+    {
+        "id": "603ea05e2b87ca0f",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "get inspector info",
+        "func": "var inspectors = [];\nvar thisOne = -1;\nfor (var inspector of msg.payload.list) {\n  thisOne = inspectors.findIndex( (x) => x.name == inspector.inspectorName);\n  if (thisOne >= 0 ) {\n    inspectors[thisOne].specialty.push(\n      inspector.inspectedSpecialtyName\n    )\n  } else {\n    inspectors.push({\n      \"name\": inspector.inspectorName,\n      \"specialty\": [inspector.inspectedSpecialtyName]\n    })\n  }\n}\n\nmsg.inspectionReport[\"inspectors\"] = inspectors;\nmsg.payload = msg.inspectionReport;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 600,
+        "wires": [
+            [
+                "bc2c918dcdae6cb5"
+            ]
+        ]
+    },
+    {
+        "id": "e3fbb648496dac27",
+        "type": "http request",
+        "z": "041ce3d9cda14530",
+        "name": "send report",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "{{{alfrescoBaseUrl}}}/s/api/inspection/report/generate?alf_ticket={{alf_ticket}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 650,
+        "y": 680,
+        "wires": [
+            [
+                "p21chk-e3fbb648496dac27"
+            ]
+        ]
+    },
+    {
+        "id": "dbdd72860edcabb4",
+        "type": "change",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "inspectionReport",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 680,
+        "wires": [
+            [
+                "p22env-e3fbb648496dac27",
+                "5ed2ab4b88d233a5"
+            ]
+        ]
+    },
+    {
+        "id": "a5534ea92b26fa8a",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "update AtroCore status to Reported",
+        "func": "var inspectionId = msg.inspectionId;\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"SiteVisit\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Reported\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 600,
+        "wires": [
+            [
+                "2e9ba67ffd0dc521"
+            ]
+        ]
+    },
+    {
+        "id": "203492bb6f7e76b3",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save inspection data",
+        "func": "msg.inspectionReport[\"inspectionCode\"] = msg.payload.list[0].code;\nmsg.inspectionReport[\"objective\"] = msg.payload.list[0].objective,\nmsg.inspectionReport[\"scope\"] = msg.payload.list[0].scope,\nmsg.inspectionReport[\"activityTypeId\"] = msg.payload.list[0].activityTypeId,\nmsg.inspectionReport[\"activityTypeCode\"] = msg.payload.list[0].activityTypeCode,\nmsg.inspectionReport[\"activityTypeName\"] = msg.payload.list[0].activityTypeName\nmsg.inspectionReport[\"description\"] = msg.payload.list[0].description\nmsg.inspectionReport[\"conclusion\"] = msg.payload.list[0].conclusion\n\n\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 320,
+        "wires": [
+            [
+                "91bbed2b3cda5bd5"
+            ]
+        ]
+    },
+    {
+        "id": "efbde6c92a59a13a",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set inspection params",
+        "func": "msg.entity = \"Inspection\";\nmsg.entityData = { \n    \"inspectedProviderId\" : msg.inspectedProviderId\n };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "d161e9147beca895"
+            ]
+        ]
+    },
+    {
+        "id": "73df7b197aabe7c9",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "save inspected provider data",
+        "func": "msg.inspectionReport[\"providerName\"] = msg.payload.list[0].serviceProviderName\nmsg.inspectedProviderId = msg.payload.list[0].id;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 260,
+        "wires": [
+            [
+                "efbde6c92a59a13a"
+            ]
+        ]
+    },
+    {
+        "id": "8d6083b09a8aabee",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set inspected provider params",
+        "func": "msg.entity = \"InspectedProvider\";\nmsg.entityData = {\n    \"siteVisitId\" : msg.siteVisitId,\n    \"serviceProviderId\" : msg.providerId\n };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 260,
+        "wires": [
+            [
+                "47ada5c5f9de4e24"
+            ]
+        ]
+    },
+    {
+        "id": "bc2c918dcdae6cb5",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "x": 170,
+        "y": 680,
+        "wires": [
+            [
+                "dbdd72860edcabb4"
+            ]
+        ]
+    },
+    {
+        "id": "180ad190d54dc47b",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get site visit",
+        "x": 430,
+        "y": 180,
+        "wires": [
+            [
+                "5c497290c30a0c70"
+            ]
+        ]
+    },
+    {
+        "id": "47ada5c5f9de4e24",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get inspected provider",
+        "x": 520,
+        "y": 260,
+        "wires": [
+            [
+                "73df7b197aabe7c9"
+            ]
+        ]
+    },
+    {
+        "id": "d161e9147beca895",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get inspections",
+        "x": 440,
+        "y": 320,
+        "wires": [
+            [
+                "203492bb6f7e76b3"
+            ]
+        ]
+    },
+    {
+        "id": "3710523db1823685",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get location services",
+        "x": 460,
+        "y": 420,
+        "wires": [
+            [
+                "9b5aaa79e9d78dc4"
+            ]
+        ]
+    },
+    {
+        "id": "ad5afef60f24495f",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get insp. specialties",
+        "x": 490,
+        "y": 520,
+        "wires": [
+            [
+                "fffc0b7e8f13e374"
+            ]
+        ]
+    },
+    {
+        "id": "93f0ce5a2b57a210",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get inspectors",
+        "x": 420,
+        "y": 600,
+        "wires": [
+            [
+                "603ea05e2b87ca0f"
+            ]
+        ]
+    },
+    {
+        "id": "2e9ba67ffd0dc521",
+        "type": "subflow:368084b92cefec18",
+        "z": "041ce3d9cda14530",
+        "name": "update site visit status",
+        "x": 1200,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "p21env-b0a2994c799fd3dc",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 40,
+        "wires": [
+            [
+                "b0a2994c799fd3dc"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-e3fbb648496dac27",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 680,
+        "wires": [
+            [
+                "99727fd091645792",
+                "a5534ea92b26fa8a"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-e3fbb648496dac27",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 680,
+        "wires": [
+            [
+                "e3fbb648496dac27"
+            ]
+        ]
+    }
+]
