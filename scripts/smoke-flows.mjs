@@ -142,8 +142,10 @@ function satisfies(result, expect) {
   if (expect === 'object' && (typeof result.json !== 'object' || result.json === null || Array.isArray(result.json))) {
     return 'expected a JSON object';
   }
-  if (expect === 'json' && result.json === null && result.raw.trim()) {
-    return 'expected a JSON body';
+  if (expect === 'json' && result.json === null) {
+    // An empty body used to satisfy this check, which is how
+    // `/inspection/:inspectionId` returned 200 with nothing for months.
+    return result.raw.trim() ? 'expected a JSON body' : 'expected a JSON body, got an empty response';
   }
   return null;
 }
