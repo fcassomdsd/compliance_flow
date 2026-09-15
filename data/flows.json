@@ -7,22 +7,6 @@
         "info": "Return checklist questions in a JSON format, fit for use in the checklist application\n\nInputs: inspected specialty ID.\n"
     },
     {
-        "id": "57efe981d107f25d",
-        "type": "tab",
-        "label": "Get atrocore auth",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "7534034467cec239",
-        "type": "tab",
-        "label": "Get topics",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "7683fa1811ae788c",
         "type": "tab",
         "label": "Query entity",
@@ -79,22 +63,6 @@
         "env": []
     },
     {
-        "id": "aef96e90a1e86beb",
-        "type": "tab",
-        "label": "Get Entity call",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "0c1f3b47482da83f",
-        "type": "tab",
-        "label": "Get links call",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "5afaefaae1db46d5",
         "type": "tab",
         "label": "Inspection plan",
@@ -135,14 +103,6 @@
         "env": []
     },
     {
-        "id": "18c3156c77e1c2fb",
-        "type": "tab",
-        "label": "get alfresco auth",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "be74fd69d845153f",
         "type": "tab",
         "label": "findings flows",
@@ -157,6 +117,632 @@
         "disabled": false,
         "info": "",
         "env": []
+    },
+    {
+        "id": "fb76825dc7301958",
+        "type": "subflow",
+        "name": "getAtrocoreTicket",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 300,
+                "wires": [
+                    {
+                        "id": "d91ff062af570bd6"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1000,
+                "y": 300,
+                "wires": [
+                    {
+                        "id": "79c7123b33df9145",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "a4fd7864d2ed64a0",
+        "type": "subflow",
+        "name": "getAlfrescoTicket",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "57edab273be1c845"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 860,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "27d2d4872fb1b8f6",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "17a5a86e5107e286",
+        "type": "subflow",
+        "name": "queryEntity",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "444824c43d7fd6c4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 940,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "p21chk-6f319e5a075c3efc",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "e2896ea94901dc8c",
+        "type": "subflow",
+        "name": "getEntityLinks",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "d6624ce34f9ccecd"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 700,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "p21chk-8644c145ead9a057",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "368084b92cefec18",
+        "type": "subflow",
+        "name": "updateEntity",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "27475d591c4aef7c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 980,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "p21chk-04a6d3170f653951",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "set_atrocore_auth",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "Set AtroCore credentials",
+        "func": "var user = env.get(\"ATROCORE_USERNAME\");\nvar pass = env.get(\"ATROCORE_PASSWORD\");\nif (!user || !pass) {\n    throw new Error(\"AtroCore credentials are not configured: set ATROCORE_USERNAME and ATROCORE_PASSWORD\");\n}\nmsg.headers = msg.headers || {};\nmsg.headers[\"Authorization\"] = \"Basic \" + Buffer.from(user + \":\" + pass).toString(\"base64\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 80,
+        "wires": [
+            [
+                "aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "d91ff062af570bd6",
+        "type": "switch",
+        "z": "fb76825dc7301958",
+        "name": "",
+        "property": "authToken",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "null"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 190,
+        "y": 300,
+        "wires": [
+            [
+                "set_atrocore_auth"
+            ],
+            [
+                "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "aa61590209297976",
+        "type": "http request",
+        "z": "fb76825dc7301958",
+        "name": "Get auth token",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://atro-web/api/v1/App/user",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "p21chk-aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "79c7123b33df9145",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "Set authorization header",
+        "func": "msg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2c42610a8c33a618",
+        "type": "change",
+        "z": "fb76825dc7301958",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "authToken",
+                "pt": "msg",
+                "to": "payload.authorizationToken",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 80,
+        "wires": [
+            [
+                "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-aa61590209297976",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 180,
+        "wires": [
+            [
+                "2c42610a8c33a618"
+            ]
+        ]
+    },
+    {
+        "id": "57edab273be1c845",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "set payload",
+        "func": "// Priority 1: forwarded ticket from frontend\nvar ticket = msg.req && msg.req.headers && msg.req.headers[\"x-alfresco-ticket\"];\nif (ticket) {\n    msg.payload = { \"entry\" : {\"id\" : ticket }};\n    msg.alf_ticket = ticket;\n    msg._skipLogin = true;\n    return msg;\n}\n// Priority 2: env var credentials\nmsg._skipLogin = false;\nvar vsoUser = env.get(\"ALFRESCO_USERNAME\");\nvar vsoPass = env.get(\"ALFRESCO_PASSWORD\");\nif (!vsoUser || !vsoPass) {\n    throw new Error(\"Alfresco credentials are not configured: set ALFRESCO_USERNAME and ALFRESCO_PASSWORD\");\n}\nmsg.payload = {\n    \"userId\": vsoUser,\n    \"password\": vsoPass\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 80,
+        "wires": [
+            [
+                "6a61c1d98f5b14e2"
+            ]
+        ]
+    },
+    {
+        "id": "6a61c1d98f5b14e2",
+        "type": "switch",
+        "z": "a4fd7864d2ed64a0",
+        "name": "",
+        "property": "_skipLogin",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "27d2d4872fb1b8f6"
+            ],
+            [
+                "6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "27d2d4872fb1b8f6",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "Set authorization header",
+        "func": "msg.alf_ticket = msg.payload.entry.id;\nmsg.headers = { \"Authorization\": \"Basic \" + Buffer.from(msg.payload.entry.id + \":\").toString('base64') };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f9d06e081f9a39e",
+        "type": "http request",
+        "z": "a4fd7864d2ed64a0",
+        "name": "Get auth ticket",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://proxy:8080/alfresco/api/-default-/public/authentication/versions/1/tickets",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 520,
+        "y": 200,
+        "wires": [
+            [
+                "p21chk-6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-6f9d06e081f9a39e",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 200,
+        "wires": [
+            [
+                "27d2d4872fb1b8f6"
+            ]
+        ]
+    },
+    {
+        "id": "0ea3a418e92c6a8a",
+        "type": "function",
+        "z": "17a5a86e5107e286",
+        "name": "Set request parameters",
+        "func": "// function makeWhereValue\n// create a where clause for and atrocore query based on an incoming object.\n// the object has the format:\n// { (\"_andx\" | \"_orx\" | \"fieldname\") : ( array | scalar | object ), ... }\n// _andx and _orx are indicators of a logical and/or, where x represent an identifying number (to avoid key name clashes)\n// if the key is an and/or condition, an object is expected as the value; \n// if the key is a fieldname, an array or a scalar is expected\n// the output is a JSON object (stringified)\nfunction makeWhereValue(valueObj) {\n  let condition;\n  const valueArray = [];\n  for (const [key, value] of Object.entries(valueObj || {})) {\n    if (key.startsWith(\"_and\") || key.startsWith(\"_or\")) {\n      condition = {\n        \"type\": (key.startsWith(\"_and\") ? \"and\" : \"or\"),\n        \"value\": makeWhereValue(value)\n      };\n    } else {\n      condition = {\n        \"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n        \"attribute\": key,\n        \"value\": value\n      };\n    }\n    valueArray.push(condition);\n  }\n  return valueArray;\n}\n\nmsg.payload = msg.payload || {};\n\nif (msg.entityData) {\n  const whereobj = {\n    \"type\": \"and\",\n    \"value\": makeWhereValue(msg.entityData)\n  };\n\n  msg.payload.where = JSON.stringify([whereobj]);\n}\n\nif (msg.entitySelect) {\n  msg.payload[\"select\"] = msg.entitySelect;\n}\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "444824c43d7fd6c4",
+        "type": "subflow:fb76825dc7301958",
+        "z": "17a5a86e5107e286",
+        "name": "",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "0ea3a418e92c6a8a"
+            ]
+        ]
+    },
+    {
+        "id": "6f319e5a075c3efc",
+        "type": "http request",
+        "z": "17a5a86e5107e286",
+        "name": "Get entity records",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}?{{ select }}maxSize=200",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 750,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-6f319e5a075c3efc",
+        "type": "function",
+        "z": "17a5a86e5107e286",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d6624ce34f9ccecd",
+        "type": "subflow:fb76825dc7301958",
+        "z": "e2896ea94901dc8c",
+        "name": "",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "8644c145ead9a057",
+        "type": "http request",
+        "z": "e2896ea94901dc8c",
+        "name": "Get links for entity instance",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://atro-web/api/v1/{{entity}}/{{entityId}}/{{entityLink}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 500,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-8644c145ead9a057",
+        "type": "function",
+        "z": "e2896ea94901dc8c",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ce72d1adedcfd54",
+        "type": "function",
+        "z": "368084b92cefec18",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.updateData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "27475d591c4aef7c",
+        "type": "subflow:fb76825dc7301958",
+        "z": "368084b92cefec18",
+        "name": "",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "6ce72d1adedcfd54"
+            ]
+        ]
+    },
+    {
+        "id": "04a6d3170f653951",
+        "type": "http request",
+        "z": "368084b92cefec18",
+        "name": "Update entity records",
+        "method": "PUT",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://atro-web/api/v1/{{ entity }}/{{entityId}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 800,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-04a6d3170f653951",
+        "type": "function",
+        "z": "368084b92cefec18",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 80,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "185d79b48148ba56",
@@ -187,8 +773,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 60,
+        "x": 90,
+        "y": 40,
         "wires": [
             [
                 "e5eea5df0c354686"
@@ -359,7 +945,7 @@
         "type": "debug",
         "z": "f6f2187d.f17ca8",
         "name": "getChecklistQuestion",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -367,8 +953,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 780,
-        "y": 60,
+        "x": 820,
+        "y": 40,
         "wires": []
     },
     {
@@ -387,25 +973,7 @@
         "y": 640,
         "wires": [
             [
-                "eb9ae640c67e9e05"
-            ]
-        ]
-    },
-    {
-        "id": "eb9ae640c67e9e05",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "Query inspection questions",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 820,
-        "y": 640,
-        "wires": [
-            [
-                "96a8237c40d6b37c"
+                "3934b8e33b8610a6"
             ]
         ]
     },
@@ -439,7 +1007,7 @@
         "y": 1000,
         "wires": [
             [
-                "ac0b6432f0212e0f"
+                "ade1cf9551aa704a"
             ]
         ]
     },
@@ -575,7 +1143,7 @@
         "to": "",
         "reg": false,
         "x": 180,
-        "y": 160,
+        "y": 100,
         "wires": [
             [
                 "6c17c2ca94b9b6f3"
@@ -595,28 +1163,10 @@
         "finalize": "",
         "libs": [],
         "x": 440,
-        "y": 160,
+        "y": 100,
         "wires": [
             [
-                "8daa3914656634e9"
-            ]
-        ]
-    },
-    {
-        "id": "8daa3914656634e9",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get inspection",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 660,
-        "y": 160,
-        "wires": [
-            [
-                "8d1fe2ce52854438"
+                "662580ec796f69d3"
             ]
         ]
     },
@@ -636,25 +1186,7 @@
         "y": 240,
         "wires": [
             [
-                "199c1b660b59e109"
-            ]
-        ]
-    },
-    {
-        "id": "199c1b660b59e109",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get specialty",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 430,
-        "y": 240,
-        "wires": [
-            [
-                "48f149e28a050195"
+                "9f5165b77afb5350"
             ]
         ]
     },
@@ -674,25 +1206,7 @@
         "y": 400,
         "wires": [
             [
-                "e07a75568b17aa84"
-            ]
-        ]
-    },
-    {
-        "id": "e07a75568b17aa84",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get inspected specialty",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 400,
-        "wires": [
-            [
-                "6ec782637fa68758"
+                "2f8a5dc186f539b0"
             ]
         ]
     },
@@ -759,24 +1273,6 @@
         "wires": []
     },
     {
-        "id": "ac0b6432f0212e0f",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get protocol questions",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 240,
-        "y": 1000,
-        "wires": [
-            [
-                "9f2a17c3b6e4d801"
-            ]
-        ]
-    },
-    {
         "id": "9f2a17c3b6e4d801",
         "type": "function",
         "z": "f6f2187d.f17ca8",
@@ -792,26 +1288,8 @@
         "y": 1000,
         "wires": [
             [
-                "9f2a17c3b6e4d802"
+                "36b5ca3c0f2b751b"
             ],
-            [
-                "9f2a17c3b6e4d803"
-            ]
-        ]
-    },
-    {
-        "id": "9f2a17c3b6e4d802",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get acapite usoap PQs",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 820,
-        "y": 980,
-        "wires": [
             [
                 "9f2a17c3b6e4d803"
             ]
@@ -850,7 +1328,7 @@
         "finalize": "",
         "libs": [],
         "x": 880,
-        "y": 160,
+        "y": 100,
         "wires": [
             [
                 "b3c6f1a9e2d47058"
@@ -869,29 +1347,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 900,
-        "y": 200,
+        "x": 200,
+        "y": 160,
         "wires": [
             [
-                "c4d7a2e0f1b58369"
-            ]
-        ]
-    },
-    {
-        "id": "c4d7a2e0f1b58369",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get inspection code",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 920,
-        "y": 240,
-        "wires": [
-            [
-                "d5e8b3f102c69470"
+                "51f239876122f184"
             ]
         ]
     },
@@ -907,8 +1367,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 940,
-        "y": 280,
+        "x": 760,
+        "y": 160,
         "wires": [
             [
                 "9a7d1d5dbbd2eb97"
@@ -927,7 +1387,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 670,
+        "x": 650,
         "y": 240,
         "wires": [
             [
@@ -952,24 +1412,6 @@
         "wires": [
             [
                 "c244ac031e1523e4"
-            ]
-        ]
-    },
-    {
-        "id": "fd38fce11ec9265e",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get inspected provider",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 500,
-        "y": 1300,
-        "wires": [
-            [
-                "660c57bd0c256f45"
             ]
         ]
     },
@@ -1042,25 +1484,7 @@
         "y": 320,
         "wires": [
             [
-                "e58b38b85d4f6b73"
-            ]
-        ]
-    },
-    {
-        "id": "e58b38b85d4f6b73",
-        "type": "link call",
-        "z": "f6f2187d.f17ca8",
-        "name": "get location",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 490,
-        "y": 320,
-        "wires": [
-            [
-                "68f9e718831a71af"
+                "447245315225b7bf"
             ]
         ]
     },
@@ -1235,345 +1659,127 @@
         "y": 1300,
         "wires": [
             [
-                "fd38fce11ec9265e"
+                "e9694cb12feb0218"
             ]
         ]
     },
     {
-        "id": "aa61590209297976",
-        "type": "http request",
-        "z": "57efe981d107f25d",
-        "name": "Get auth token",
-        "method": "GET",
-        "ret": "obj",
-        "paytoqs": "ignore",
-        "url": "http://atro-web/api/v1/App/user",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 420,
-        "y": 180,
+        "id": "662580ec796f69d3",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspection",
+        "x": 660,
+        "y": 100,
         "wires": [
             [
-                "2c42610a8c33a618"
+                "8d1fe2ce52854438",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
     {
-        "id": "79c7123b33df9145",
-        "type": "function",
-        "z": "57efe981d107f25d",
-        "name": "Set authorization header",
-        "func": "msg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 730,
-        "y": 300,
-        "wires": [
-            [
-                "3e6981e8eae71675"
-            ]
-        ]
-    },
-    {
-        "id": "2cecf651291035ab",
-        "type": "link in",
-        "z": "57efe981d107f25d",
-        "name": "Link atrocore authorization",
-        "links": [],
-        "x": 35,
-        "y": 220,
-        "wires": [
-            [
-                "d91ff062af570bd6"
-            ]
-        ]
-    },
-    {
-        "id": "3e6981e8eae71675",
-        "type": "link out",
-        "z": "57efe981d107f25d",
-        "name": "link out 1",
-        "mode": "return",
-        "links": [],
-        "x": 905,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "2c42610a8c33a618",
-        "type": "change",
-        "z": "57efe981d107f25d",
+        "id": "9f5165b77afb5350",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
         "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "authToken",
-                "pt": "msg",
-                "to": "payload.authorizationToken",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 570,
-        "y": 80,
-        "wires": [
-            [
-                "79c7123b33df9145"
-            ]
-        ]
-    },
-    {
-        "id": "set_atrocore_auth",
-        "type": "function",
-        "z": "57efe981d107f25d",
-        "name": "Set AtroCore credentials",
-        "func": "var user = env.get(\"ATROCORE_USERNAME\");\nvar pass = env.get(\"ATROCORE_PASSWORD\");\nif (!user || !pass) {\n    throw new Error(\"AtroCore credentials are not configured: set ATROCORE_USERNAME and ATROCORE_PASSWORD\");\n}\nmsg.headers = msg.headers || {};\nmsg.headers[\"Authorization\"] = \"Basic \" + Buffer.from(user + \":\" + pass).toString(\"base64\");\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 80,
-        "wires": [
-            [
-                "aa61590209297976"
-            ]
-        ]
-    },
-    {
-        "id": "d91ff062af570bd6",
-        "type": "switch",
-        "z": "57efe981d107f25d",
-        "name": "",
-        "property": "authToken",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "null"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 110,
-        "y": 300,
-        "wires": [
-            [
-                "set_atrocore_auth"
-            ],
-            [
-                "79c7123b33df9145"
-            ]
-        ]
-    },
-    {
-        "id": "387e9b79ae9ce28d",
-        "type": "http request",
-        "z": "7534034467cec239",
-        "name": "",
-        "method": "GET",
-        "ret": "obj",
-        "paytoqs": "query",
-        "url": "http://atro-web/api/v1/QuestionTopic?select=id,name",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 390,
-        "y": 120,
-        "wires": [
-            [
-                "a2631810f8cdcdbf"
-            ]
-        ]
-    },
-    {
-        "id": "39d8088c93d45fdb",
-        "type": "function",
-        "z": "7534034467cec239",
-        "name": "Set topic parameters",
-        "func": "msg.payload = {\n    where : '[{\"type\":\"and\",\"value\": [{\"type\":\"in\",\"attribute\":\"name\",\"value\":' + JSON.stringify(msg.topics) + '}]}]'\n};\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 160,
-        "y": 120,
-        "wires": [
-            [
-                "387e9b79ae9ce28d"
-            ]
-        ]
-    },
-    {
-        "id": "a2631810f8cdcdbf",
-        "type": "split",
-        "z": "7534034467cec239",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "property": "payload",
-        "x": 590,
-        "y": 120,
-        "wires": [
-            [
-                "2596331805042d7c"
-            ]
-        ]
-    },
-    {
-        "id": "c4b6eb4e2de5824b",
-        "type": "change",
-        "z": "7534034467cec239",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "payload.id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 200,
-        "y": 200,
-        "wires": [
-            [
-                "883ce19a7a4069f3"
-            ]
-        ]
-    },
-    {
-        "id": "2596331805042d7c",
-        "type": "split",
-        "z": "7534034467cec239",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "property": "payload",
-        "x": 750,
-        "y": 120,
-        "wires": [
-            [
-                "c4b6eb4e2de5824b"
-            ]
-        ]
-    },
-    {
-        "id": "883ce19a7a4069f3",
-        "type": "join",
-        "z": "7534034467cec239",
-        "name": "",
-        "mode": "auto",
-        "build": "array",
-        "property": "payload.topicId",
-        "propertyType": "msg",
-        "key": "topic",
-        "joiner": "\\n",
-        "joinerType": "str",
-        "useparts": false,
-        "accumulate": false,
-        "timeout": "",
-        "count": "2",
-        "reduceRight": false,
-        "reduceExp": "",
-        "reduceInit": "",
-        "reduceInitType": "",
-        "reduceFixup": "",
         "x": 430,
-        "y": 200,
+        "y": 240,
         "wires": [
             [
-                "95dfb395fc857a22"
+                "48f149e28a050195"
             ]
         ]
     },
     {
-        "id": "95dfb395fc857a22",
-        "type": "change",
-        "z": "7534034467cec239",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "topics",
-                "pt": "msg",
-                "to": "payload",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 640,
-        "y": 200,
+        "id": "51f239876122f184",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspection code",
+        "x": 450,
+        "y": 160,
         "wires": [
             [
-                "595e3edbf9c89916"
+                "d5e8b3f102c69470"
             ]
         ]
     },
     {
-        "id": "c30da64cde6490b7",
-        "type": "link in",
-        "z": "7534034467cec239",
-        "name": "Get topics",
-        "links": [],
-        "x": 45,
-        "y": 60,
+        "id": "447245315225b7bf",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get location",
+        "x": 490,
+        "y": 320,
         "wires": [
             [
-                "39d8088c93d45fdb"
+                "68f9e718831a71af"
             ]
         ]
     },
     {
-        "id": "595e3edbf9c89916",
-        "type": "link out",
-        "z": "7534034467cec239",
-        "name": "link out 2",
-        "mode": "return",
-        "links": [],
-        "x": 845,
-        "y": 200,
-        "wires": []
+        "id": "2f8a5dc186f539b0",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspected specialty",
+        "x": 480,
+        "y": 400,
+        "wires": [
+            [
+                "6ec782637fa68758"
+            ]
+        ]
+    },
+    {
+        "id": "3934b8e33b8610a6",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "query inspection questions",
+        "x": 800,
+        "y": 640,
+        "wires": [
+            [
+                "96a8237c40d6b37c"
+            ]
+        ]
+    },
+    {
+        "id": "ade1cf9551aa704a",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get checklist questions",
+        "x": 240,
+        "y": 1000,
+        "wires": [
+            [
+                "9f2a17c3b6e4d801"
+            ]
+        ]
+    },
+    {
+        "id": "36b5ca3c0f2b751b",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get acapite usoap PQs",
+        "x": 800,
+        "y": 980,
+        "wires": [
+            [
+                "9f2a17c3b6e4d803"
+            ]
+        ]
+    },
+    {
+        "id": "e9694cb12feb0218",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "f6f2187d.f17ca8",
+        "name": "get inspected provider",
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "660c57bd0c256f45"
+            ]
+        ]
     },
     {
         "id": "b09f2d07a15b9060",
@@ -1613,7 +1819,7 @@
         "y": 140,
         "wires": [
             [
-                "6adb4db4ea764b60"
+                "1bc49dceb06b9f04"
             ]
         ]
     },
@@ -1658,7 +1864,7 @@
         "y": 260,
         "wires": [
             [
-                "9c45b78ce0fc5b6c"
+                "p21env-9c45b78ce0fc5b6c"
             ]
         ]
     },
@@ -1691,21 +1897,35 @@
         "wires": []
     },
     {
-        "id": "6adb4db4ea764b60",
-        "type": "link call",
+        "id": "1bc49dceb06b9f04",
+        "type": "subflow:17a5a86e5107e286",
         "z": "7683fa1811ae788c",
         "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 580,
+        "x": 590,
         "y": 140,
         "wires": [
             [
                 "9013d18f89d05fcd",
                 "6bf10b4a40e39b6e"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-9c45b78ce0fc5b6c",
+        "type": "function",
+        "z": "7683fa1811ae788c",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 260,
+        "wires": [
+            [
+                "9c45b78ce0fc5b6c"
             ]
         ]
     },
@@ -1763,7 +1983,7 @@
         "y": 160,
         "wires": [
             [
-                "46c3c1a18c464621"
+                "c8d7e4150ce6efb1"
             ]
         ]
     },
@@ -1778,23 +1998,6 @@
         },
         "x": 830,
         "y": 100,
-        "wires": []
-    },
-    {
-        "id": "863a44862822b5a9",
-        "type": "debug",
-        "z": "c865579c6e7f852c",
-        "name": "updateEntity",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 890,
-        "y": 280,
         "wires": []
     },
     {
@@ -1859,116 +2062,10 @@
         "wires": []
     },
     {
-        "id": "d00302ab123c5d70",
-        "type": "link call",
-        "z": "c865579c6e7f852c",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 190,
-        "y": 400,
-        "wires": [
-            [
-                "6ce72d1adedcfd54"
-            ]
-        ]
-    },
-    {
-        "id": "6ce72d1adedcfd54",
-        "type": "function",
-        "z": "c865579c6e7f852c",
-        "name": "Set request parameters",
-        "func": "msg.payload = msg.updateData;\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 470,
-        "y": 400,
-        "wires": [
-            [
-                "04a6d3170f653951"
-            ]
-        ]
-    },
-    {
-        "id": "04a6d3170f653951",
-        "type": "http request",
-        "z": "c865579c6e7f852c",
-        "name": "Update entity records",
-        "method": "PUT",
-        "ret": "txt",
-        "paytoqs": "query",
-        "url": "http://atro-web/api/v1/{{ entity }}/{{entityId}}",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [
-            {
-                "keyType": "Content-Type",
-                "keyValue": "",
-                "valueType": "application/json",
-                "valueValue": ""
-            },
-            {
-                "keyType": "Accept",
-                "keyValue": "",
-                "valueType": "application/json",
-                "valueValue": ""
-            }
-        ],
-        "x": 780,
-        "y": 400,
-        "wires": [
-            [
-                "42e5aa734738a44b",
-                "863a44862822b5a9"
-            ]
-        ]
-    },
-    {
-        "id": "08f5d2534ec47de6",
-        "type": "link in",
-        "z": "c865579c6e7f852c",
-        "name": "update entity",
-        "links": [],
-        "x": 75,
-        "y": 340,
-        "wires": [
-            [
-                "d00302ab123c5d70"
-            ]
-        ]
-    },
-    {
-        "id": "42e5aa734738a44b",
-        "type": "link out",
-        "z": "c865579c6e7f852c",
-        "name": "update entity out",
-        "mode": "return",
-        "links": [],
-        "x": 925,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "46c3c1a18c464621",
-        "type": "link call",
+        "id": "c8d7e4150ce6efb1",
+        "type": "subflow:368084b92cefec18",
         "z": "c865579c6e7f852c",
         "name": "",
-        "links": [
-            "08f5d2534ec47de6"
-        ],
-        "linkType": "static",
-        "timeout": "30",
         "x": 490,
         "y": 160,
         "wires": [
@@ -1976,16 +2073,6 @@
                 "89aeadd7e4fef1c0"
             ]
         ]
-    },
-    {
-        "id": "943c108439f5beb3",
-        "type": "comment",
-        "z": "c865579c6e7f852c",
-        "name": "update entity call",
-        "info": "Update entity call, for reuse",
-        "x": 180,
-        "y": 300,
-        "wires": []
     },
     {
         "id": "b7ae165fc4ae3a9e",
@@ -2034,25 +2121,7 @@
         "y": 180,
         "wires": [
             [
-                "7914f79036bd67d1"
-            ]
-        ]
-    },
-    {
-        "id": "7914f79036bd67d1",
-        "type": "link call",
-        "z": "e6eb17aaaa227e4d",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 530,
-        "y": 180,
-        "wires": [
-            [
-                "5c0ca4319b81e817"
+                "07cac92ea17cd346"
             ]
         ]
     },
@@ -2109,8 +2178,7 @@
         "y": 260,
         "wires": [
             [
-                "78cd9869f40be1c8",
-                "395b3799645197f5"
+                "p21chk-5475d96d7baf4b89"
             ]
         ]
     },
@@ -2138,7 +2206,7 @@
         "y": 340,
         "wires": [
             [
-                "cb95456a5e6cf9db"
+                "p21env-cb95456a5e6cf9db"
             ]
         ]
     },
@@ -2164,11 +2232,63 @@
         "type": "http response",
         "z": "e6eb17aaaa227e4d",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 360,
         "y": 340,
         "wires": []
+    },
+    {
+        "id": "07cac92ea17cd346",
+        "type": "subflow:fb76825dc7301958",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "x": 510,
+        "y": 180,
+        "wires": [
+            [
+                "5c0ca4319b81e817"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-cb95456a5e6cf9db",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "cb95456a5e6cf9db"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-5475d96d7baf4b89",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 260,
+        "wires": [
+            [
+                "78cd9869f40be1c8",
+                "395b3799645197f5"
+            ]
+        ]
     },
     {
         "id": "c4daafefcacb6c5c",
@@ -2217,25 +2337,7 @@
         "y": 180,
         "wires": [
             [
-                "3707a0f07de74116"
-            ]
-        ]
-    },
-    {
-        "id": "3707a0f07de74116",
-        "type": "link call",
-        "z": "15c8a1dad7c49d22",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 470,
-        "y": 180,
-        "wires": [
-            [
-                "20e115303a0a641e"
+                "5760bd73ca8d3cd6"
             ]
         ]
     },
@@ -2266,7 +2368,7 @@
         "y": 180,
         "wires": [
             [
-                "a81113143222e840"
+                "p21chk-20e115303a0a641e"
             ]
         ]
     },
@@ -2294,7 +2396,7 @@
         "y": 260,
         "wires": [
             [
-                "985233363769dfb3"
+                "p21env-985233363769dfb3"
             ]
         ]
     },
@@ -2320,11 +2422,62 @@
         "type": "http response",
         "z": "15c8a1dad7c49d22",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 340,
         "y": 260,
         "wires": []
+    },
+    {
+        "id": "5760bd73ca8d3cd6",
+        "type": "subflow:fb76825dc7301958",
+        "z": "15c8a1dad7c49d22",
+        "name": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "20e115303a0a641e"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-985233363769dfb3",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "985233363769dfb3"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-20e115303a0a641e",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 180,
+        "wires": [
+            [
+                "a81113143222e840"
+            ]
+        ]
     },
     {
         "id": "f2ea80ba1964cbca",
@@ -2380,7 +2533,7 @@
         "y": 180,
         "wires": [
             [
-                "ae04948297a9437b"
+                "3645865e49c29e27"
             ]
         ]
     },
@@ -2408,7 +2561,7 @@
         "y": 280,
         "wires": [
             [
-                "92e365dc5ad8fbc5"
+                "p21env-92e365dc5ad8fbc5"
             ]
         ]
     },
@@ -2434,28 +2587,42 @@
         "type": "http response",
         "z": "2be0d2205654bc57",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 320,
         "y": 280,
         "wires": []
     },
     {
-        "id": "ae04948297a9437b",
-        "type": "link call",
+        "id": "3645865e49c29e27",
+        "type": "subflow:e2896ea94901dc8c",
         "z": "2be0d2205654bc57",
         "name": "",
-        "links": [
-            "76b977314bdff87c"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 520,
+        "x": 500,
         "y": 180,
         "wires": [
             [
-                "d1ee23f65b6a3211",
-                "48b69f490df79ca2"
+                "48b69f490df79ca2",
+                "d1ee23f65b6a3211"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-92e365dc5ad8fbc5",
+        "type": "function",
+        "z": "2be0d2205654bc57",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 280,
+        "wires": [
+            [
+                "92e365dc5ad8fbc5"
             ]
         ]
     },
@@ -2520,25 +2687,7 @@
         "y": 160,
         "wires": [
             [
-                "80647407d320b8a5"
-            ]
-        ]
-    },
-    {
-        "id": "80647407d320b8a5",
-        "type": "link call",
-        "z": "b464a16d5b6e3016",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 490,
-        "y": 160,
-        "wires": [
-            [
-                "fb0719b9314b3bef"
+                "03fd8dd8a58beb1a"
             ]
         ]
     },
@@ -2575,7 +2724,7 @@
         "y": 240,
         "wires": [
             [
-                "12b61e0fc68d30d2"
+                "p21chk-3a6c14cbae2c5777"
             ]
         ]
     },
@@ -2603,7 +2752,7 @@
         "y": 320,
         "wires": [
             [
-                "6bfc24f589892edd"
+                "p21env-6bfc24f589892edd"
             ]
         ]
     },
@@ -2629,7 +2778,7 @@
         "type": "http response",
         "z": "b464a16d5b6e3016",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 340,
         "y": 320,
@@ -2652,6 +2801,57 @@
         "wires": [
             [
                 "3a6c14cbae2c5777"
+            ]
+        ]
+    },
+    {
+        "id": "03fd8dd8a58beb1a",
+        "type": "subflow:fb76825dc7301958",
+        "z": "b464a16d5b6e3016",
+        "name": "",
+        "x": 530,
+        "y": 160,
+        "wires": [
+            [
+                "fb0719b9314b3bef"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-6bfc24f589892edd",
+        "type": "function",
+        "z": "b464a16d5b6e3016",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 320,
+        "wires": [
+            [
+                "6bfc24f589892edd"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-3a6c14cbae2c5777",
+        "type": "function",
+        "z": "b464a16d5b6e3016",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 240,
+        "wires": [
+            [
+                "12b61e0fc68d30d2"
             ]
         ]
     },
@@ -2716,25 +2916,7 @@
         "y": 140,
         "wires": [
             [
-                "fe089eb76e538b32"
-            ]
-        ]
-    },
-    {
-        "id": "fe089eb76e538b32",
-        "type": "link call",
-        "z": "1151e4755687bce1",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 470,
-        "y": 140,
-        "wires": [
-            [
-                "b70f9835e7dad017"
+                "4bc096c007b83a9f"
             ]
         ]
     },
@@ -2771,7 +2953,7 @@
         "y": 220,
         "wires": [
             [
-                "f4c72dd42ee97418"
+                "p21chk-65bcb3492b0bda31"
             ]
         ]
     },
@@ -2799,7 +2981,7 @@
         "y": 280,
         "wires": [
             [
-                "a101b1a1587ce7f9"
+                "p21env-a101b1a1587ce7f9"
             ]
         ]
     },
@@ -2825,7 +3007,7 @@
         "type": "http response",
         "z": "1151e4755687bce1",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 300,
         "y": 280,
@@ -2852,194 +3034,55 @@
         ]
     },
     {
-        "id": "0ea3a418e92c6a8a",
+        "id": "4bc096c007b83a9f",
+        "type": "subflow:fb76825dc7301958",
+        "z": "1151e4755687bce1",
+        "name": "",
+        "x": 490,
+        "y": 140,
+        "wires": [
+            [
+                "b70f9835e7dad017"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-a101b1a1587ce7f9",
         "type": "function",
-        "z": "aef96e90a1e86beb",
-        "name": "Set request parameters",
-        "func": "// function makeWhereValue\n// create a where clause for and atrocore query based on an incoming object.\n// the object has the format:\n// { (\"_andx\" | \"_orx\" | \"fieldname\") : ( array | scalar | object ), ... }\n// _andx and _orx are indicators of a logical and/or, where x represent an identifying number (to avoid key name clashes)\n// if the key is an and/or condition, an object is expected as the value; \n// if the key is a fieldname, an array or a scalar is expected\n// the output is a JSON object (stringified)\nfunction makeWhereValue(valueObj) {\n  let condition;\n  const valueArray = [];\n  for (const [key, value] of Object.entries(valueObj || {})) {\n    if (key.startsWith(\"_and\") || key.startsWith(\"_or\")) {\n      condition = {\n        \"type\": (key.startsWith(\"_and\") ? \"and\" : \"or\"),\n        \"value\": makeWhereValue(value)\n      };\n    } else {\n      condition = {\n        \"type\": (Array.isArray(value) ? \"in\" : \"equals\"),\n        \"attribute\": key,\n        \"value\": value\n      };\n    }\n    valueArray.push(condition);\n  }\n  return valueArray;\n}\n\nmsg.payload = msg.payload || {};\n\nif (msg.entityData) {\n  const whereobj = {\n    \"type\": \"and\",\n    \"value\": makeWhereValue(msg.entityData)\n  };\n\n  msg.payload.where = JSON.stringify([whereobj]);\n}\n\nif (msg.entitySelect) {\n  msg.payload[\"select\"] = msg.entitySelect;\n}\n\nmsg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "z": "1151e4755687bce1",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
         "outputs": 1,
-        "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 490,
-        "y": 160,
+        "x": 210,
+        "y": 280,
         "wires": [
             [
-                "6f319e5a075c3efc"
+                "a101b1a1587ce7f9"
             ]
         ]
     },
     {
-        "id": "6f319e5a075c3efc",
-        "type": "http request",
-        "z": "aef96e90a1e86beb",
-        "name": "Get entity records",
-        "method": "GET",
-        "ret": "obj",
-        "paytoqs": "query",
-        "url": "http://atro-web/api/v1/{{ entity }}?{{ select }}maxSize=200",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 750,
-        "y": 160,
+        "id": "p21chk-65bcb3492b0bda31",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 220,
         "wires": [
             [
-                "6fb50185fb3085f4",
-                "ef1280f979b0ae24"
+                "f4c72dd42ee97418"
             ]
         ]
-    },
-    {
-        "id": "9d1c32d934dc0bce",
-        "type": "link in",
-        "z": "aef96e90a1e86beb",
-        "name": "linkQuery",
-        "links": [],
-        "x": 55,
-        "y": 160,
-        "wires": [
-            [
-                "f9f0c2c7ec45e373"
-            ]
-        ]
-    },
-    {
-        "id": "6fb50185fb3085f4",
-        "type": "link out",
-        "z": "aef96e90a1e86beb",
-        "name": "linkOutQuery",
-        "mode": "return",
-        "links": [],
-        "x": 925,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "ef1280f979b0ae24",
-        "type": "debug",
-        "z": "aef96e90a1e86beb",
-        "name": "getEntityCall",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 890,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "f9f0c2c7ec45e373",
-        "type": "link call",
-        "z": "aef96e90a1e86beb",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 230,
-        "y": 160,
-        "wires": [
-            [
-                "0ea3a418e92c6a8a"
-            ]
-        ]
-    },
-    {
-        "id": "508988429242a401",
-        "type": "link call",
-        "z": "0c1f3b47482da83f",
-        "name": "Get atrocore auth",
-        "links": [
-            "2cecf651291035ab"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 250,
-        "y": 120,
-        "wires": [
-            [
-                "8644c145ead9a057"
-            ]
-        ]
-    },
-    {
-        "id": "8644c145ead9a057",
-        "type": "http request",
-        "z": "0c1f3b47482da83f",
-        "name": "Get links for entity instance",
-        "method": "GET",
-        "ret": "obj",
-        "paytoqs": "ignore",
-        "url": "http://atro-web/api/v1/{{entity}}/{{entityId}}/{{entityLink}}",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 520,
-        "y": 120,
-        "wires": [
-            [
-                "86a2eaa7ac22e96d",
-                "46b5cd6f1c76d535"
-            ]
-        ]
-    },
-    {
-        "id": "76b977314bdff87c",
-        "type": "link in",
-        "z": "0c1f3b47482da83f",
-        "name": "linkLinks",
-        "links": [],
-        "x": 75,
-        "y": 120,
-        "wires": [
-            [
-                "508988429242a401"
-            ]
-        ]
-    },
-    {
-        "id": "86a2eaa7ac22e96d",
-        "type": "link out",
-        "z": "0c1f3b47482da83f",
-        "name": "link out 3",
-        "mode": "return",
-        "links": [],
-        "x": 795,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "46b5cd6f1c76d535",
-        "type": "debug",
-        "z": "0c1f3b47482da83f",
-        "name": "getLinksCall",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 750,
-        "y": 60,
-        "wires": []
     },
     {
         "id": "d6c972992eb7e4af",
@@ -3124,7 +3167,7 @@
         "y": 60,
         "wires": [
             [
-                "ed694127efde2c16"
+                "p21env-ed694127efde2c16"
             ]
         ]
     },
@@ -3211,25 +3254,7 @@
         "y": 1080,
         "wires": [
             [
-                "3e2c6bf1a1c4cd88"
-            ]
-        ]
-    },
-    {
-        "id": "3e2c6bf1a1c4cd88",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "76b977314bdff87c"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 1080,
-        "wires": [
-            [
-                "14c4bc83ec3010f5"
+                "d1fc60f56d89d6ed"
             ]
         ]
     },
@@ -3245,7 +3270,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 710,
+        "x": 770,
         "y": 320,
         "wires": [
             [
@@ -3375,26 +3400,8 @@
         "y": 440,
         "wires": [
             [
-                "e9a25e0d8e85ac85",
-                "1d55d021874f94ec"
-            ]
-        ]
-    },
-    {
-        "id": "e9a25e0d8e85ac85",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "get contacts",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 410,
-        "y": 440,
-        "wires": [
-            [
-                "0985ff675aba9a60"
+                "1d55d021874f94ec",
+                "93d185bb62227f0d"
             ]
         ]
     },
@@ -3414,7 +3421,7 @@
         "y": 440,
         "wires": [
             [
-                "bded2a99204287bd"
+                "9303c38011e447ec"
             ]
         ]
     },
@@ -3455,25 +3462,7 @@
         "y": 1240,
         "wires": [
             [
-                "04df7fa525d9a95f"
-            ]
-        ]
-    },
-    {
-        "id": "04df7fa525d9a95f",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "get inspected specialties",
-        "links": [
-            "76b977314bdff87c"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 550,
-        "y": 1240,
-        "wires": [
-            [
-                "19bda6326095de10"
+                "81d630685e15ede4"
             ]
         ]
     },
@@ -3513,25 +3502,7 @@
         "y": 1300,
         "wires": [
             [
-                "5f8385dc2db746a5"
-            ]
-        ]
-    },
-    {
-        "id": "5f8385dc2db746a5",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "get inspectors",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 500,
-        "y": 1300,
-        "wires": [
-            [
-                "e81e909d1e22987d"
+                "831ab4790b303803"
             ]
         ]
     },
@@ -3571,25 +3542,7 @@
         "y": 1360,
         "wires": [
             [
-                "e58aa12ef472a651"
-            ]
-        ]
-    },
-    {
-        "id": "e58aa12ef472a651",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "get inspected services",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 1360,
-        "wires": [
-            [
-                "13c22c1a0428f139"
+                "1b3ef9819f4ea74a"
             ]
         ]
     },
@@ -3614,24 +3567,6 @@
         ]
     },
     {
-        "id": "ed8c223f8db2c5bb",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 440,
-        "y": 320,
-        "wires": [
-            [
-                "b56fec9bbbe16305"
-            ]
-        ]
-    },
-    {
         "id": "80c8ad511bbb29c5",
         "type": "function",
         "z": "5afaefaae1db46d5",
@@ -3647,7 +3582,7 @@
         "y": 320,
         "wires": [
             [
-                "ed8c223f8db2c5bb"
+                "1d612cf625083f29"
             ]
         ]
     },
@@ -3704,25 +3639,7 @@
         "y": 560,
         "wires": [
             [
-                "a043bae1603803a8"
-            ]
-        ]
-    },
-    {
-        "id": "bded2a99204287bd",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "396d75052328dabf"
-        ],
-        "linkType": "static",
-        "timeout": "40",
-        "x": 860,
-        "y": 440,
-        "wires": [
-            [
-                "2a46f207dd799e40"
+                "p21chk-af66b696c5573785"
             ]
         ]
     },
@@ -3769,25 +3686,7 @@
         "y": 560,
         "wires": [
             [
-                "39c0cb52f511d9cb"
-            ]
-        ]
-    },
-    {
-        "id": "39c0cb52f511d9cb",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "08f5d2534ec47de6"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 890,
-        "y": 560,
-        "wires": [
-            [
-                "7cb35d6d0bf3d372"
+                "c55e50354b7ed99e"
             ]
         ]
     },
@@ -3807,25 +3706,7 @@
         "y": 860,
         "wires": [
             [
-                "ffcc34884cd3e4d7"
-            ]
-        ]
-    },
-    {
-        "id": "ffcc34884cd3e4d7",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 860,
-        "wires": [
-            [
-                "8c1d0e3854ae8978"
+                "6f6662d330569c75"
             ]
         ]
     },
@@ -3875,25 +3756,7 @@
         "y": 700,
         "wires": [
             [
-                "35becf515ebcf047"
-            ]
-        ]
-    },
-    {
-        "id": "35becf515ebcf047",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 440,
-        "y": 700,
-        "wires": [
-            [
-                "bcc17094dcb92785"
+                "3caf5495edae2dd4"
             ]
         ]
     },
@@ -3933,25 +3796,7 @@
         "y": 780,
         "wires": [
             [
-                "3213533424412f9f"
-            ]
-        ]
-    },
-    {
-        "id": "3213533424412f9f",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 780,
-        "wires": [
-            [
-                "c9f46601581cf055"
+                "60400cf026ee7f65"
             ]
         ]
     },
@@ -3967,7 +3812,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 690,
+        "x": 810,
         "y": 780,
         "wires": [
             [
@@ -3999,6 +3844,187 @@
         "x": 865,
         "y": 860,
         "wires": []
+    },
+    {
+        "id": "9303c38011e447ec",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "x": 850,
+        "y": 440,
+        "wires": [
+            [
+                "2a46f207dd799e40"
+            ]
+        ]
+    },
+    {
+        "id": "1d612cf625083f29",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get location services",
+        "x": 480,
+        "y": 320,
+        "wires": [
+            [
+                "b56fec9bbbe16305"
+            ]
+        ]
+    },
+    {
+        "id": "93d185bb62227f0d",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get contacts",
+        "x": 410,
+        "y": 440,
+        "wires": [
+            [
+                "0985ff675aba9a60"
+            ]
+        ]
+    },
+    {
+        "id": "3caf5495edae2dd4",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get site visit",
+        "x": 430,
+        "y": 700,
+        "wires": [
+            [
+                "bcc17094dcb92785"
+            ]
+        ]
+    },
+    {
+        "id": "60400cf026ee7f65",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected providers",
+        "x": 530,
+        "y": 780,
+        "wires": [
+            [
+                "c9f46601581cf055"
+            ]
+        ]
+    },
+    {
+        "id": "6f6662d330569c75",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspections",
+        "x": 460,
+        "y": 860,
+        "wires": [
+            [
+                "8c1d0e3854ae8978"
+            ]
+        ]
+    },
+    {
+        "id": "831ab4790b303803",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspectors",
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "e81e909d1e22987d"
+            ]
+        ]
+    },
+    {
+        "id": "1b3ef9819f4ea74a",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "5afaefaae1db46d5",
+        "name": "get inspected services",
+        "x": 480,
+        "y": 1360,
+        "wires": [
+            [
+                "13c22c1a0428f139"
+            ]
+        ]
+    },
+    {
+        "id": "d1fc60f56d89d6ed",
+        "type": "subflow:e2896ea94901dc8c",
+        "z": "5afaefaae1db46d5",
+        "name": "get linked schedules",
+        "x": 500,
+        "y": 1080,
+        "wires": [
+            [
+                "14c4bc83ec3010f5"
+            ]
+        ]
+    },
+    {
+        "id": "81d630685e15ede4",
+        "type": "subflow:e2896ea94901dc8c",
+        "z": "5afaefaae1db46d5",
+        "name": "get linked inspected specialties",
+        "x": 550,
+        "y": 1240,
+        "wires": [
+            [
+                "19bda6326095de10"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-ed694127efde2c16",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 60,
+        "wires": [
+            [
+                "ed694127efde2c16"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-af66b696c5573785",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 560,
+        "wires": [
+            [
+                "a043bae1603803a8"
+            ]
+        ]
+    },
+    {
+        "id": "c55e50354b7ed99e",
+        "type": "subflow:368084b92cefec18",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "x": 890,
+        "y": 560,
+        "wires": [
+            [
+                "7cb35d6d0bf3d372"
+            ]
+        ]
     },
     {
         "id": "4b1f9e2113621dd8",
@@ -4063,8 +4089,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 890,
-        "y": 160,
+        "x": 870,
+        "y": 180,
         "wires": [
             [
                 "4f450e00fab88e37"
@@ -4104,8 +4130,7 @@
         "y": 260,
         "wires": [
             [
-                "61f3e4f51ebe920e",
-                "f8fd0ba84a167fe4"
+                "p21chk-4f450e00fab88e37"
             ]
         ]
     },
@@ -4133,7 +4158,7 @@
         "y": 40,
         "wires": [
             [
-                "3220f3f3f70fa16f"
+                "p21env-3220f3f3f70fa16f"
             ]
         ]
     },
@@ -4159,29 +4184,11 @@
         "type": "http response",
         "z": "2958c4a9b21da45a",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 360,
         "y": 40,
         "wires": []
-    },
-    {
-        "id": "7a3c382c54194732",
-        "type": "link call",
-        "z": "2958c4a9b21da45a",
-        "name": "alfresco auth",
-        "links": [
-            "396d75052328dabf"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 670,
-        "y": 160,
-        "wires": [
-            [
-                "085b06de7f20dbf3"
-            ]
-        ]
     },
     {
         "id": "0f7dc8a7cf76071a",
@@ -4223,7 +4230,7 @@
         "y": 600,
         "wires": [
             [
-                "dbd3043502f149d4"
+                "c2844da92658a347"
             ]
         ]
     },
@@ -4260,8 +4267,7 @@
         "y": 700,
         "wires": [
             [
-                "d2f2602a5ec15194",
-                "2f70858160b486f1"
+                "p21chk-ebac6e5376bc7bbc"
             ]
         ]
     },
@@ -4294,24 +4300,6 @@
         "x": 840,
         "y": 620,
         "wires": []
-    },
-    {
-        "id": "dbd3043502f149d4",
-        "type": "link call",
-        "z": "2958c4a9b21da45a",
-        "name": "",
-        "links": [
-            "396d75052328dabf"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 480,
-        "y": 600,
-        "wires": [
-            [
-                "01e297ebbd9d42ec"
-            ]
-        ]
     },
     {
         "id": "01e297ebbd9d42ec",
@@ -4356,25 +4344,7 @@
         "y": 260,
         "wires": [
             [
-                "82ed4a92c8c8050e"
-            ]
-        ]
-    },
-    {
-        "id": "82ed4a92c8c8050e",
-        "type": "link call",
-        "z": "2958c4a9b21da45a",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 400,
-        "y": 320,
-        "wires": [
-            [
-                "638b34fa78135933"
+                "4f11c2af825a2065"
             ]
         ]
     },
@@ -4394,25 +4364,7 @@
         "y": 320,
         "wires": [
             [
-                "1a3ed13a32e97cc3"
-            ]
-        ]
-    },
-    {
-        "id": "1a3ed13a32e97cc3",
-        "type": "link call",
-        "z": "2958c4a9b21da45a",
-        "name": "",
-        "links": [
-            "08f5d2534ec47de6"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 910,
-        "y": 320,
-        "wires": [
-            [
-                "f5779d026901d5c1"
+                "5d0378d7d1ad8d9f"
             ]
         ]
     },
@@ -4428,30 +4380,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 120,
-        "y": 160,
+        "x": 660,
+        "y": 100,
         "wires": [
             [
-                "81d455892af199df"
-            ]
-        ]
-    },
-    {
-        "id": "81d455892af199df",
-        "type": "link call",
-        "z": "2958c4a9b21da45a",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 320,
-        "y": 160,
-        "wires": [
-            [
-                "952946db67cb59ba",
-                "90613ba352af9a02"
+                "41cfd1cd666e3d80"
             ]
         ]
     },
@@ -4488,11 +4421,11 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 500,
-        "y": 160,
+        "x": 400,
+        "y": 180,
         "wires": [
             [
-                "7a3c382c54194732"
+                "63a03945d4e882a6"
             ]
         ]
     },
@@ -4512,24 +4445,144 @@
         "y": 380,
         "wires": [
             [
-                "6c8ff1ae1abd95eb"
+                "49d5e1fb66e70f5f"
             ]
         ]
     },
     {
-        "id": "6c8ff1ae1abd95eb",
-        "type": "link call",
+        "id": "c2844da92658a347",
+        "type": "subflow:a4fd7864d2ed64a0",
         "z": "2958c4a9b21da45a",
         "name": "",
-        "links": [
-            "08f5d2534ec47de6"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 910,
+        "x": 490,
+        "y": 600,
+        "wires": [
+            [
+                "01e297ebbd9d42ec"
+            ]
+        ]
+    },
+    {
+        "id": "41cfd1cd666e3d80",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "2958c4a9b21da45a",
+        "name": "get inspections",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "952946db67cb59ba",
+                "90613ba352af9a02"
+            ]
+        ]
+    },
+    {
+        "id": "63a03945d4e882a6",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "2958c4a9b21da45a",
+        "name": "",
+        "x": 610,
+        "y": 180,
+        "wires": [
+            [
+                "085b06de7f20dbf3"
+            ]
+        ]
+    },
+    {
+        "id": "4f11c2af825a2065",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "2958c4a9b21da45a",
+        "name": "get site visit",
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "638b34fa78135933"
+            ]
+        ]
+    },
+    {
+        "id": "5d0378d7d1ad8d9f",
+        "type": "subflow:368084b92cefec18",
+        "z": "2958c4a9b21da45a",
+        "name": "update site visit",
+        "x": 900,
+        "y": 320,
+        "wires": [
+            [
+                "f5779d026901d5c1"
+            ]
+        ]
+    },
+    {
+        "id": "49d5e1fb66e70f5f",
+        "type": "subflow:368084b92cefec18",
+        "z": "2958c4a9b21da45a",
+        "name": "update site visit again",
+        "x": 920,
         "y": 380,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "p21env-3220f3f3f70fa16f",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 40,
+        "wires": [
+            [
+                "3220f3f3f70fa16f"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-4f450e00fab88e37",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "61f3e4f51ebe920e",
+                "f8fd0ba84a167fe4"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-ebac6e5376bc7bbc",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 700,
+        "wires": [
+            [
+                "d2f2602a5ec15194",
+                "2f70858160b486f1"
+            ]
         ]
     },
     {
@@ -4622,7 +4675,7 @@
         "y": 40,
         "wires": [
             [
-                "b0a2994c799fd3dc"
+                "p21env-b0a2994c799fd3dc"
             ]
         ]
     },
@@ -4650,27 +4703,9 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 910,
-        "y": 460,
+        "x": 890,
+        "y": 480,
         "wires": []
-    },
-    {
-        "id": "af055080076259f2",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 440,
-        "y": 180,
-        "wires": [
-            [
-                "5c497290c30a0c70"
-            ]
-        ]
     },
     {
         "id": "5c497290c30a0c70",
@@ -4704,7 +4739,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 690,
+        "x": 710,
         "y": 420,
         "wires": [
             [
@@ -4728,25 +4763,7 @@
         "y": 520,
         "wires": [
             [
-                "a280859553a52a29"
-            ]
-        ]
-    },
-    {
-        "id": "a280859553a52a29",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "get insp specialties",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 470,
-        "y": 520,
-        "wires": [
-            [
-                "fffc0b7e8f13e374"
+                "ad5afef60f24495f"
             ]
         ]
     },
@@ -4771,24 +4788,6 @@
         ]
     },
     {
-        "id": "3670efee8fa9cb90",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 440,
-        "y": 420,
-        "wires": [
-            [
-                "9b5aaa79e9d78dc4"
-            ]
-        ]
-    },
-    {
         "id": "91bbed2b3cda5bd5",
         "type": "function",
         "z": "041ce3d9cda14530",
@@ -4804,7 +4803,7 @@
         "y": 420,
         "wires": [
             [
-                "3670efee8fa9cb90"
+                "3710523db1823685"
             ]
         ]
     },
@@ -4824,7 +4823,7 @@
         "y": 180,
         "wires": [
             [
-                "af055080076259f2"
+                "180ad190d54dc47b"
             ]
         ]
     },
@@ -4844,25 +4843,7 @@
         "y": 600,
         "wires": [
             [
-                "9729b91c720d1466"
-            ]
-        ]
-    },
-    {
-        "id": "9729b91c720d1466",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "get inspectors",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 460,
-        "y": 600,
-        "wires": [
-            [
-                "603ea05e2b87ca0f"
+                "93f0ce5a2b57a210"
             ]
         ]
     },
@@ -4882,7 +4863,7 @@
         "y": 600,
         "wires": [
             [
-                "bec446be943ad654"
+                "bc2c918dcdae6cb5"
             ]
         ]
     },
@@ -4919,26 +4900,7 @@
         "y": 680,
         "wires": [
             [
-                "99727fd091645792",
-                "a5534ea92b26fa8a"
-            ]
-        ]
-    },
-    {
-        "id": "bec446be943ad654",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "",
-        "links": [
-            "396d75052328dabf"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 200,
-        "y": 680,
-        "wires": [
-            [
-                "dbdd72860edcabb4"
+                "p21chk-e3fbb648496dac27"
             ]
         ]
     },
@@ -4986,24 +4948,8 @@
         "y": 600,
         "wires": [
             [
-                "dc30543fe5a6e743"
+                "2e9ba67ffd0dc521"
             ]
-        ]
-    },
-    {
-        "id": "dc30543fe5a6e743",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "",
-        "links": [
-            "08f5d2534ec47de6"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 1070,
-        "y": 500,
-        "wires": [
-            []
         ]
     },
     {
@@ -5027,24 +4973,6 @@
         ]
     },
     {
-        "id": "253d2c0e579f37bc",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 440,
-        "y": 320,
-        "wires": [
-            [
-                "203492bb6f7e76b3"
-            ]
-        ]
-    },
-    {
         "id": "efbde6c92a59a13a",
         "type": "function",
         "z": "041ce3d9cda14530",
@@ -5060,7 +4988,7 @@
         "y": 320,
         "wires": [
             [
-                "253d2c0e579f37bc"
+                "d161e9147beca895"
             ]
         ]
     },
@@ -5076,29 +5004,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 720,
+        "x": 800,
         "y": 260,
         "wires": [
             [
                 "efbde6c92a59a13a"
-            ]
-        ]
-    },
-    {
-        "id": "8e99b735bbb21d34",
-        "type": "link call",
-        "z": "041ce3d9cda14530",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 460,
-        "y": 260,
-        "wires": [
-            [
-                "73df7b197aabe7c9"
             ]
         ]
     },
@@ -5118,7 +5028,148 @@
         "y": 260,
         "wires": [
             [
-                "8e99b735bbb21d34"
+                "47ada5c5f9de4e24"
+            ]
+        ]
+    },
+    {
+        "id": "bc2c918dcdae6cb5",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "041ce3d9cda14530",
+        "name": "",
+        "x": 170,
+        "y": 680,
+        "wires": [
+            [
+                "dbdd72860edcabb4"
+            ]
+        ]
+    },
+    {
+        "id": "180ad190d54dc47b",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get site visit",
+        "x": 430,
+        "y": 180,
+        "wires": [
+            [
+                "5c497290c30a0c70"
+            ]
+        ]
+    },
+    {
+        "id": "47ada5c5f9de4e24",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get inspected provider",
+        "x": 520,
+        "y": 260,
+        "wires": [
+            [
+                "73df7b197aabe7c9"
+            ]
+        ]
+    },
+    {
+        "id": "d161e9147beca895",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get inspections",
+        "x": 440,
+        "y": 320,
+        "wires": [
+            [
+                "203492bb6f7e76b3"
+            ]
+        ]
+    },
+    {
+        "id": "3710523db1823685",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get location services",
+        "x": 460,
+        "y": 420,
+        "wires": [
+            [
+                "9b5aaa79e9d78dc4"
+            ]
+        ]
+    },
+    {
+        "id": "ad5afef60f24495f",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get insp. specialties",
+        "x": 490,
+        "y": 520,
+        "wires": [
+            [
+                "fffc0b7e8f13e374"
+            ]
+        ]
+    },
+    {
+        "id": "93f0ce5a2b57a210",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "041ce3d9cda14530",
+        "name": "get inspectors",
+        "x": 420,
+        "y": 600,
+        "wires": [
+            [
+                "603ea05e2b87ca0f"
+            ]
+        ]
+    },
+    {
+        "id": "2e9ba67ffd0dc521",
+        "type": "subflow:368084b92cefec18",
+        "z": "041ce3d9cda14530",
+        "name": "update site visit status",
+        "x": 1200,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "p21env-b0a2994c799fd3dc",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 40,
+        "wires": [
+            [
+                "b0a2994c799fd3dc"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-e3fbb648496dac27",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 680,
+        "wires": [
+            [
+                "99727fd091645792",
+                "a5534ea92b26fa8a"
             ]
         ]
     },
@@ -5144,7 +5195,7 @@
         "type": "http response",
         "z": "4462ef5386374bff",
         "name": "",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {
             "content-type": "application/json"
         },
@@ -5163,7 +5214,7 @@
         "y": 220,
         "wires": [
             [
-                "3800a06e3170345b"
+                "p21env-3800a06e3170345b"
             ]
         ]
     },
@@ -5196,25 +5247,6 @@
         "wires": []
     },
     {
-        "id": "de28d8125a390f40",
-        "type": "link call",
-        "z": "4462ef5386374bff",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 600,
-        "y": 100,
-        "wires": [
-            [
-                "7251cf3fe6b2a510",
-                "017b7d2c2761d8f3"
-            ]
-        ]
-    },
-    {
         "id": "f35160c07e027e6c",
         "type": "function",
         "z": "4462ef5386374bff",
@@ -5230,7 +5262,7 @@
         "y": 100,
         "wires": [
             [
-                "de28d8125a390f40"
+                "8a611ac168b8bb2c"
             ]
         ]
     },
@@ -5239,7 +5271,7 @@
         "type": "function",
         "z": "4462ef5386374bff",
         "name": "Create inspection object",
-        "func": "msg.inspector = {\n    \"id\" : msg.payload.list[0]?.id,\n    \"name\" : msg.payload.list[0]?.name,\n    \"serviceAreaId\" : msg.payload.list[0]?.serviceAreaId || null,\n    \"serviceAreaName\" : msg.payload.list[0]?.serviceAreaName || null,\n    \"specialties\" : msg.payload.list[0]?.specialty?.map((x) => \n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.inspector;\nreturn msg;",
+        "func": "var list = (msg.payload && msg.payload.list) || [];\nif (list.length === 0) {\n    // A lookup by id with no match is a 404, not a 200 full of nulls.\n    msg.statusCode = 404;\n    if (msg.res) { msg.res.statusCode = 404; }\n    var wanted = (msg.req && msg.req.params && msg.req.params.externalId) || \"\";\n    msg.payload = { success: false, error: \"Inspector not found: \" + wanted };\n    return msg;\n}\nmsg.inspector = {\n    \"id\" : list[0]?.id,\n    \"name\" : list[0]?.name,\n    \"serviceAreaId\" : list[0]?.serviceAreaId || null,\n    \"serviceAreaName\" : list[0]?.serviceAreaName || null,\n    \"specialties\" : list[0]?.specialty?.map((x) =>\n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.inspector;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -5302,24 +5334,6 @@
         "wires": []
     },
     {
-        "id": "235c4f351bd9f157",
-        "type": "link call",
-        "z": "4462ef5386374bff",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 600,
-        "y": 400,
-        "wires": [
-            [
-                "f274d07e82b8dbc1"
-            ]
-        ]
-    },
-    {
         "id": "b119067bf8ac10b3",
         "type": "function",
         "z": "4462ef5386374bff",
@@ -5335,7 +5349,7 @@
         "y": 400,
         "wires": [
             [
-                "235c4f351bd9f157"
+                "e264581785747118"
             ]
         ]
     },
@@ -5380,7 +5394,7 @@
         "y": 840,
         "wires": [
             [
-                "ba30a1d3a6d9a47e"
+                "p21env-ba30a1d3a6d9a47e"
             ]
         ]
     },
@@ -5413,25 +5427,6 @@
         "wires": []
     },
     {
-        "id": "4b95c1a0676e8c86",
-        "type": "link call",
-        "z": "4462ef5386374bff",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 600,
-        "y": 720,
-        "wires": [
-            [
-                "f214c53eba0d1c22",
-                "b7cc0a622e4cc39b"
-            ]
-        ]
-    },
-    {
         "id": "971b8b9418905d87",
         "type": "function",
         "z": "4462ef5386374bff",
@@ -5447,7 +5442,7 @@
         "y": 720,
         "wires": [
             [
-                "4b95c1a0676e8c86"
+                "c3737e378539beb4"
             ]
         ]
     },
@@ -5463,7 +5458,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 790,
+        "x": 870,
         "y": 720,
         "wires": [
             [
@@ -5492,6 +5487,84 @@
         ]
     },
     {
+        "id": "8a611ac168b8bb2c",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "4462ef5386374bff",
+        "name": "get inspector",
+        "x": 590,
+        "y": 100,
+        "wires": [
+            [
+                "7251cf3fe6b2a510",
+                "017b7d2c2761d8f3"
+            ]
+        ]
+    },
+    {
+        "id": "e264581785747118",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "4462ef5386374bff",
+        "name": "get inspection",
+        "x": 600,
+        "y": 400,
+        "wires": [
+            [
+                "f274d07e82b8dbc1"
+            ]
+        ]
+    },
+    {
+        "id": "c3737e378539beb4",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "4462ef5386374bff",
+        "name": "get assigner group",
+        "x": 650,
+        "y": 720,
+        "wires": [
+            [
+                "f214c53eba0d1c22"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-3800a06e3170345b",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "3800a06e3170345b"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-ba30a1d3a6d9a47e",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 840,
+        "wires": [
+            [
+                "ba30a1d3a6d9a47e"
+            ]
+        ]
+    },
+    {
         "id": "b35f1c933bf6e77c",
         "type": "http in",
         "z": "dbdd767669d57957",
@@ -5501,7 +5574,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 140,
+        "y": 60,
         "wires": [
             [
                 "171d96bba8a52e61"
@@ -5517,8 +5590,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 920,
-        "y": 500,
+        "x": 960,
+        "y": 360,
         "wires": []
     },
     {
@@ -5534,8 +5607,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 800,
-        "y": 80,
+        "x": 1060,
+        "y": 180,
         "wires": []
     },
     {
@@ -5557,8 +5630,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 300,
-        "y": 140,
+        "x": 320,
+        "y": 60,
         "wires": [
             [
                 "be151a9a6d230ee7"
@@ -5583,8 +5656,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 130,
-        "y": 460,
+        "x": 170,
+        "y": 420,
         "wires": [
             [
                 "be53fd4a382031bb"
@@ -5607,28 +5680,10 @@
         "finalize": "",
         "libs": [],
         "x": 540,
-        "y": 140,
+        "y": 60,
         "wires": [
             [
-                "c467165894b0c769"
-            ]
-        ]
-    },
-    {
-        "id": "c467165894b0c769",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "query specialties",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 170,
-        "y": 200,
-        "wires": [
-            [
-                "b98a1635343936d9"
+                "9a4ac8195ca8af20"
             ]
         ]
     },
@@ -5645,7 +5700,7 @@
         "finalize": "",
         "libs": [],
         "x": 670,
-        "y": 220,
+        "y": 160,
         "wires": [
             [
                 "4a223f2a859f29e7"
@@ -5665,7 +5720,7 @@
         "finalize": "",
         "libs": [],
         "x": 910,
-        "y": 360,
+        "y": 260,
         "wires": [
             [
                 "63cce0a745e14369",
@@ -5686,7 +5741,7 @@
         "finalize": "",
         "libs": [],
         "x": 320,
-        "y": 400,
+        "y": 340,
         "wires": [
             [
                 "701257e88ccbd7b5"
@@ -5718,8 +5773,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 3,
-        "x": 410,
-        "y": 320,
+        "x": 430,
+        "y": 260,
         "wires": [
             [
                 "e32dab8498403768"
@@ -5745,7 +5800,7 @@
         "finalize": "",
         "libs": [],
         "x": 670,
-        "y": 360,
+        "y": 260,
         "wires": [
             [
                 "4a223f2a859f29e7"
@@ -5771,8 +5826,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 650,
-        "y": 500,
+        "x": 690,
+        "y": 360,
         "wires": [
             [
                 "4a223f2a859f29e7"
@@ -5798,8 +5853,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 140,
-        "y": 320,
+        "x": 160,
+        "y": 220,
         "wires": [
             [
                 "f103a4ce0a691d1a"
@@ -5815,8 +5870,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 640,
+        "x": 90,
+        "y": 600,
         "wires": [
             [
                 "4ca836268aabe9ec"
@@ -5827,7 +5882,7 @@
         "id": "4ca836268aabe9ec",
         "type": "function",
         "z": "dbdd767669d57957",
-        "name": "find specialty params",
+        "name": "set location params",
         "func": "msg.entity=\"Location\";\nmsg.entitySelect=\"id,name,icaoCode,city,province\"\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
@@ -5835,29 +5890,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 640,
+        "x": 330,
+        "y": 600,
         "wires": [
             [
-                "f21aaf6ebdb529a5"
-            ]
-        ]
-    },
-    {
-        "id": "f21aaf6ebdb529a5",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 560,
-        "y": 640,
-        "wires": [
-            [
-                "7c24b6ca1d0dfdec"
+                "0162063b573158e5"
             ]
         ]
     },
@@ -5868,15 +5905,15 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 940,
-        "y": 640,
+        "x": 960,
+        "y": 600,
         "wires": []
     },
     {
         "id": "7c24b6ca1d0dfdec",
         "type": "function",
         "z": "dbdd767669d57957",
-        "name": "function 1",
+        "name": "save location data",
         "func": "let locationList = msg.payload.list.map((x) => ({\n    \"id\" : x.id,\n    \"name\" : x.name,\n    \"icaoCode\" : x.icaoCode,\n    \"city\" : x.city,\n    \"province\" : x. province\n}));\nmsg.payload = locationList;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
@@ -5884,8 +5921,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 740,
-        "y": 640,
+        "x": 750,
+        "y": 600,
         "wires": [
             [
                 "9fb0b0ad48e00844"
@@ -5901,8 +5938,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 140,
-        "y": 760,
+        "x": 100,
+        "y": 780,
         "wires": [
             [
                 "a9ffc1324cf63fc0"
@@ -5921,29 +5958,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 760,
+        "x": 350,
+        "y": 780,
         "wires": [
             [
-                "2fc2d3ae75858424"
-            ]
-        ]
-    },
-    {
-        "id": "2fc2d3ae75858424",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 580,
-        "y": 760,
-        "wires": [
-            [
-                "130557f25a0681b5"
+                "d357ed0e89cec207"
             ]
         ]
     },
@@ -5959,8 +5978,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 750,
-        "y": 760,
+        "x": 770,
+        "y": 780,
         "wires": [
             [
                 "3d8fb2ca615b88ae"
@@ -5977,7 +5996,7 @@
             "content-type": "application/json"
         },
         "x": 960,
-        "y": 760,
+        "y": 780,
         "wires": []
     },
     {
@@ -5990,7 +6009,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 540,
+        "y": 520,
         "wires": [
             [
                 "6a2ad5f8c76403f8"
@@ -6009,29 +6028,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 540,
+        "x": 350,
+        "y": 520,
         "wires": [
             [
-                "7e9f53e2c9ffa007"
-            ]
-        ]
-    },
-    {
-        "id": "7e9f53e2c9ffa007",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 560,
-        "y": 540,
-        "wires": [
-            [
-                "d16140583c0346c5"
+                "5671443886482d27"
             ]
         ]
     },
@@ -6047,8 +6048,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 780,
-        "y": 540,
+        "x": 790,
+        "y": 520,
         "wires": [
             [
                 "be2d9b961222238c"
@@ -6065,7 +6066,7 @@
             "content-type": "application/json"
         },
         "x": 1000,
-        "y": 540,
+        "y": 520,
         "wires": []
     },
     {
@@ -6076,7 +6077,7 @@
         "statusCode": "200",
         "headers": {},
         "x": 720,
-        "y": 1140,
+        "y": 1220,
         "wires": []
     },
     {
@@ -6089,7 +6090,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 130,
-        "y": 740,
+        "y": 860,
         "wires": [
             [
                 "8d251c8331387b1d"
@@ -6115,8 +6116,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 370,
-        "y": 740,
+        "x": 410,
+        "y": 860,
         "wires": [
             [
                 "fbbd171c817c81e0"
@@ -6135,29 +6136,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 630,
-        "y": 740,
+        "x": 170,
+        "y": 920,
         "wires": [
             [
-                "dfcf837bc6f0705f"
-            ]
-        ]
-    },
-    {
-        "id": "dfcf837bc6f0705f",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 840,
-        "y": 740,
-        "wires": [
-            [
-                "1feb07b141deec90"
+                "d7f9c399d8f9396f"
             ]
         ]
     },
@@ -6173,8 +6156,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 800,
+        "x": 680,
+        "y": 920,
         "wires": [
             [
                 "7cc001e167e24c12"
@@ -6190,8 +6173,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 860,
-        "y": 820,
+        "x": 940,
+        "y": 920,
         "wires": []
     },
     {
@@ -6203,8 +6186,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 900,
+        "x": 140,
+        "y": 1020,
         "wires": [
             [
                 "27d0e3e3effafc07"
@@ -6223,29 +6206,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 900,
+        "x": 370,
+        "y": 1020,
         "wires": [
             [
-                "66876264d02814bf"
-            ]
-        ]
-    },
-    {
-        "id": "66876264d02814bf",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 540,
-        "y": 900,
-        "wires": [
-            [
-                "50755965a8957afc"
+                "f35ab37ff4e73da0"
             ]
         ]
     },
@@ -6261,8 +6226,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 720,
-        "y": 900,
+        "x": 780,
+        "y": 1020,
         "wires": [
             [
                 "ed0537cb104083fa"
@@ -6278,34 +6243,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 920,
-        "y": 900,
-        "wires": []
-    },
-    {
-        "id": "b6726ffba2fe494e",
-        "type": "catch",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "scope": null,
-        "uncaught": false,
-        "x": 120,
-        "y": 980,
-        "wires": [
-            [
-                "4ee3b05369286bb3"
-            ]
-        ]
-    },
-    {
-        "id": "4ee3b05369286bb3",
-        "type": "http response",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "statusCode": "400",
-        "headers": {},
-        "x": 340,
-        "y": 980,
+        "x": 960,
+        "y": 1020,
         "wires": []
     },
     {
@@ -6321,7 +6260,7 @@
         "finalize": "",
         "libs": [],
         "x": 400,
-        "y": 1140,
+        "y": 1240,
         "wires": [
             [
                 "eeb674aa4db3ca34",
@@ -6340,7 +6279,7 @@
         "skipBodyParsing": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 1060,
+        "y": 1120,
         "wires": [
             [
                 "7e44dfd48d05a09a"
@@ -6359,11 +6298,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 620,
-        "y": 1060,
+        "x": 660,
+        "y": 1120,
         "wires": [
             [
-                "27cbb6c8170ef54c"
+                "a025a514a07f39c9"
             ]
         ]
     },
@@ -6387,28 +6326,10 @@
         "to": "",
         "reg": false,
         "x": 390,
-        "y": 1060,
+        "y": 1120,
         "wires": [
             [
                 "f899da7d4784aa3d"
-            ]
-        ]
-    },
-    {
-        "id": "27cbb6c8170ef54c",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 140,
-        "y": 1140,
-        "wires": [
-            [
-                "c93de37ae28f9bc8"
             ]
         ]
     },
@@ -6425,143 +6346,229 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 880,
-        "y": 1040,
+        "x": 700,
+        "y": 1320,
         "wires": []
     },
     {
-        "id": "6f9d06e081f9a39e",
-        "type": "http request",
-        "z": "18c3156c77e1c2fb",
-        "name": "Get auth ticket",
-        "method": "POST",
-        "ret": "obj",
-        "paytoqs": "ignore",
-        "url": "http://proxy:8080/alfresco/api/-default-/public/authentication/versions/1/tickets",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 520,
-        "y": 300,
+        "id": "c6d4b2c5e36a4f5f",
+        "type": "http in",
+        "z": "dbdd767669d57957",
+        "name": "Query inspectors by specialty",
+        "url": "/inspectors",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 680,
         "wires": [
             [
-                "27d2d4872fb1b8f6",
-                "1ab5cc53868b0395"
+                "0d370debd8d24302"
             ]
         ]
     },
     {
-        "id": "27d2d4872fb1b8f6",
+        "id": "0d370debd8d24302",
         "type": "function",
-        "z": "18c3156c77e1c2fb",
-        "name": "Set authorization header",
-        "func": "msg.alf_ticket = msg.payload.entry.id;\nmsg.headers = { \"Authorization\": \"Basic \" + Buffer.from(msg.payload.entry.id + \":\").toString('base64') };\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 770,
-        "y": 300,
-        "wires": [
-            [
-                "c0a92aa5d3f5ef39"
-            ]
-        ]
-    },
-    {
-        "id": "396d75052328dabf",
-        "type": "link in",
-        "z": "18c3156c77e1c2fb",
-        "name": "link alfresco authentication",
-        "links": [],
-        "x": 55,
-        "y": 60,
-        "wires": [
-            [
-                "57edab273be1c845"
-            ]
-        ]
-    },
-    {
-        "id": "c0a92aa5d3f5ef39",
-        "type": "link out",
-        "z": "18c3156c77e1c2fb",
-        "name": "link out 7",
-        "mode": "return",
-        "links": [],
-        "x": 915,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "57edab273be1c845",
-        "type": "function",
-        "z": "18c3156c77e1c2fb",
-        "name": "set payload",
-        "func": "// Priority 1: forwarded ticket from frontend\nvar ticket = msg.req && msg.req.headers && msg.req.headers[\"x-alfresco-ticket\"];\nif (ticket) {\n    msg.payload = { \"entry\" : {\"id\" : ticket }};\n    msg.alf_ticket = ticket;\n    msg._skipLogin = true;\n    return msg;\n}\n// Priority 2: env var credentials\nmsg._skipLogin = false;\nvar vsoUser = env.get(\"ALFRESCO_USERNAME\");\nvar vsoPass = env.get(\"ALFRESCO_PASSWORD\");\nif (!vsoUser || !vsoPass) {\n    throw new Error(\"Alfresco credentials are not configured: set ALFRESCO_USERNAME and ALFRESCO_PASSWORD\");\n}\nmsg.payload = {\n    \"userId\": vsoUser,\n    \"password\": vsoPass\n};\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 130,
-        "y": 180,
-        "wires": [
-            [
-                "6a61c1d98f5b14e2"
-            ]
-        ]
-    },
-    {
-        "id": "1ab5cc53868b0395",
-        "type": "debug",
-        "z": "18c3156c77e1c2fb",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 240,
-        "y": 480,
-        "wires": []
-    },
-    {
-        "id": "6a61c1d98f5b14e2",
-        "type": "switch",
-        "z": "18c3156c77e1c2fb",
-        "name": "",
-        "property": "_skipLogin",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "true"
-            },
-            {
-                "t": "false"
-            }
-        ],
-        "checkall": "false",
-        "repair": false,
+        "z": "dbdd767669d57957",
+        "name": "set inspectors-by-specialty params",
+        "func": "const query = (msg.req && msg.req.query) || {};\nconst raw = query.specialty || query.specialtyCode || \"\";\nconst code = String(raw).trim().toUpperCase();\n\nif (!code) {\n  msg.statusCode = 400;\n  if (msg.res) { msg.res.statusCode = 400; }\n  msg.payload = { success: false, error: \"specialty query parameter is required\" };\n  return [null, msg];\n}\n\nmsg.specialtyCode = code;\nmsg.entity = \"Inspector\";\nmsg.entityData = { deleted: false };\nmsg.entitySelect = \"id,name,externalUserID,specialty\";\nreturn [msg, null];",
         "outputs": 2,
-        "x": 350,
-        "y": 180,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 680,
         "wires": [
             [
-                "27d2d4872fb1b8f6"
+                "4881a048207ad467"
             ],
             [
-                "6f9d06e081f9a39e"
+                "4ca8207a3cd84f95"
+            ]
+        ]
+    },
+    {
+        "id": "a488c6d53f464a9c",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "map inspectors by specialty",
+        "func": "const code = String(msg.specialtyCode || \"\").toUpperCase();\nconst rows = (msg.payload && Array.isArray(msg.payload.list)) ? msg.payload.list : [];\n\n// AtroCore cannot filter a many-to-many link in a where clause, so the\n// Specialty relation (Inspector.specialty, the same link /inspector/:id uses)\n// is matched here on the rows the query returned.\nmsg.payload = rows\n  .filter((row) => Array.isArray(row.specialty) &&\n    row.specialty.some((entry) => String((entry && entry.code) || \"\").toUpperCase() === code))\n  .map((row) => ({\n    id: row.id,\n    name: row.name,\n    externalUserID: row.externalUserID || null\n  }));\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 660,
+        "wires": [
+            [
+                "4ca8207a3cd84f95"
+            ]
+        ]
+    },
+    {
+        "id": "4ca8207a3cd84f95",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1200,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "9a4ac8195ca8af20",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query specialties",
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "b98a1635343936d9"
+            ]
+        ]
+    },
+    {
+        "id": "5671443886482d27",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "get service area",
+        "x": 580,
+        "y": 520,
+        "wires": [
+            [
+                "d16140583c0346c5"
+            ]
+        ]
+    },
+    {
+        "id": "0162063b573158e5",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query locations",
+        "x": 540,
+        "y": 600,
+        "wires": [
+            [
+                "7c24b6ca1d0dfdec"
+            ]
+        ]
+    },
+    {
+        "id": "4881a048207ad467",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query inspectors",
+        "x": 720,
+        "y": 660,
+        "wires": [
+            [
+                "a488c6d53f464a9c"
+            ]
+        ]
+    },
+    {
+        "id": "d357ed0e89cec207",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query activity types",
+        "x": 570,
+        "y": 780,
+        "wires": [
+            [
+                "130557f25a0681b5"
+            ]
+        ]
+    },
+    {
+        "id": "d7f9c399d8f9396f",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query inspected providers",
+        "x": 450,
+        "y": 920,
+        "wires": [
+            [
+                "1feb07b141deec90"
+            ]
+        ]
+    },
+    {
+        "id": "f35ab37ff4e73da0",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query site visits",
+        "x": 580,
+        "y": 1020,
+        "wires": [
+            [
+                "50755965a8957afc"
+            ]
+        ]
+    },
+    {
+        "id": "a025a514a07f39c9",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "dbdd767669d57957",
+        "name": "query inspections",
+        "x": 150,
+        "y": 1240,
+        "wires": [
+            [
+                "c93de37ae28f9bc8"
+            ]
+        ]
+    },
+    {
+        "id": "b6726ffba2fe494e",
+        "type": "catch",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 980,
+        "wires": [
+            [
+                "p21env-4ee3b05369286bb3"
+            ]
+        ]
+    },
+    {
+        "id": "4ee3b05369286bb3",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "p21env-4ee3b05369286bb3",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 980,
+        "wires": [
+            [
+                "4ee3b05369286bb3"
             ]
         ]
     },
@@ -6631,24 +6638,6 @@
         ]
     },
     {
-        "id": "d5ad990219f7e100",
-        "type": "link call",
-        "z": "be74fd69d845153f",
-        "name": "",
-        "links": [
-            "396d75052328dabf"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 600,
-        "y": 260,
-        "wires": [
-            [
-                "5df3c363ff334a37"
-            ]
-        ]
-    },
-    {
         "id": "de062de86100cbc3",
         "type": "http request",
         "z": "be74fd69d845153f",
@@ -6668,8 +6657,7 @@
         "y": 340,
         "wires": [
             [
-                "da044a31bcb31118",
-                "4afccf560762d782"
+                "p21chk-de062de86100cbc3"
             ]
         ]
     },
@@ -6689,7 +6677,7 @@
         "y": 260,
         "wires": [
             [
-                "d5ad990219f7e100"
+                "83e77cdcc727d206"
             ]
         ]
     },
@@ -6821,6 +6809,39 @@
         ]
     },
     {
+        "id": "83e77cdcc727d206",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "x": 570,
+        "y": 260,
+        "wires": [
+            [
+                "5df3c363ff334a37"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-de062de86100cbc3",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "da044a31bcb31118",
+                "4afccf560762d782"
+            ]
+        ]
+    },
+    {
         "id": "355c318caf6fc721",
         "type": "http in",
         "z": "5e1aad1777646734",
@@ -6872,24 +6893,6 @@
         ]
     },
     {
-        "id": "e6b3daa270c934e8",
-        "type": "link call",
-        "z": "5e1aad1777646734",
-        "name": "",
-        "links": [
-            "396d75052328dabf"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 560,
-        "y": 260,
-        "wires": [
-            [
-                "0c0220959198349e"
-            ]
-        ]
-    },
-    {
         "id": "3856a097e0ba3c92",
         "type": "http request",
         "z": "5e1aad1777646734",
@@ -6909,7 +6912,7 @@
         "y": 340,
         "wires": [
             [
-                "463ace0ebbc03553"
+                "p21chk-3856a097e0ba3c92"
             ]
         ]
     },
@@ -6929,7 +6932,7 @@
         "y": 260,
         "wires": [
             [
-                "e6b3daa270c934e8"
+                "11fb631d19a4c516"
             ]
         ]
     },
@@ -6967,7 +6970,7 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 840,
+        "x": 920,
         "y": 80,
         "wires": []
     },
@@ -7061,94 +7064,35 @@
         ]
     },
     {
-        "id": "c6d4b2c5e36a4f5f",
-        "type": "http in",
-        "z": "dbdd767669d57957",
-        "name": "Query inspectors by specialty",
-        "url": "/inspectors",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 170,
-        "y": 700,
-        "wires": [
-            [
-                "0d370debd8d24302"
-            ]
-        ]
-    },
-    {
-        "id": "0d370debd8d24302",
-        "type": "function",
-        "z": "dbdd767669d57957",
-        "name": "set inspectors-by-specialty params",
-        "func": "const query = (msg.req && msg.req.query) || {};\nconst raw = query.specialty || query.specialtyCode || \"\";\nconst code = String(raw).trim().toUpperCase();\n\nif (!code) {\n  msg.statusCode = 400;\n  if (msg.res) { msg.res.statusCode = 400; }\n  msg.payload = { error: \"specialty query parameter is required\" };\n  return [null, msg];\n}\n\nmsg.specialtyCode = code;\nmsg.entity = \"Inspector\";\nmsg.entityData = { deleted: false };\nmsg.entitySelect = \"id,name,externalUserID,specialty\";\nreturn [msg, null];",
-        "outputs": 2,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 430,
-        "y": 700,
-        "wires": [
-            [
-                "60a54e35886d4430"
-            ],
-            [
-                "4ca8207a3cd84f95"
-            ]
-        ]
-    },
-    {
-        "id": "60a54e35886d4430",
-        "type": "link call",
-        "z": "dbdd767669d57957",
-        "name": "query inspectors",
-        "links": [
-            "9d1c32d934dc0bce"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 710,
-        "y": 780,
-        "wires": [
-            [
-                "a488c6d53f464a9c"
-            ]
-        ]
-    },
-    {
-        "id": "a488c6d53f464a9c",
-        "type": "function",
-        "z": "dbdd767669d57957",
-        "name": "map inspectors by specialty",
-        "func": "const code = String(msg.specialtyCode || \"\").toUpperCase();\nconst rows = (msg.payload && Array.isArray(msg.payload.list)) ? msg.payload.list : [];\n\n// AtroCore cannot filter a many-to-many link in a where clause, so the\n// Specialty relation (Inspector.specialty, the same link /inspector/:id uses)\n// is matched here on the rows the query returned.\nmsg.payload = rows\n  .filter((row) => Array.isArray(row.specialty) &&\n    row.specialty.some((entry) => String((entry && entry.code) || \"\").toUpperCase() === code))\n  .map((row) => ({\n    id: row.id,\n    name: row.name,\n    externalUserID: row.externalUserID || null\n  }));\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 960,
-        "y": 780,
-        "wires": [
-            [
-                "4ca8207a3cd84f95"
-            ]
-        ]
-    },
-    {
-        "id": "4ca8207a3cd84f95",
-        "type": "http response",
-        "z": "dbdd767669d57957",
+        "id": "11fb631d19a4c516",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "5e1aad1777646734",
         "name": "",
-        "statusCode": "",
-        "headers": {
-            "content-type": "application/json"
-        },
-        "x": 1200,
-        "y": 700,
-        "wires": []
+        "x": 530,
+        "y": 260,
+        "wires": [
+            [
+                "0c0220959198349e"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-3856a097e0ba3c92",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 340,
+        "wires": [
+            [
+                "463ace0ebbc03553"
+            ]
+        ]
     }
 ]
