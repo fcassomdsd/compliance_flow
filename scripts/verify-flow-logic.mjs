@@ -153,6 +153,28 @@ for (const node of plain.slice(0, 2)) {
     bad.out === null && bad.errors.length === 1, JSON.stringify(bad));
 }
 
+// --- entity / identifier pairing --------------------------------------------
+// A blanket "Inspection -> SiteVisit" rename once rewrote a status-update node's
+// entity while leaving its identifier alone, so /inspectionPlan and
+// /inspectionReport updated a SiteVisit with an Inspection id (HTTP 404) on
+// every call. It went unnoticed because those tabs' catch nodes were disabled,
+// so the failure was never answered — the request just hung. When a function
+// sets both msg.entity and msg.entityId from a "<something>Id" variable, the
+// two names must agree.
+const mismatched = [];
+for (const node of flows) {
+  if (!node || node.type !== 'function' || typeof node.func !== 'string') continue;
+  const entity = node.func.match(/msg\.entity\s*=\s*"([^"]+)"/);
+  const entityId = node.func.match(/msg\.entityId\s*=\s*(?:msg\.)?([A-Za-z_$][\w$]*)\s*;/);
+  if (!entity || !entityId || !entityId[1].endsWith('Id')) continue;
+  const prefix = entityId[1].slice(0, -2);
+  if (prefix.toLowerCase() !== entity[1].toLowerCase()) {
+    mismatched.push(`${node.name}: msg.entity = "${entity[1]}" but msg.entityId = ${entityId[1]}`);
+  }
+}
+check('entity updates pair each entity with its own identifier',
+  mismatched.length === 0, mismatched.join('; '));
+
 // --- report -----------------------------------------------------------------
 if (failures.length > 0) {
   console.error(`FAIL: ${failures.length} flow-logic check(s) failed:`);
