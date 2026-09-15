@@ -102,6 +102,20 @@ for (const node of flows) {
   }
 }
 
+// A disabled catch node is worse than a missing one: Node-RED only logs an
+// error when no catch node handles it, so every failure in that tab leaves the
+// HTTP request unanswered — the client hangs instead of getting the envelope.
+// Both of the flow's disabled nodes were catch nodes, unnoticed for months.
+for (const node of flows) {
+  if (node && node.type === 'catch' && node.d === true) {
+    const parent = byId.get(node.z);
+    problems.push(
+      `catch node (${node.id}) in tab "${parent ? parent.label : node.z}" is disabled ` +
+        '("d": true) — errors in that tab would never be answered',
+    );
+  }
+}
+
 const tabs = flows.filter((n) => n && n.type === 'tab').length;
 const subflows = flows.filter((n) => n && n.type === 'subflow').length;
 const endpoints = flows.filter((n) => n && n.type === 'http in').length;
