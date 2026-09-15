@@ -1,0 +1,136 @@
+[
+    {
+        "id": "e2896ea94901dc8c",
+        "type": "subflow",
+        "name": "getEntityLinks",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "d6624ce34f9ccecd"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 700,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "p21chk-8644c145ead9a057",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "d6624ce34f9ccecd",
+        "type": "subflow:fb76825dc7301958",
+        "z": "e2896ea94901dc8c",
+        "name": "",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "p22env-8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "8644c145ead9a057",
+        "type": "http request",
+        "z": "e2896ea94901dc8c",
+        "name": "Get links for entity instance",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "{{{atrocoreBaseUrl}}}/{{entity}}/{{entityId}}/{{entityLink}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 500,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-8644c145ead9a057",
+        "type": "function",
+        "z": "e2896ea94901dc8c",
+        "name": "check upstream status",
+        "func": "// Upstream failures arrive on the normal output. Retry server/transport\n// failures a bounded number of times (msg.delay -> the \"retry backoff\" delay\n// node -> back into the request), then raise so the flow's catch handler\n// returns the error envelope.\nvar transportFailure = isNaN(parseInt(msg.statusCode, 10));\nvar status = transportFailure ? 0 : parseInt(msg.statusCode, 10);\nif (status >= 400 || transportFailure) {\n    var maxRetries = parseInt(env.get(\"HTTP_MAX_RETRIES\"), 10);\n    if (isNaN(maxRetries) || maxRetries < 0) { maxRetries = 2; }\n    var attempt = parseInt(msg.retry_8644c145ead9a057, 10) || 0;\n    var retryable = transportFailure || status >= 500;\n    if (retryable && attempt < maxRetries) {\n        msg.retry_8644c145ead9a057 = attempt + 1;\n        var backoff = parseInt(env.get(\"HTTP_RETRY_BACKOFF_MS\"), 10);\n        if (isNaN(backoff) || backoff < 0) { backoff = 500; }\n        msg.delay = backoff * msg.retry_8644c145ead9a057;\n        return [null, msg];\n    }\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + (transportFailure ? \"transport failure\" : status) + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "p22retry-8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-8644c145ead9a057",
+        "type": "function",
+        "z": "e2896ea94901dc8c",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 80,
+        "wires": [
+            [
+                "8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "p22retry-8644c145ead9a057",
+        "type": "delay",
+        "z": "e2896ea94901dc8c",
+        "name": "retry backoff",
+        "pauseType": "delayv",
+        "timeout": "500",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 200,
+        "wires": [
+            [
+                "8644c145ead9a057"
+            ]
+        ]
+    }
+]

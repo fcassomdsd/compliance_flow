@@ -1,0 +1,157 @@
+[
+    {
+        "id": "2be0d2205654bc57",
+        "type": "tab",
+        "label": "Get links",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f2ea80ba1964cbca",
+        "type": "http in",
+        "z": "2be0d2205654bc57",
+        "name": "Get Entity Links",
+        "url": "/getLinks",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            [
+                "281dc8339d56e6e6"
+            ]
+        ]
+    },
+    {
+        "id": "281dc8339d56e6e6",
+        "type": "change",
+        "z": "2be0d2205654bc57",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityId",
+                "pt": "msg",
+                "to": "req.query.id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityLink",
+                "pt": "msg",
+                "to": "req.query.link",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 180,
+        "wires": [
+            [
+                "3645865e49c29e27"
+            ]
+        ]
+    },
+    {
+        "id": "d1ee23f65b6a3211",
+        "type": "http response",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "500256bb13bdf379",
+        "type": "catch",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "p21env-92e365dc5ad8fbc5"
+            ]
+        ]
+    },
+    {
+        "id": "48b69f490df79ca2",
+        "type": "debug",
+        "z": "2be0d2205654bc57",
+        "name": "getLinks",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "92e365dc5ad8fbc5",
+        "type": "http response",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "statusCode": "500",
+        "headers": {},
+        "x": 320,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "3645865e49c29e27",
+        "type": "subflow:e2896ea94901dc8c",
+        "z": "2be0d2205654bc57",
+        "name": "",
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "48b69f490df79ca2",
+                "d1ee23f65b6a3211"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-92e365dc5ad8fbc5",
+        "type": "function",
+        "z": "2be0d2205654bc57",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 280,
+        "wires": [
+            [
+                "92e365dc5ad8fbc5"
+            ]
+        ]
+    }
+]

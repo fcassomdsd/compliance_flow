@@ -101,7 +101,8 @@ docker network create import-backend
 |---|---|
 | `docker-compose.yaml` | Container definition, port mapping, and network membership |
 | `data/settings.js` | Node-RED runtime configuration (port, security, flow file, etc.) |
-| `data/flows.json` | All Node-RED flow definitions (source of truth for the API) |
+| `flows/*.json` | **The maintained flow definitions** — one file per tab and per subflow |
+| `data/flows.json` | The runtime flow file: `flows/*.json` concatenated in filename order |
 | `data/flows_cred.json` | Encrypted credentials used by flows (do **not** commit plaintext secrets) |
 | `data/package.json` | Node-RED project metadata and custom node dependencies |
 | `.env.example` | Environment variable template (copy to `.env` before deployment) |
@@ -270,19 +271,69 @@ node scripts/audit-error-envelope.mjs --enforce  # exit 1 until every probe pass
 
 ---
 
+## Flow file layout
+
+Node-RED loads exactly one flow file (Projects included — `data/settings.js` has
+projects disabled), so `data/flows.json` stays the runtime artifact. The flow is
+**maintained** as one file per tab and per subflow under `flows/`, so a change to
+one flow is a diff in one small file instead of in a 7,500-line JSON blob:
+
+```
+flows/
+├── 01-getchecklistquestion.json          # tab "getChecklistQuestion" (container node first)
+├── 02-query-entity.json
+├── …
+├── 15-follow-up-flows.json
+├── subflow-getatrocoreticket.json        # subflow definition + its nodes
+├── subflow-queryentity.json
+└── …
+```
+
+`data/flows.json` is those files concatenated in filename order (tabs in their
+original order, then subflows, then any node whose `z` is not a known tab).
+
+```bash
+node scripts/split-flows.mjs             # data/flows.json -> flows/*.json (and re-canonicalise data/flows.json)
+node scripts/assemble-flows.mjs          # flows/*.json -> data/flows.json
+node scripts/split-flows.mjs --check     # fail if flows/ is stale (CI)
+node scripts/assemble-flows.mjs --check  # fail if data/flows.json is stale (CI)
+node --test scripts/flows-files.test.mjs # round-trip and failure-mode tests
+```
+
+**Which command to run after editing**
+
+- Edited in the Node-RED editor? Run `node scripts/split-flows.mjs`. The editor
+  writes `data/flows.json` and appends new nodes at the end of the array, so this
+  one command updates `flows/` *and* rewrites `data/flows.json` in canonical
+  order, leaving the tree consistent.
+- Edited `flows/*.json` directly? Run `node scripts/assemble-flows.mjs`.
+
+Commit both sides; the `validate:flows` CI job fails when the fragments and the
+runtime file disagree. Renaming a tab renames its file (the numeric prefix is the
+tab's order of appearance), and adding or removing a tab renumbers the tabs after
+it — a reviewable rename, not a content change.
+
+---
+
 ## Project Structure
 
 ```
 node-red/
 ├── docker-compose.yaml       # Docker service definition
+├── flows/                    # One flow file per tab/subflow (the maintained source)
+│   ├── 01-getchecklistquestion.json
+│   └── subflow-getatrocoreticket.json
 ├── data/                     # Mounted into the container as /data
-│   ├── flows.json            # All Node-RED flow definitions
+│   ├── flows.json            # Runtime flow file, assembled from ../flows/
 │   ├── flows_cred.json       # Encrypted flow credentials
 │   ├── package.json          # Project metadata / custom node deps
 │   ├── settings.js           # Node-RED runtime configuration
 │   └── lib/
 │       └── flows/            # (reserved for reusable sub-flow libraries)
 └── scripts/                  # Validation and smoke tooling (run on the host, not in the container)
+    ├── split-flows.mjs           # data/flows.json -> flows/ (after editor edits)
+    ├── assemble-flows.mjs        # flows/ -> data/flows.json
+    ├── flows-files.test.mjs      # Round-trip tests for the two above (CI)
     ├── validate-flows.mjs        # Structural flow validation (CI)
     ├── verify-endpoints.mjs      # README endpoint manifest check (CI)
     ├── smoke-flows.mjs           # Read-only live smoke harness (local)

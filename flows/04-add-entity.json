@@ -1,0 +1,245 @@
+[
+    {
+        "id": "e6eb17aaaa227e4d",
+        "type": "tab",
+        "label": "Add entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b7ae165fc4ae3a9e",
+        "type": "http in",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Add Entity",
+        "url": "/addEntity",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "1b834ed079034115"
+            ]
+        ]
+    },
+    {
+        "id": "1b834ed079034115",
+        "type": "change",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Capture request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "addData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 180,
+        "wires": [
+            [
+                "07cac92ea17cd346"
+            ]
+        ]
+    },
+    {
+        "id": "5c0ca4319b81e817",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Set request parameters",
+        "func": "msg.payload = msg.addData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 180,
+        "wires": [
+            [
+                "p22env-5475d96d7baf4b89"
+            ]
+        ]
+    },
+    {
+        "id": "5475d96d7baf4b89",
+        "type": "http request",
+        "z": "e6eb17aaaa227e4d",
+        "name": "Add entity record",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "{{{atrocoreBaseUrl}}}/{{ entity }}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 250,
+        "y": 260,
+        "wires": [
+            [
+                "p21chk-5475d96d7baf4b89"
+            ]
+        ]
+    },
+    {
+        "id": "78cd9869f40be1c8",
+        "type": "http response",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 640,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "fc58921eb3167d4c",
+        "type": "catch",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 340,
+        "wires": [
+            [
+                "p21env-cb95456a5e6cf9db"
+            ]
+        ]
+    },
+    {
+        "id": "395b3799645197f5",
+        "type": "debug",
+        "z": "e6eb17aaaa227e4d",
+        "name": "addEntity",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "cb95456a5e6cf9db",
+        "type": "http response",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "statusCode": "500",
+        "headers": {},
+        "x": 360,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "07cac92ea17cd346",
+        "type": "subflow:fb76825dc7301958",
+        "z": "e6eb17aaaa227e4d",
+        "name": "",
+        "x": 510,
+        "y": 180,
+        "wires": [
+            [
+                "5c0ca4319b81e817"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-cb95456a5e6cf9db",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "cb95456a5e6cf9db"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-5475d96d7baf4b89",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 260,
+        "wires": [
+            [
+                "78cd9869f40be1c8",
+                "395b3799645197f5"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-5475d96d7baf4b89",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 50,
+        "y": 260,
+        "wires": [
+            [
+                "5475d96d7baf4b89"
+            ]
+        ]
+    }
+]

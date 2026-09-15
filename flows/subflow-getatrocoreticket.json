@@ -1,0 +1,218 @@
+[
+    {
+        "id": "fb76825dc7301958",
+        "type": "subflow",
+        "name": "getAtrocoreTicket",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 300,
+                "wires": [
+                    {
+                        "id": "d91ff062af570bd6"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1000,
+                "y": 300,
+                "wires": [
+                    {
+                        "id": "79c7123b33df9145",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "set_atrocore_auth",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "Set AtroCore credentials",
+        "func": "var user = env.get(\"ATROCORE_USERNAME\");\nvar pass = env.get(\"ATROCORE_PASSWORD\");\nif (!user || !pass) {\n    throw new Error(\"AtroCore credentials are not configured: set ATROCORE_USERNAME and ATROCORE_PASSWORD\");\n}\nmsg.headers = msg.headers || {};\nmsg.headers[\"Authorization\"] = \"Basic \" + Buffer.from(user + \":\" + pass).toString(\"base64\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 80,
+        "wires": [
+            [
+                "p22env-aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "d91ff062af570bd6",
+        "type": "switch",
+        "z": "fb76825dc7301958",
+        "name": "",
+        "property": "authToken",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "null"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 190,
+        "y": 300,
+        "wires": [
+            [
+                "set_atrocore_auth"
+            ],
+            [
+                "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "aa61590209297976",
+        "type": "http request",
+        "z": "fb76825dc7301958",
+        "name": "Get auth token",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "{{{atrocoreBaseUrl}}}/App/user",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "p21chk-aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "79c7123b33df9145",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "Set authorization header",
+        "func": "msg.headers = { \"Authorization\": \"Bearer \" + msg.authToken };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2c42610a8c33a618",
+        "type": "change",
+        "z": "fb76825dc7301958",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "authToken",
+                "pt": "msg",
+                "to": "payload.authorizationToken",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 80,
+        "wires": [
+            [
+                "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-aa61590209297976",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "check upstream status",
+        "func": "// Upstream failures arrive on the normal output. Retry server/transport\n// failures a bounded number of times (msg.delay -> the \"retry backoff\" delay\n// node -> back into the request), then raise so the flow's catch handler\n// returns the error envelope.\nvar transportFailure = isNaN(parseInt(msg.statusCode, 10));\nvar status = transportFailure ? 0 : parseInt(msg.statusCode, 10);\nif (status >= 400 || transportFailure) {\n    var maxRetries = parseInt(env.get(\"HTTP_MAX_RETRIES\"), 10);\n    if (isNaN(maxRetries) || maxRetries < 0) { maxRetries = 2; }\n    var attempt = parseInt(msg.retry_aa61590209297976, 10) || 0;\n    var retryable = transportFailure || status >= 500;\n    if (retryable && attempt < maxRetries) {\n        msg.retry_aa61590209297976 = attempt + 1;\n        var backoff = parseInt(env.get(\"HTTP_RETRY_BACKOFF_MS\"), 10);\n        if (isNaN(backoff) || backoff < 0) { backoff = 500; }\n        msg.delay = backoff * msg.retry_aa61590209297976;\n        return [null, msg];\n    }\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + (transportFailure ? \"transport failure\" : status) + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 180,
+        "wires": [
+            [
+                "2c42610a8c33a618"
+            ],
+            [
+                "p22retry-aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-aa61590209297976",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "aa61590209297976"
+            ]
+        ]
+    },
+    {
+        "id": "p22retry-aa61590209297976",
+        "type": "delay",
+        "z": "fb76825dc7301958",
+        "name": "retry backoff",
+        "pauseType": "delayv",
+        "timeout": "500",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 300,
+        "wires": [
+            [
+                "aa61590209297976"
+            ]
+        ]
+    }
+]

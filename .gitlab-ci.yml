@@ -7,10 +7,17 @@ stages:
 # structure on every merge request, verify the README endpoint manifest still
 # matches the flow's http-in nodes, and unit-check the JavaScript embedded in the
 # function nodes (envelope, env plumbing, retry policy) — all without a stack.
+#
+# The flow is maintained as one file per tab/subflow under flows/ and assembled
+# into data/flows.json; the two --check runs fail the pipeline when the fragments
+# and the runtime file drift apart.
 validate:flows:
   stage: validate
   image: node:20-alpine
   script:
+    - node --test scripts/flows-files.test.mjs
+    - node scripts/assemble-flows.mjs --check
+    - node scripts/split-flows.mjs --check
     - node scripts/validate-flows.mjs
     - node scripts/verify-endpoints.mjs
     - node scripts/verify-flow-logic.mjs

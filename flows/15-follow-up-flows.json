@@ -1,0 +1,283 @@
+[
+    {
+        "id": "5e1aad1777646734",
+        "type": "tab",
+        "label": "follow up flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "355c318caf6fc721",
+        "type": "http in",
+        "z": "5e1aad1777646734",
+        "name": "get last sequence Follow Ups",
+        "url": "/content/lastSeq",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "87398e603e4cd557"
+            ]
+        ]
+    },
+    {
+        "id": "87398e603e4cd557",
+        "type": "change",
+        "z": "5e1aad1777646734",
+        "name": "get parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "prefix",
+                "pt": "msg",
+                "to": "req.query.prefix",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "relativePath",
+                "pt": "msg",
+                "to": "req.query.relativePath",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "2ba66e3da5a2cf69"
+            ]
+        ]
+    },
+    {
+        "id": "3856a097e0ba3c92",
+        "type": "http request",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "{{{alfrescoBaseUrl}}}/api/-default-/public/alfresco/versions/1/nodes/-root-/children?alf_ticket={{alf_ticket}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 340,
+        "wires": [
+            [
+                "p21chk-3856a097e0ba3c92"
+            ]
+        ]
+    },
+    {
+        "id": "90d02e729b93bac5",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "prepare payload",
+        "func": "msg.scriptPayload = {};\nif (msg.relativePath) {\n  msg.scriptPayload[\"relativePath\"] = msg.relativePath\n}\n\nmsg.scriptPayload[\"fields\"] = [\"name\"];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "11fb631d19a4c516"
+            ]
+        ]
+    },
+    {
+        "id": "0c0220959198349e",
+        "type": "change",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "scriptPayload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "p22env-3856a097e0ba3c92"
+            ]
+        ]
+    },
+    {
+        "id": "b38be35bcddb3b07",
+        "type": "http response",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 920,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "8a89544c87a5a0b8",
+        "type": "link in",
+        "z": "5e1aad1777646734",
+        "name": "link followup sequence",
+        "links": [],
+        "x": 85,
+        "y": 260,
+        "wires": [
+            [
+                "90d02e729b93bac5"
+            ]
+        ]
+    },
+    {
+        "id": "dd22dfeb1cbdd77c",
+        "type": "link out",
+        "z": "5e1aad1777646734",
+        "name": "link out 10",
+        "mode": "return",
+        "links": [],
+        "x": 815,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "9ae829a3a13e1828",
+        "type": "comment",
+        "z": "5e1aad1777646734",
+        "name": "follow up sequence sub flow",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "2ba66e3da5a2cf69",
+        "type": "link call",
+        "z": "5e1aad1777646734",
+        "name": "link follow up sequence",
+        "links": [
+            "8a89544c87a5a0b8"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 670,
+        "y": 80,
+        "wires": [
+            [
+                "b38be35bcddb3b07"
+            ]
+        ]
+    },
+    {
+        "id": "63e20a552ddab517",
+        "type": "debug",
+        "z": "5e1aad1777646734",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "463ace0ebbc03553",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "format findings",
+        "func": "// look for follow ups for this finding\nconst rgx = \"^\" + msg.prefix;\nconst followUpList = msg.payload.list.entries.map( (x) => \n    x.entry.name\n  ).filter((x) => x.match(rgx)\n  )\nif (followUpList.length == 0) {\n    msg.payload = \"00\";\n} else {\n  const lastOneParts = followUpList.sort()[followUpList.length-1].split(\" \");\n  msg.payload = lastOneParts[lastOneParts.length-1];\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 340,
+        "wires": [
+            [
+                "dd22dfeb1cbdd77c"
+            ]
+        ]
+    },
+    {
+        "id": "11fb631d19a4c516",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "5e1aad1777646734",
+        "name": "",
+        "x": 530,
+        "y": 260,
+        "wires": [
+            [
+                "0c0220959198349e"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-3856a097e0ba3c92",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 340,
+        "wires": [
+            [
+                "463ace0ebbc03553"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-3856a097e0ba3c92",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "3856a097e0ba3c92"
+            ]
+        ]
+    }
+]

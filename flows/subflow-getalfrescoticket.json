@@ -1,0 +1,192 @@
+[
+    {
+        "id": "a4fd7864d2ed64a0",
+        "type": "subflow",
+        "name": "getAlfrescoTicket",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "57edab273be1c845"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 860,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "27d2d4872fb1b8f6",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "57edab273be1c845",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "set payload",
+        "func": "// Priority 1: forwarded ticket from frontend\nvar ticket = msg.req && msg.req.headers && msg.req.headers[\"x-alfresco-ticket\"];\nif (ticket) {\n    msg.payload = { \"entry\" : {\"id\" : ticket }};\n    msg.alf_ticket = ticket;\n    msg._skipLogin = true;\n    return msg;\n}\n// Priority 2: env var credentials\nmsg._skipLogin = false;\nvar vsoUser = env.get(\"ALFRESCO_USERNAME\");\nvar vsoPass = env.get(\"ALFRESCO_PASSWORD\");\nif (!vsoUser || !vsoPass) {\n    throw new Error(\"Alfresco credentials are not configured: set ALFRESCO_USERNAME and ALFRESCO_PASSWORD\");\n}\nmsg.payload = {\n    \"userId\": vsoUser,\n    \"password\": vsoPass\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 80,
+        "wires": [
+            [
+                "6a61c1d98f5b14e2"
+            ]
+        ]
+    },
+    {
+        "id": "6a61c1d98f5b14e2",
+        "type": "switch",
+        "z": "a4fd7864d2ed64a0",
+        "name": "",
+        "property": "_skipLogin",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "27d2d4872fb1b8f6"
+            ],
+            [
+                "p22env-6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "27d2d4872fb1b8f6",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "Set authorization header",
+        "func": "msg.alf_ticket = msg.payload.entry.id;\nmsg.headers = { \"Authorization\": \"Basic \" + Buffer.from(msg.payload.entry.id + \":\").toString('base64') };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f9d06e081f9a39e",
+        "type": "http request",
+        "z": "a4fd7864d2ed64a0",
+        "name": "Get auth ticket",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "{{{alfrescoBaseUrl}}}/api/-default-/public/authentication/versions/1/tickets",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 520,
+        "y": 200,
+        "wires": [
+            [
+                "p21chk-6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-6f9d06e081f9a39e",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "check upstream status",
+        "func": "// Upstream failures arrive on the normal output. Retry server/transport\n// failures a bounded number of times (msg.delay -> the \"retry backoff\" delay\n// node -> back into the request), then raise so the flow's catch handler\n// returns the error envelope.\nvar transportFailure = isNaN(parseInt(msg.statusCode, 10));\nvar status = transportFailure ? 0 : parseInt(msg.statusCode, 10);\nif (status >= 400 || transportFailure) {\n    var maxRetries = parseInt(env.get(\"HTTP_MAX_RETRIES\"), 10);\n    if (isNaN(maxRetries) || maxRetries < 0) { maxRetries = 2; }\n    var attempt = parseInt(msg.retry_6f9d06e081f9a39e, 10) || 0;\n    var retryable = transportFailure || status >= 500;\n    if (retryable && attempt < maxRetries) {\n        msg.retry_6f9d06e081f9a39e = attempt + 1;\n        var backoff = parseInt(env.get(\"HTTP_RETRY_BACKOFF_MS\"), 10);\n        if (isNaN(backoff) || backoff < 0) { backoff = 500; }\n        msg.delay = backoff * msg.retry_6f9d06e081f9a39e;\n        return [null, msg];\n    }\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + (transportFailure ? \"transport failure\" : status) + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 200,
+        "wires": [
+            [
+                "27d2d4872fb1b8f6"
+            ],
+            [
+                "p22retry-6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-6f9d06e081f9a39e",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 200,
+        "wires": [
+            [
+                "6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "p22retry-6f9d06e081f9a39e",
+        "type": "delay",
+        "z": "a4fd7864d2ed64a0",
+        "name": "retry backoff",
+        "pauseType": "delayv",
+        "timeout": "500",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "6f9d06e081f9a39e"
+            ]
+        ]
+    }
+]

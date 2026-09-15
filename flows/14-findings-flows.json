@@ -1,0 +1,298 @@
+[
+    {
+        "id": "be74fd69d845153f",
+        "type": "tab",
+        "label": "findings flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b7ef9a6b5d70ce2a",
+        "type": "http in",
+        "z": "be74fd69d845153f",
+        "name": "get open findings",
+        "url": "/findings/open",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "c1ec5c598feb9954"
+            ]
+        ]
+    },
+    {
+        "id": "c1ec5c598feb9954",
+        "type": "change",
+        "z": "be74fd69d845153f",
+        "name": "get parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "locationCode",
+                "pt": "msg",
+                "to": "req.query.locationCode",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "locationId",
+                "pt": "msg",
+                "to": "req.query.locationId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyCode",
+                "pt": "msg",
+                "to": "req.query.specialtyCode",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "specialtyId",
+                "pt": "msg",
+                "to": "req.query.specialtyId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 80,
+        "wires": [
+            [
+                "24c1bb20d7548a07"
+            ]
+        ]
+    },
+    {
+        "id": "de062de86100cbc3",
+        "type": "http request",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "{{{alfrescoBaseUrl}}}/s/api/findings/open/query?alf_ticket={{alf_ticket}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "p21chk-de062de86100cbc3"
+            ]
+        ]
+    },
+    {
+        "id": "57c03636fad05005",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "prepare payload",
+        "func": "msg.scriptPayload = {};\nif (msg.locationId) {\n  msg.scriptPayload[\"locationId\"] = msg.locationId\n} else {\n  if (msg.locationCode) {\n    msg.scriptPayload[\"locationCode\"] = msg.locationCode\n  }\n}\n\nif (msg.specialtyId) {\n  msg.scriptPayload[\"specialtyId\"] = msg.specialtyId\n} else {\n  if (msg.specialtyCode) {\n    msg.scriptPayload[\"specialtyCode\"] = msg.specialtyCode\n  }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 260,
+        "wires": [
+            [
+                "83e77cdcc727d206"
+            ]
+        ]
+    },
+    {
+        "id": "5df3c363ff334a37",
+        "type": "change",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "scriptPayload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 340,
+        "wires": [
+            [
+                "p22env-de062de86100cbc3"
+            ]
+        ]
+    },
+    {
+        "id": "78451597aa97c229",
+        "type": "http response",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 880,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "7020910e67e189ea",
+        "type": "link in",
+        "z": "be74fd69d845153f",
+        "name": "link open findings",
+        "links": [],
+        "x": 125,
+        "y": 260,
+        "wires": [
+            [
+                "57c03636fad05005"
+            ]
+        ]
+    },
+    {
+        "id": "179fea6113c9a09e",
+        "type": "link out",
+        "z": "be74fd69d845153f",
+        "name": "link out 8",
+        "mode": "return",
+        "links": [],
+        "x": 855,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "ad16f0af8c380a43",
+        "type": "comment",
+        "z": "be74fd69d845153f",
+        "name": "open findings sub flow",
+        "info": "",
+        "x": 200,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "24c1bb20d7548a07",
+        "type": "link call",
+        "z": "be74fd69d845153f",
+        "name": "link open findings",
+        "links": [
+            "7020910e67e189ea"
+        ],
+        "linkType": "static",
+        "timeout": "30",
+        "x": 670,
+        "y": 80,
+        "wires": [
+            [
+                "78451597aa97c229"
+            ]
+        ]
+    },
+    {
+        "id": "da044a31bcb31118",
+        "type": "debug",
+        "z": "be74fd69d845153f",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "4afccf560762d782",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "format findings",
+        "func": "const findingList = msg.payload.findings.map( (x) => {\n    const f = x.finding;\n    if (f.correctiveAction.capId == \"\") {\n       f.correctiveAction = undefined;\n    }\n    return f;\n    });\nmsg.payload = findingList;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 340,
+        "wires": [
+            [
+                "179fea6113c9a09e"
+            ]
+        ]
+    },
+    {
+        "id": "83e77cdcc727d206",
+        "type": "subflow:a4fd7864d2ed64a0",
+        "z": "be74fd69d845153f",
+        "name": "",
+        "x": 570,
+        "y": 260,
+        "wires": [
+            [
+                "5df3c363ff334a37"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-de062de86100cbc3",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "da044a31bcb31118",
+                "4afccf560762d782"
+            ]
+        ]
+    },
+    {
+        "id": "p22env-de062de86100cbc3",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "set env config",
+        "func": "// Deployment settings. The http request node renders its URL with mustache\n// against msg only, and mustache HTML-escapes {{ }} values, so the base URLs\n// are injected as msg properties and referenced with triple braces {{{ }}}.\nmsg.atrocoreBaseUrl = env.get(\"ATROCORE_BASE_URL\") || \"http://atro-web/api/v1\";\nmsg.alfrescoBaseUrl = env.get(\"ALFRESCO_BASE_URL\") || \"http://proxy:8080/alfresco\";\nvar timeout = parseInt(env.get(\"HTTP_REQUEST_TIMEOUT_MS\"), 10);\nif (timeout > 0) { msg.requestTimeout = timeout; }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "de062de86100cbc3"
+            ]
+        ]
+    }
+]

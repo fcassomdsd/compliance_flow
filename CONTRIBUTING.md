@@ -73,7 +73,7 @@ These principles apply to every repository in this platform:
 
 ### Repository-specific tooling
 
-- The service logic **is** `data/flows.json`. Edit it through the Node-RED editor at `http://localhost:1880` (login required) or directly, but review the JSON diff before committing — it is generated, large, and merges at the byte level.
+- The service logic **is** the flow definition. Maintain it as one file per tab/subflow under `flows/` — edit through the Node-RED editor at `http://localhost:1880` (login required) and run `node scripts/split-flows.mjs`, or edit `flows/*.json` directly and run `node scripts/assemble-flows.mjs`. `data/flows.json` is the assembled runtime file; commit it alongside `flows/` and let the `validate:flows` job prove the two agree. See README, "Flow file layout".
 - Prefer reusable **subflows** over copy-pasted function nodes, and keep each function node small and single-purpose.
 - Give every `http in` endpoint a matching `catch` handler that returns a consistent error envelope with an explicit 4xx/5xx status.
 - Never commit `data/flows_cred.json`, `.env`, `data/.sessions.json`, or any other credential or session material. Flow credential encryption uses `NODE_RED_CREDENTIAL_SECRET`; keep real values out of the repository.
@@ -88,17 +88,26 @@ Run the relevant checks locally before opening a merge request, and include the 
 
 ### Repository-specific checks
 
-There is currently no automated test suite in this repository. Before opening a merge request:
+The `validate:flows` CI job runs without a stack; run the same commands locally before opening a merge request:
 
 ```bash
-# 1. Verify that flows.json is valid JSON
-python3 -m json.tool data/flows.json > /dev/null
+# 1. Flow-file layout: fragments, the runtime file and their round trip
+node --test scripts/flows-files.test.mjs
+node scripts/assemble-flows.mjs --check
+node scripts/split-flows.mjs --check
 
-# 2. Start Node-RED (the shared Docker networks must already exist)
-docker compose up -d
+# 2. Flow structure, endpoint manifest and embedded function logic
+node scripts/validate-flows.mjs
+node scripts/verify-endpoints.mjs
+node scripts/verify-flow-logic.mjs
+```
 
-# 3. Import the flow in the editor at http://localhost:1880 and exercise
-#    every endpoint you changed, confirming the status and response body.
+Then start the stack and exercise the flow for real:
+
+```bash
+docker compose up -d                       # shared Docker networks must already exist
+node scripts/smoke-flows.mjs               # read-only endpoint smoke test
+node scripts/audit-error-envelope.mjs      # error-response shapes
 ```
 
 Include the endpoints you exercised and their responses in the merge request description. If you add a test harness or flow-validation script, document how to run it here.

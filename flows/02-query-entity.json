@@ -1,0 +1,158 @@
+[
+    {
+        "id": "7683fa1811ae788c",
+        "type": "tab",
+        "label": "Query entity",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b09f2d07a15b9060",
+        "type": "change",
+        "z": "7683fa1811ae788c",
+        "name": "Store request parameters",
+        "rules": [
+            {
+                "t": "set",
+                "p": "entity",
+                "pt": "msg",
+                "to": "req.query.entity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "entityData",
+                "pt": "msg",
+                "to": "req.body",
+                "tot": "msg",
+                "dc": true
+            },
+            {
+                "t": "set",
+                "p": "entitySelect",
+                "pt": "msg",
+                "to": "req.query.select",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 140,
+        "wires": [
+            [
+                "1bc49dceb06b9f04"
+            ]
+        ]
+    },
+    {
+        "id": "202d921782b44e07",
+        "type": "http in",
+        "z": "7683fa1811ae788c",
+        "name": "Query Entity",
+        "url": "/queryEntity",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 140,
+        "wires": [
+            [
+                "b09f2d07a15b9060"
+            ]
+        ]
+    },
+    {
+        "id": "9013d18f89d05fcd",
+        "type": "http response",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 800,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5a909e22eeb8ab6e",
+        "type": "catch",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 260,
+        "wires": [
+            [
+                "p21env-9c45b78ce0fc5b6c"
+            ]
+        ]
+    },
+    {
+        "id": "9c45b78ce0fc5b6c",
+        "type": "http response",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "6bf10b4a40e39b6e",
+        "type": "debug",
+        "z": "7683fa1811ae788c",
+        "name": "queryEntity",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "1bc49dceb06b9f04",
+        "type": "subflow:17a5a86e5107e286",
+        "z": "7683fa1811ae788c",
+        "name": "",
+        "x": 590,
+        "y": 140,
+        "wires": [
+            [
+                "9013d18f89d05fcd",
+                "6bf10b4a40e39b6e"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-9c45b78ce0fc5b6c",
+        "type": "function",
+        "z": "7683fa1811ae788c",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 260,
+        "wires": [
+            [
+                "9c45b78ce0fc5b6c"
+            ]
+        ]
+    }
+]
