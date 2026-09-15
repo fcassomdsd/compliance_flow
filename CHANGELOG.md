@@ -19,6 +19,12 @@ All notable changes are documented in this file.
 
 ### Fixed
 
+- **`/checklist` dropped the USOAP area from every question.** `UsoapProtocolQuestion.areaCode` is an `extensibleMultiEnum`, so AtroCore returns `areaCodeNames` — a map of option id to name — and never the `areaCodeName` string the flow read. Every question therefore came back with `areaCode` missing, for real data as much as demo data. It now joins the resolved names into the string the checklist app's schema declares (`additionalProperties: false`, `areaCode: { type: 'string' }`). Verified: `ATS-9001 ce=CE-5 area="ATS"`.
+- **`GET /inspection/:inspectionId` queried the wrong entity and answered an empty 200 on a miss.** The route is named and documented as an *inspection* lookup but queried `SiteVisit`, keying on `code` only for the legacy `MD…` site-visit codes; on a miss it left `msg.payload` undefined and the response node sent **HTTP 200 with an empty body**. It now queries `Inspection`, using the Nomenclatura `AV-…` prefix to choose `code` over `id`, and a miss answers **404 + the error envelope**. The first attempt routed the miss through `node.error` like every other error in that tab, which turned out to wedge the flow — that tab has two `catch` nodes, so one error produced two responses (`ERR_HTTP_HEADERS_SENT`), which was itself caught, and requests after the first hung. The miss is now answered directly and the response node honours `msg.statusCode`; three consecutive misses each return 404 and the flow stays responsive.
+- **The smoke harness could not detect an empty response.** Every `json` assertion required a non-empty body before failing, so `200` with nothing counted as `ok` — which is exactly how the defect above stayed invisible. An empty body is now a failure.
+
+### Fixed (continued)
+
 - **`/inspectionPlan` and `/inspectionReport` hung forever instead of answering.** Both tabs' `catch` nodes were the only disabled nodes in the whole flow (`"d": true`, present 15+ commits back), and Node-RED reports an error only when *no* catch node handles it — so every failure in those two tabs was dropped and the HTTP request was never answered. The two error paths built for the P2.1 envelope work (`catch → error envelope → http response(400)`) were dead code. Both catches are enabled, and `scripts/validate-flows.mjs` now fails CI on a disabled `catch` node, since this failure mode is silent by construction.
 - **The two status transitions updated the wrong entity, failing every call with HTTP 404.** A blanket "rename Inspection entity references to SiteVisit" commit (`cfc7fe3`) rewrote the *entity* in `set parameteros for status to Planned` and `update AtroCore status to Reported` while leaving `msg.entityId = inspectionId` alone, so `/inspectionPlan` and `/inspectionReport` tried `PUT /api/v1/SiteVisit/<inspection id>` — a SiteVisit that does not exist. Both are back to `msg.entity = "Inspection"`, matching the documented per-provider status model (the Inspection's status is what moves `→ Planned` / `→ Reported`, not the SiteVisit's). `scripts/verify-flow-logic.mjs` now asserts that a node setting both `msg.entity` and `msg.entityId = <name>Id` pairs the two consistently (50 checks). The two bugs had been hiding each other: the disabled catch meant the 404 was never returned, so the endpoint simply hung. Verified live: `GET /inspectionPlan?siteVisit=V-MDPP-2025-01&provider=…` now returns **200** and moves the Inspection `Assigned → Planned`, and the generated plan PDF renders the `Entity(ies) to be Inspected` and `Team Members` blocks.
 
@@ -35,6 +41,12 @@ All notable changes are documented in this file.
 - **`/inspectionReport`**'s Inspection lookup ("set inspection params") no longer filters by a captured SiteVisit-code variable alongside `inspectedProviderId` — that filter could never match once Activity/SiteVisit codes were decoupled, so report generation was failing outright for every request.
 
 ### Fixed
+
+- **`/checklist` dropped the USOAP area from every question.** `UsoapProtocolQuestion.areaCode` is an `extensibleMultiEnum`, so AtroCore returns `areaCodeNames` — a map of option id to name — and never the `areaCodeName` string the flow read. Every question therefore came back with `areaCode` missing, for real data as much as demo data. It now joins the resolved names into the string the checklist app's schema declares (`additionalProperties: false`, `areaCode: { type: 'string' }`). Verified: `ATS-9001 ce=CE-5 area="ATS"`.
+- **`GET /inspection/:inspectionId` queried the wrong entity and answered an empty 200 on a miss.** The route is named and documented as an *inspection* lookup but queried `SiteVisit`, keying on `code` only for the legacy `MD…` site-visit codes; on a miss it left `msg.payload` undefined and the response node sent **HTTP 200 with an empty body**. It now queries `Inspection`, using the Nomenclatura `AV-…` prefix to choose `code` over `id`, and a miss answers **404 + the error envelope**. The first attempt routed the miss through `node.error` like every other error in that tab, which turned out to wedge the flow — that tab has two `catch` nodes, so one error produced two responses (`ERR_HTTP_HEADERS_SENT`), which was itself caught, and requests after the first hung. The miss is now answered directly and the response node honours `msg.statusCode`; three consecutive misses each return 404 and the flow stays responsive.
+- **The smoke harness could not detect an empty response.** Every `json` assertion required a non-empty body before failing, so `200` with nothing counted as `ok` — which is exactly how the defect above stayed invisible. An empty body is now a failure.
+
+### Fixed (continued)
 - **Alfresco ticket authentication**: the shared auth subflow (used by `/findings/open`, canonical-import triggers, and inspection plan/report generation) built an invalid Basic-auth header when logging in fresh rather than forwarding a caller's ticket (missing the required trailing colon), and separately, the legacy Alfresco webscript runtime backing these routes needs the ticket passed as an `alf_ticket` query parameter rather than a Basic-auth header. Both fixed.
 
 ## [0.4.0] - 2026-08-02
@@ -54,6 +66,12 @@ All notable changes are documented in this file.
 - **Status transitions updated**: `/inspectionPlan`, `/importCanonical`, `/inspectionReport` status update flows now reference `SiteVisit` entity (was `Inspection`).
 
 ### Fixed
+
+- **`/checklist` dropped the USOAP area from every question.** `UsoapProtocolQuestion.areaCode` is an `extensibleMultiEnum`, so AtroCore returns `areaCodeNames` — a map of option id to name — and never the `areaCodeName` string the flow read. Every question therefore came back with `areaCode` missing, for real data as much as demo data. It now joins the resolved names into the string the checklist app's schema declares (`additionalProperties: false`, `areaCode: { type: 'string' }`). Verified: `ATS-9001 ce=CE-5 area="ATS"`.
+- **`GET /inspection/:inspectionId` queried the wrong entity and answered an empty 200 on a miss.** The route is named and documented as an *inspection* lookup but queried `SiteVisit`, keying on `code` only for the legacy `MD…` site-visit codes; on a miss it left `msg.payload` undefined and the response node sent **HTTP 200 with an empty body**. It now queries `Inspection`, using the Nomenclatura `AV-…` prefix to choose `code` over `id`, and a miss answers **404 + the error envelope**. The first attempt routed the miss through `node.error` like every other error in that tab, which turned out to wedge the flow — that tab has two `catch` nodes, so one error produced two responses (`ERR_HTTP_HEADERS_SENT`), which was itself caught, and requests after the first hung. The miss is now answered directly and the response node honours `msg.statusCode`; three consecutive misses each return 404 and the flow stays responsive.
+- **The smoke harness could not detect an empty response.** Every `json` assertion required a non-empty body before failing, so `200` with nothing counted as `ok` — which is exactly how the defect above stayed invisible. An empty body is now a failure.
+
+### Fixed (continued)
 - Fixed `/inspectionReport` using `req.query.siteVisit` (was `req.query.inspection` after rename).
 - Fixed inspection plan `serviceArea` filter removed in favor of `inspectedProviderId`.
 
@@ -82,6 +100,12 @@ All notable changes are documented in this file.
 - `.env.example` template with all 7 environment variables
 
 ### Fixed
+
+- **`/checklist` dropped the USOAP area from every question.** `UsoapProtocolQuestion.areaCode` is an `extensibleMultiEnum`, so AtroCore returns `areaCodeNames` — a map of option id to name — and never the `areaCodeName` string the flow read. Every question therefore came back with `areaCode` missing, for real data as much as demo data. It now joins the resolved names into the string the checklist app's schema declares (`additionalProperties: false`, `areaCode: { type: 'string' }`). Verified: `ATS-9001 ce=CE-5 area="ATS"`.
+- **`GET /inspection/:inspectionId` queried the wrong entity and answered an empty 200 on a miss.** The route is named and documented as an *inspection* lookup but queried `SiteVisit`, keying on `code` only for the legacy `MD…` site-visit codes; on a miss it left `msg.payload` undefined and the response node sent **HTTP 200 with an empty body**. It now queries `Inspection`, using the Nomenclatura `AV-…` prefix to choose `code` over `id`, and a miss answers **404 + the error envelope**. The first attempt routed the miss through `node.error` like every other error in that tab, which turned out to wedge the flow — that tab has two `catch` nodes, so one error produced two responses (`ERR_HTTP_HEADERS_SENT`), which was itself caught, and requests after the first hung. The miss is now answered directly and the response node honours `msg.statusCode`; three consecutive misses each return 404 and the flow stays responsive.
+- **The smoke harness could not detect an empty response.** Every `json` assertion required a non-empty body before failing, so `200` with nothing counted as `ok` — which is exactly how the defect above stayed invisible. An empty body is now a failure.
+
+### Fixed (continued)
 - Fixed `send report` node `paytoqs` from `query` to `ignore` (JSON body instead of query params)
 - Fixed AtroCore auth flow missing credentials (`authType: basic` with no credentials)
 - Fixed `alfresco-net` network marked as external in docker-compose
@@ -129,6 +153,12 @@ All notable changes are documented in this file.
   - `data/.config.users.json`
 
 ### Fixed
+
+- **`/checklist` dropped the USOAP area from every question.** `UsoapProtocolQuestion.areaCode` is an `extensibleMultiEnum`, so AtroCore returns `areaCodeNames` — a map of option id to name — and never the `areaCodeName` string the flow read. Every question therefore came back with `areaCode` missing, for real data as much as demo data. It now joins the resolved names into the string the checklist app's schema declares (`additionalProperties: false`, `areaCode: { type: 'string' }`). Verified: `ATS-9001 ce=CE-5 area="ATS"`.
+- **`GET /inspection/:inspectionId` queried the wrong entity and answered an empty 200 on a miss.** The route is named and documented as an *inspection* lookup but queried `SiteVisit`, keying on `code` only for the legacy `MD…` site-visit codes; on a miss it left `msg.payload` undefined and the response node sent **HTTP 200 with an empty body**. It now queries `Inspection`, using the Nomenclatura `AV-…` prefix to choose `code` over `id`, and a miss answers **404 + the error envelope**. The first attempt routed the miss through `node.error` like every other error in that tab, which turned out to wedge the flow — that tab has two `catch` nodes, so one error produced two responses (`ERR_HTTP_HEADERS_SENT`), which was itself caught, and requests after the first hung. The miss is now answered directly and the response node honours `msg.statusCode`; three consecutive misses each return 404 and the flow stays responsive.
+- **The smoke harness could not detect an empty response.** Every `json` assertion required a non-empty body before failing, so `200` with nothing counted as `ok` — which is exactly how the defect above stayed invisible. An empty body is now a failure.
+
+### Fixed (continued)
 - Normativa multiplicity: normativa is now a single object per protocol question (instead of array).
 
 ### Removed

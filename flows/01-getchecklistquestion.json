@@ -562,7 +562,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "merge usoap pq into questions",
-        "func": "const acapiteList = (msg.payload && msg.payload.list) || [];\nconst byAcapite = {};\nfor (const acapite of acapiteList) {\n  const pqs = acapite.usoapProtocolQuestions || [];\n  byAcapite[acapite.id] = pqs.map((pq) => ({\n    code: pq.code,\n    criticalElement: pq.criticalElementName,\n    areaCode: pq.areaCodeName\n  }));\n}\n\nfor (const q of (msg.pqList || [])) {\n  const n = q.normativas && q.normativas[0];\n  if (n) {\n    n.usoapPqReference = byAcapite[n.acapitesOACIId] || [];\n  }\n}\n\nmsg.payload = { list: msg.pqList, total: msg.pqList.length };\nreturn msg;",
+        "func": "const acapiteList = (msg.payload && msg.payload.list) || [];\nconst byAcapite = {};\nfor (const acapite of acapiteList) {\n  const pqs = acapite.usoapProtocolQuestions || [];\n  byAcapite[acapite.id] = pqs.map((pq) => ({\n    code: pq.code,\n    criticalElement: pq.criticalElementName,\n    // areaCode is an extensibleMultiEnum: AtroCore returns areaCodeNames as a\n    // map of option id -> name, never an \"areaCodeName\" string, so the area was\n    // silently dropped from every question. The checklist app's schema declares\n    // areaCode as a string, so join the resolved names.\n    areaCode: Object.values(pq.areaCodeNames || {}).join(\", \")\n  }));\n}\n\nfor (const q of (msg.pqList || [])) {\n  const n = q.normativas && q.normativas[0];\n  if (n) {\n    n.usoapPqReference = byAcapite[n.acapitesOACIId] || [];\n  }\n}\n\nmsg.payload = { list: msg.pqList, total: msg.pqList.length };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
