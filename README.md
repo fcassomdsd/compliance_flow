@@ -201,24 +201,32 @@ The Node-RED editor organises logic into the following tabs (flows):
 | Flow | Description |
 |---|---|
 | **getChecklistQuestion** | Builds and returns checklist questions for the front end, given an inspected specialty ID |
-| **Get atrocore auth** | Obtains and caches an authentication token for the AtroCRM API |
-| **Get alfresco auth** | Obtains and caches an authentication token for the Alfresco API |
-| **Get topics** | Retrieves inspection topic list |
-| **Query entity** | Generic entity query against AtroCRM |
-| **Update entity** | Generic entity update against AtroCRM |
+| **Query entity** | Generic entity query against AtroCRM (`POST /queryEntity`) |
+| **Update entity** | Generic entity update against AtroCRM (`PUT /updateEntity`) |
 | **Add entity** | Generic entity creation in AtroCRM |
 | **Delete entity** | Generic entity deletion in AtroCRM |
-| **Get links / Get links call** | Retrieves entity relationship links |
+| **Get links** | Retrieves entity relationship links |
 | **Add links** | Creates entity relationship links |
 | **Delete links** | Removes entity relationship links |
-| **Get Entity call** | Lower-level entity retrieval sub-flow |
 | **Inspection plan** | Builds and serves an inspection plan; updates AtroCore inspection status to `Planned` |
 | **import canonical to alfresco** | Exports canonical inspection records to Alfresco; queries AtroCore and transitions status from `Planned` to `Uploaded` |
 | **Inspection report** | Compiles and returns a full inspection report; updates AtroCore inspection status to `Reported` |
-| **Auth flows** | Shared authentication helper sub-flows |
+| **Auth flows** | OAuth/API-key helper flows for the authenticated endpoints |
 | **Static data** | Serves reference / lookup data (inspectors, locations, specialties, groups) |
 | **findings flows** | Manages open findings lifecycle |
 | **follow up flows** | Manages follow-up items after inspections |
+
+### Subflows
+
+Reusable logic extracted from the tabs above. A Subflow is instantiated wherever it is needed, which replaced the previous `link call`/`link in` pattern for these paths.
+
+| Subflow | Description | Instances |
+|---|---|---|
+| **getAtrocoreTicket** | Obtains and caches an AtroCore API token and sets the `Authorization` header | used by the query/update/links subflows and the Add/Delete entity and links tabs |
+| **getAlfrescoTicket** | Obtains an Alfresco ticket, preferring a forwarded `X-Alfresco-Ticket`, and sets `alf_ticket` | inspection plan/report, import canonical, findings and follow-up flows |
+| **queryEntity** | Reads records from AtroCore (wraps `getAtrocoreTicket`) | heavily reused across the query/report/static-data tabs |
+| **getEntityLinks** | Reads an entity's relationship links from AtroCore | Get links and Inspection plan |
+| **updateEntity** | Updates an AtroCore record (wraps `getAtrocoreTicket`) | Update entity, import canonical, Inspection report |
 
 ---
 

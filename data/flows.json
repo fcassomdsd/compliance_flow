@@ -7,22 +7,6 @@
         "info": "Return checklist questions in a JSON format, fit for use in the checklist application\n\nInputs: inspected specialty ID.\n"
     },
     {
-        "id": "57efe981d107f25d",
-        "type": "tab",
-        "label": "Get atrocore auth",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "7534034467cec239",
-        "type": "tab",
-        "label": "Get topics",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "7683fa1811ae788c",
         "type": "tab",
         "label": "Query entity",
@@ -79,22 +63,6 @@
         "env": []
     },
     {
-        "id": "aef96e90a1e86beb",
-        "type": "tab",
-        "label": "Get Entity call",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "0c1f3b47482da83f",
-        "type": "tab",
-        "label": "Get links call",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "5afaefaae1db46d5",
         "type": "tab",
         "label": "Inspection plan",
@@ -130,14 +98,6 @@
         "id": "dbdd767669d57957",
         "type": "tab",
         "label": "Static data",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "18c3156c77e1c2fb",
-        "type": "tab",
-        "label": "get alfresco auth",
         "disabled": false,
         "info": "",
         "env": []
@@ -1726,236 +1686,6 @@
         ]
     },
     {
-        "id": "2cecf651291035ab",
-        "type": "link in",
-        "z": "57efe981d107f25d",
-        "name": "Link atrocore authorization",
-        "links": [],
-        "x": 35,
-        "y": 220,
-        "wires": [
-            [
-                "c627c378e2aea32e"
-            ]
-        ]
-    },
-    {
-        "id": "3e6981e8eae71675",
-        "type": "link out",
-        "z": "57efe981d107f25d",
-        "name": "link out 1",
-        "mode": "return",
-        "links": [],
-        "x": 905,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "c627c378e2aea32e",
-        "type": "subflow:fb76825dc7301958",
-        "z": "57efe981d107f25d",
-        "name": "getAtrocoreTicket",
-        "x": 490,
-        "y": 200,
-        "wires": [
-            [
-                "3e6981e8eae71675"
-            ]
-        ]
-    },
-    {
-        "id": "387e9b79ae9ce28d",
-        "type": "http request",
-        "z": "7534034467cec239",
-        "name": "",
-        "method": "GET",
-        "ret": "obj",
-        "paytoqs": "query",
-        "url": "http://atro-web/api/v1/QuestionTopic?select=id,name",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 390,
-        "y": 120,
-        "wires": [
-            [
-                "a2631810f8cdcdbf"
-            ]
-        ]
-    },
-    {
-        "id": "39d8088c93d45fdb",
-        "type": "function",
-        "z": "7534034467cec239",
-        "name": "Set topic parameters",
-        "func": "msg.payload = {\n    where : '[{\"type\":\"and\",\"value\": [{\"type\":\"in\",\"attribute\":\"name\",\"value\":' + JSON.stringify(msg.topics) + '}]}]'\n};\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 160,
-        "y": 120,
-        "wires": [
-            [
-                "387e9b79ae9ce28d"
-            ]
-        ]
-    },
-    {
-        "id": "a2631810f8cdcdbf",
-        "type": "split",
-        "z": "7534034467cec239",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "property": "payload",
-        "x": 590,
-        "y": 120,
-        "wires": [
-            [
-                "2596331805042d7c"
-            ]
-        ]
-    },
-    {
-        "id": "c4b6eb4e2de5824b",
-        "type": "change",
-        "z": "7534034467cec239",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "payload.id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 200,
-        "y": 200,
-        "wires": [
-            [
-                "883ce19a7a4069f3"
-            ]
-        ]
-    },
-    {
-        "id": "2596331805042d7c",
-        "type": "split",
-        "z": "7534034467cec239",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "property": "payload",
-        "x": 750,
-        "y": 120,
-        "wires": [
-            [
-                "c4b6eb4e2de5824b"
-            ]
-        ]
-    },
-    {
-        "id": "883ce19a7a4069f3",
-        "type": "join",
-        "z": "7534034467cec239",
-        "name": "",
-        "mode": "auto",
-        "build": "array",
-        "property": "payload.topicId",
-        "propertyType": "msg",
-        "key": "topic",
-        "joiner": "\\n",
-        "joinerType": "str",
-        "useparts": false,
-        "accumulate": false,
-        "timeout": "",
-        "count": "2",
-        "reduceRight": false,
-        "reduceExp": "",
-        "reduceInit": "",
-        "reduceInitType": "",
-        "reduceFixup": "",
-        "x": 430,
-        "y": 200,
-        "wires": [
-            [
-                "95dfb395fc857a22"
-            ]
-        ]
-    },
-    {
-        "id": "95dfb395fc857a22",
-        "type": "change",
-        "z": "7534034467cec239",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "topics",
-                "pt": "msg",
-                "to": "payload",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 640,
-        "y": 200,
-        "wires": [
-            [
-                "595e3edbf9c89916"
-            ]
-        ]
-    },
-    {
-        "id": "c30da64cde6490b7",
-        "type": "link in",
-        "z": "7534034467cec239",
-        "name": "Get topics",
-        "links": [],
-        "x": 45,
-        "y": 60,
-        "wires": [
-            [
-                "39d8088c93d45fdb"
-            ]
-        ]
-    },
-    {
-        "id": "595e3edbf9c89916",
-        "type": "link out",
-        "z": "7534034467cec239",
-        "name": "link out 2",
-        "mode": "return",
-        "links": [],
-        "x": 845,
-        "y": 200,
-        "wires": []
-    },
-    {
         "id": "b09f2d07a15b9060",
         "type": "change",
         "z": "7683fa1811ae788c",
@@ -3131,116 +2861,6 @@
         "wires": [
             [
                 "b70f9835e7dad017"
-            ]
-        ]
-    },
-    {
-        "id": "9d1c32d934dc0bce",
-        "type": "link in",
-        "z": "aef96e90a1e86beb",
-        "name": "linkQuery",
-        "links": [],
-        "x": 55,
-        "y": 160,
-        "wires": [
-            [
-                "09696231cec21495"
-            ]
-        ]
-    },
-    {
-        "id": "6fb50185fb3085f4",
-        "type": "link out",
-        "z": "aef96e90a1e86beb",
-        "name": "linkOutQuery",
-        "mode": "return",
-        "links": [],
-        "x": 925,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "ef1280f979b0ae24",
-        "type": "debug",
-        "z": "aef96e90a1e86beb",
-        "name": "getEntityCall",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 890,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "09696231cec21495",
-        "type": "subflow:17a5a86e5107e286",
-        "z": "aef96e90a1e86beb",
-        "x": 510,
-        "y": 160,
-        "wires": [
-            [
-                "6fb50185fb3085f4",
-                "ef1280f979b0ae24"
-            ]
-        ]
-    },
-    {
-        "id": "76b977314bdff87c",
-        "type": "link in",
-        "z": "0c1f3b47482da83f",
-        "name": "linkLinks",
-        "links": [],
-        "x": 75,
-        "y": 120,
-        "wires": [
-            [
-                "e8c4c0ac7c5859ad"
-            ]
-        ]
-    },
-    {
-        "id": "86a2eaa7ac22e96d",
-        "type": "link out",
-        "z": "0c1f3b47482da83f",
-        "name": "link out 3",
-        "mode": "return",
-        "links": [],
-        "x": 795,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "46b5cd6f1c76d535",
-        "type": "debug",
-        "z": "0c1f3b47482da83f",
-        "name": "getLinksCall",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 750,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "e8c4c0ac7c5859ad",
-        "type": "subflow:e2896ea94901dc8c",
-        "z": "0c1f3b47482da83f",
-        "x": 420,
-        "y": 120,
-        "wires": [
-            [
-                "86a2eaa7ac22e96d",
-                "46b5cd6f1c76d535"
             ]
         ]
     },
@@ -6522,62 +6142,6 @@
         ]
     },
     {
-        "id": "396d75052328dabf",
-        "type": "link in",
-        "z": "18c3156c77e1c2fb",
-        "name": "link alfresco authentication",
-        "links": [],
-        "x": 55,
-        "y": 60,
-        "wires": [
-            [
-                "6411a15701fd8cbc"
-            ]
-        ]
-    },
-    {
-        "id": "c0a92aa5d3f5ef39",
-        "type": "link out",
-        "z": "18c3156c77e1c2fb",
-        "name": "link out 7",
-        "mode": "return",
-        "links": [],
-        "x": 915,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "1ab5cc53868b0395",
-        "type": "debug",
-        "z": "18c3156c77e1c2fb",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 720,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "6411a15701fd8cbc",
-        "type": "subflow:a4fd7864d2ed64a0",
-        "z": "18c3156c77e1c2fb",
-        "name": "",
-        "x": 510,
-        "y": 240,
-        "wires": [
-            [
-                "c0a92aa5d3f5ef39",
-                "1ab5cc53868b0395"
-            ]
-        ]
-    },
-    {
         "id": "b7ef9a6b5d70ce2a",
         "type": "http in",
         "z": "be74fd69d845153f",
@@ -7061,5 +6625,31 @@
                 "0c0220959198349e"
             ]
         ]
+    },
+    {
+        "id": "b6726ffba2fe494e",
+        "type": "catch",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 980,
+        "wires": [
+            [
+                "4ee3b05369286bb3"
+            ]
+        ]
+    },
+    {
+        "id": "4ee3b05369286bb3",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 980,
+        "wires": []
     }
 ]
