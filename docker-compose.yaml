@@ -21,6 +21,15 @@ services:
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
       - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH:?ADMIN_PASSWORD_HASH must be set}
       - NODE_ENV=${NODE_ENV:-development}
+      # Deployment endpoints and request tuning. Defaults match the local stack;
+      # the flows read these in their "set env config" function nodes.
+      - ATROCORE_BASE_URL=${ATROCORE_BASE_URL:-http://atro-web/api/v1}
+      - ALFRESCO_BASE_URL=${ALFRESCO_BASE_URL:-http://proxy:8080/alfresco}
+      # Empty = keep the http request node's own default (5s).
+      - HTTP_REQUEST_TIMEOUT_MS=${HTTP_REQUEST_TIMEOUT_MS:-}
+      # Retry policy for the auth/query/CRUD subflows' upstream calls.
+      - HTTP_MAX_RETRIES=${HTTP_MAX_RETRIES:-2}
+      - HTTP_RETRY_BACKOFF_MS=${HTTP_RETRY_BACKOFF_MS:-500}
     ports:
       - "1880:1880"
     networks:

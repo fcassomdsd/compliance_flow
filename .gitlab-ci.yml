@@ -4,14 +4,16 @@ stages:
 
 # data/flows.json is the entire service, so a duplicate id or a wire/link that
 # points at a node that no longer exists only surfaces at runtime. Validate the
-# structure on every merge request, and verify the README endpoint manifest
-# still matches the flow's http-in nodes.
+# structure on every merge request, verify the README endpoint manifest still
+# matches the flow's http-in nodes, and unit-check the JavaScript embedded in the
+# function nodes (envelope, env plumbing, retry policy) — all without a stack.
 validate:flows:
   stage: validate
   image: node:20-alpine
   script:
     - node scripts/validate-flows.mjs
     - node scripts/verify-endpoints.mjs
+    - node scripts/verify-flow-logic.mjs
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "develop"'

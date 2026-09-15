@@ -119,12 +119,24 @@ docker network create import-backend
 | Variable | Default | Description |
 |---|---|---|
 | `TZ` | `Europe/Amsterdam` | Container timezone |
-| `ALFRESCO_USERNAME` | `admin` | Alfresco credentials (used when frontend does not forward a user ticket) |
-| `ALFRESCO_PASSWORD` | `admin` | Alfresco credentials |
+| `ALFRESCO_USERNAME` / `ALFRESCO_PASSWORD` | *(required)* | Alfresco credentials (used when the caller does not forward a user ticket) |
+| `ATROCORE_USERNAME` / `ATROCORE_PASSWORD` | *(required)* | AtroCore credentials |
 | `API_KEY` | *(unset)* | Shared secret for REST endpoint protection; unset = no auth (dev mode) |
 | `ADMIN_USERNAME` | `admin` | Node-RED editor login username |
 | `ADMIN_PASSWORD_HASH` | *(bcrypt hash)* | Node-RED editor login password (bcrypt hash) |
-| `NODE_RED_CREDENTIAL_SECRET` | `a-secret-key` | Encryption key for flow credentials — change in production |
+| `NODE_RED_CREDENTIAL_SECRET` | *(required)* | Encryption key for flow credentials — change in production |
+| `NODE_ENV` | `development` | `production` enables the startup validation (fails on missing secrets) |
+| `ATROCORE_BASE_URL` | `http://atro-web/api/v1` | AtroCore API base URL used by every `http request` node |
+| `ALFRESCO_BASE_URL` | `http://proxy:8080/alfresco` | Alfresco base URL used by every `http request` node |
+| `HTTP_REQUEST_TIMEOUT_MS` | *(empty → 5000)* | Per-request timeout in ms; empty keeps the node's own 5s default |
+| `HTTP_MAX_RETRIES` | `2` | Extra attempts for the auth/query/CRUD subflows' upstream calls |
+| `HTTP_RETRY_BACKOFF_MS` | `500` | Base backoff in ms; attempt N waits `N × backoff` |
+
+The base URLs and timeout are read per request by the `set env config` function nodes
+(`env.get(...)` → `msg.atrocoreBaseUrl` / `msg.alfrescoBaseUrl` / `msg.requestTimeout`).
+They must be **msg** properties: the `http request` node renders its URL with
+`mustache.render(url, msg)` against `msg` only, and mustache HTML-escapes `{{ }}`
+values — hence the triple-braced `{{{atrocoreBaseUrl}}}` in the URL templates.
 
 ---
 
