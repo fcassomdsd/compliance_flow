@@ -203,11 +203,11 @@
         ],
         "out": [
             {
-                "x": 920,
+                "x": 940,
                 "y": 80,
                 "wires": [
                     {
-                        "id": "6f319e5a075c3efc",
+                        "id": "p21chk-6f319e5a075c3efc",
                         "port": 0
                     }
                 ]
@@ -240,7 +240,7 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "8644c145ead9a057",
+                        "id": "p21chk-8644c145ead9a057",
                         "port": 0
                     }
                 ]
@@ -273,7 +273,7 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "04a6d3170f653951",
+                        "id": "p21chk-04a6d3170f653951",
                         "port": 0
                     }
                 ]
@@ -351,7 +351,7 @@
         "y": 180,
         "wires": [
             [
-                "2c42610a8c33a618"
+                "p21chk-aa61590209297976"
             ]
         ]
     },
@@ -397,6 +397,25 @@
         "wires": [
             [
                 "79c7123b33df9145"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-aa61590209297976",
+        "type": "function",
+        "z": "fb76825dc7301958",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 180,
+        "wires": [
+            [
+                "2c42610a8c33a618"
             ]
         ]
     },
@@ -487,6 +506,25 @@
         "y": 200,
         "wires": [
             [
+                "p21chk-6f9d06e081f9a39e"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-6f9d06e081f9a39e",
+        "type": "function",
+        "z": "a4fd7864d2ed64a0",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 200,
+        "wires": [
+            [
                 "27d2d4872fb1b8f6"
             ]
         ]
@@ -543,6 +581,25 @@
         "x": 750,
         "y": 80,
         "wires": [
+            [
+                "p21chk-6f319e5a075c3efc"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-6f319e5a075c3efc",
+        "type": "function",
+        "z": "17a5a86e5107e286",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 80,
+        "wires": [
             []
         ]
     },
@@ -576,6 +633,25 @@
         "senderr": false,
         "headers": [],
         "x": 500,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-8644c145ead9a057"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-8644c145ead9a057",
+        "type": "function",
+        "z": "e2896ea94901dc8c",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
         "y": 80,
         "wires": [
             []
@@ -644,6 +720,25 @@
             }
         ],
         "x": 800,
+        "y": 80,
+        "wires": [
+            [
+                "p21chk-04a6d3170f653951"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-04a6d3170f653951",
+        "type": "function",
+        "z": "368084b92cefec18",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
         "y": 80,
         "wires": [
             []
@@ -850,7 +945,7 @@
         "type": "debug",
         "z": "f6f2187d.f17ca8",
         "name": "getChecklistQuestion",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1577,7 +1672,8 @@
         "y": 100,
         "wires": [
             [
-                "8d1fe2ce52854438"
+                "8d1fe2ce52854438",
+                "2852a7a7c4aebcb9"
             ]
         ]
     },
@@ -1768,7 +1864,7 @@
         "y": 260,
         "wires": [
             [
-                "9c45b78ce0fc5b6c"
+                "p21env-9c45b78ce0fc5b6c"
             ]
         ]
     },
@@ -1811,6 +1907,25 @@
             [
                 "9013d18f89d05fcd",
                 "6bf10b4a40e39b6e"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-9c45b78ce0fc5b6c",
+        "type": "function",
+        "z": "7683fa1811ae788c",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 260,
+        "wires": [
+            [
+                "9c45b78ce0fc5b6c"
             ]
         ]
     },
@@ -1886,23 +2001,6 @@
         "wires": []
     },
     {
-        "id": "863a44862822b5a9",
-        "type": "debug",
-        "z": "c865579c6e7f852c",
-        "name": "updateEntity",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 890,
-        "y": 280,
-        "wires": []
-    },
-    {
         "id": "c680dd9cfe15db3d",
         "type": "http response",
         "z": "c865579c6e7f852c",
@@ -1962,55 +2060,6 @@
         "x": 810,
         "y": 220,
         "wires": []
-    },
-    {
-        "id": "08f5d2534ec47de6",
-        "type": "link in",
-        "z": "c865579c6e7f852c",
-        "name": "update entity",
-        "links": [],
-        "x": 75,
-        "y": 340,
-        "wires": [
-            [
-                "7f858f45069d839d"
-            ]
-        ]
-    },
-    {
-        "id": "42e5aa734738a44b",
-        "type": "link out",
-        "z": "c865579c6e7f852c",
-        "name": "update entity out",
-        "mode": "return",
-        "links": [],
-        "x": 925,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "943c108439f5beb3",
-        "type": "comment",
-        "z": "c865579c6e7f852c",
-        "name": "update entity call",
-        "info": "Update entity call, for reuse",
-        "x": 180,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "7f858f45069d839d",
-        "type": "subflow:368084b92cefec18",
-        "z": "c865579c6e7f852c",
-        "name": "",
-        "x": 510,
-        "y": 400,
-        "wires": [
-            [
-                "42e5aa734738a44b",
-                "863a44862822b5a9"
-            ]
-        ]
     },
     {
         "id": "c8d7e4150ce6efb1",
@@ -2129,8 +2178,7 @@
         "y": 260,
         "wires": [
             [
-                "78cd9869f40be1c8",
-                "395b3799645197f5"
+                "p21chk-5475d96d7baf4b89"
             ]
         ]
     },
@@ -2158,7 +2206,7 @@
         "y": 340,
         "wires": [
             [
-                "cb95456a5e6cf9db"
+                "p21env-cb95456a5e6cf9db"
             ]
         ]
     },
@@ -2184,7 +2232,7 @@
         "type": "http response",
         "z": "e6eb17aaaa227e4d",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 360,
         "y": 340,
@@ -2200,6 +2248,45 @@
         "wires": [
             [
                 "5c0ca4319b81e817"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-cb95456a5e6cf9db",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "cb95456a5e6cf9db"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-5475d96d7baf4b89",
+        "type": "function",
+        "z": "e6eb17aaaa227e4d",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 260,
+        "wires": [
+            [
+                "78cd9869f40be1c8",
+                "395b3799645197f5"
             ]
         ]
     },
@@ -2281,7 +2368,7 @@
         "y": 180,
         "wires": [
             [
-                "a81113143222e840"
+                "p21chk-20e115303a0a641e"
             ]
         ]
     },
@@ -2309,7 +2396,7 @@
         "y": 260,
         "wires": [
             [
-                "985233363769dfb3"
+                "p21env-985233363769dfb3"
             ]
         ]
     },
@@ -2335,7 +2422,7 @@
         "type": "http response",
         "z": "15c8a1dad7c49d22",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 340,
         "y": 260,
@@ -2351,6 +2438,44 @@
         "wires": [
             [
                 "20e115303a0a641e"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-985233363769dfb3",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "985233363769dfb3"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-20e115303a0a641e",
+        "type": "function",
+        "z": "15c8a1dad7c49d22",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 180,
+        "wires": [
+            [
+                "a81113143222e840"
             ]
         ]
     },
@@ -2436,7 +2561,7 @@
         "y": 280,
         "wires": [
             [
-                "92e365dc5ad8fbc5"
+                "p21env-92e365dc5ad8fbc5"
             ]
         ]
     },
@@ -2462,7 +2587,7 @@
         "type": "http response",
         "z": "2be0d2205654bc57",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 320,
         "y": 280,
@@ -2479,6 +2604,25 @@
             [
                 "48b69f490df79ca2",
                 "d1ee23f65b6a3211"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-92e365dc5ad8fbc5",
+        "type": "function",
+        "z": "2be0d2205654bc57",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 280,
+        "wires": [
+            [
+                "92e365dc5ad8fbc5"
             ]
         ]
     },
@@ -2580,7 +2724,7 @@
         "y": 240,
         "wires": [
             [
-                "12b61e0fc68d30d2"
+                "p21chk-3a6c14cbae2c5777"
             ]
         ]
     },
@@ -2608,7 +2752,7 @@
         "y": 320,
         "wires": [
             [
-                "6bfc24f589892edd"
+                "p21env-6bfc24f589892edd"
             ]
         ]
     },
@@ -2634,7 +2778,7 @@
         "type": "http response",
         "z": "b464a16d5b6e3016",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 340,
         "y": 320,
@@ -2670,6 +2814,44 @@
         "wires": [
             [
                 "fb0719b9314b3bef"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-6bfc24f589892edd",
+        "type": "function",
+        "z": "b464a16d5b6e3016",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 320,
+        "wires": [
+            [
+                "6bfc24f589892edd"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-3a6c14cbae2c5777",
+        "type": "function",
+        "z": "b464a16d5b6e3016",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 240,
+        "wires": [
+            [
+                "12b61e0fc68d30d2"
             ]
         ]
     },
@@ -2771,7 +2953,7 @@
         "y": 220,
         "wires": [
             [
-                "f4c72dd42ee97418"
+                "p21chk-65bcb3492b0bda31"
             ]
         ]
     },
@@ -2799,7 +2981,7 @@
         "y": 280,
         "wires": [
             [
-                "a101b1a1587ce7f9"
+                "p21env-a101b1a1587ce7f9"
             ]
         ]
     },
@@ -2825,7 +3007,7 @@
         "type": "http response",
         "z": "1151e4755687bce1",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 300,
         "y": 280,
@@ -2861,6 +3043,44 @@
         "wires": [
             [
                 "b70f9835e7dad017"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-a101b1a1587ce7f9",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 280,
+        "wires": [
+            [
+                "a101b1a1587ce7f9"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-65bcb3492b0bda31",
+        "type": "function",
+        "z": "1151e4755687bce1",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 220,
+        "wires": [
+            [
+                "f4c72dd42ee97418"
             ]
         ]
     },
@@ -2947,7 +3167,7 @@
         "y": 60,
         "wires": [
             [
-                "ed694127efde2c16"
+                "p21env-ed694127efde2c16"
             ]
         ]
     },
@@ -3419,7 +3639,7 @@
         "y": 560,
         "wires": [
             [
-                "a043bae1603803a8"
+                "p21chk-af66b696c5573785"
             ]
         ]
     },
@@ -3466,25 +3686,7 @@
         "y": 560,
         "wires": [
             [
-                "39c0cb52f511d9cb"
-            ]
-        ]
-    },
-    {
-        "id": "39c0cb52f511d9cb",
-        "type": "link call",
-        "z": "5afaefaae1db46d5",
-        "name": "",
-        "links": [
-            "08f5d2534ec47de6"
-        ],
-        "linkType": "static",
-        "timeout": "30",
-        "x": 890,
-        "y": 560,
-        "wires": [
-            [
-                "7cb35d6d0bf3d372"
+                "c55e50354b7ed99e"
             ]
         ]
     },
@@ -3774,6 +3976,57 @@
         ]
     },
     {
+        "id": "p21env-ed694127efde2c16",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 60,
+        "wires": [
+            [
+                "ed694127efde2c16"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-af66b696c5573785",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 560,
+        "wires": [
+            [
+                "a043bae1603803a8"
+            ]
+        ]
+    },
+    {
+        "id": "c55e50354b7ed99e",
+        "type": "subflow:368084b92cefec18",
+        "z": "5afaefaae1db46d5",
+        "name": "",
+        "x": 890,
+        "y": 560,
+        "wires": [
+            [
+                "7cb35d6d0bf3d372"
+            ]
+        ]
+    },
+    {
         "id": "4b1f9e2113621dd8",
         "type": "http in",
         "z": "2958c4a9b21da45a",
@@ -3877,8 +4130,7 @@
         "y": 260,
         "wires": [
             [
-                "61f3e4f51ebe920e",
-                "f8fd0ba84a167fe4"
+                "p21chk-4f450e00fab88e37"
             ]
         ]
     },
@@ -3906,7 +4158,7 @@
         "y": 40,
         "wires": [
             [
-                "3220f3f3f70fa16f"
+                "p21env-3220f3f3f70fa16f"
             ]
         ]
     },
@@ -3932,7 +4184,7 @@
         "type": "http response",
         "z": "2958c4a9b21da45a",
         "name": "",
-        "statusCode": "304",
+        "statusCode": "500",
         "headers": {},
         "x": 360,
         "y": 40,
@@ -4015,8 +4267,7 @@
         "y": 700,
         "wires": [
             [
-                "d2f2602a5ec15194",
-                "2f70858160b486f1"
+                "p21chk-ebac6e5376bc7bbc"
             ]
         ]
     },
@@ -4276,6 +4527,65 @@
         ]
     },
     {
+        "id": "p21env-3220f3f3f70fa16f",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 40,
+        "wires": [
+            [
+                "3220f3f3f70fa16f"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-4f450e00fab88e37",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "61f3e4f51ebe920e",
+                "f8fd0ba84a167fe4"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-ebac6e5376bc7bbc",
+        "type": "function",
+        "z": "2958c4a9b21da45a",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 700,
+        "wires": [
+            [
+                "d2f2602a5ec15194",
+                "2f70858160b486f1"
+            ]
+        ]
+    },
+    {
         "id": "bd82a7a67ef6d40c",
         "type": "change",
         "z": "041ce3d9cda14530",
@@ -4365,7 +4675,7 @@
         "y": 40,
         "wires": [
             [
-                "b0a2994c799fd3dc"
+                "p21env-b0a2994c799fd3dc"
             ]
         ]
     },
@@ -4590,8 +4900,7 @@
         "y": 680,
         "wires": [
             [
-                "99727fd091645792",
-                "a5534ea92b26fa8a"
+                "p21chk-e3fbb648496dac27"
             ]
         ]
     },
@@ -4826,6 +5135,45 @@
         ]
     },
     {
+        "id": "p21env-b0a2994c799fd3dc",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 40,
+        "wires": [
+            [
+                "b0a2994c799fd3dc"
+            ]
+        ]
+    },
+    {
+        "id": "p21chk-e3fbb648496dac27",
+        "type": "function",
+        "z": "041ce3d9cda14530",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 680,
+        "wires": [
+            [
+                "99727fd091645792",
+                "a5534ea92b26fa8a"
+            ]
+        ]
+    },
+    {
         "id": "d6a9d7aecd4fd3fc",
         "type": "http in",
         "z": "4462ef5386374bff",
@@ -4847,7 +5195,7 @@
         "type": "http response",
         "z": "4462ef5386374bff",
         "name": "",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {
             "content-type": "application/json"
         },
@@ -4866,7 +5214,7 @@
         "y": 220,
         "wires": [
             [
-                "3800a06e3170345b"
+                "p21env-3800a06e3170345b"
             ]
         ]
     },
@@ -4923,7 +5271,7 @@
         "type": "function",
         "z": "4462ef5386374bff",
         "name": "Create inspection object",
-        "func": "msg.inspector = {\n    \"id\" : msg.payload.list[0]?.id,\n    \"name\" : msg.payload.list[0]?.name,\n    \"serviceAreaId\" : msg.payload.list[0]?.serviceAreaId || null,\n    \"serviceAreaName\" : msg.payload.list[0]?.serviceAreaName || null,\n    \"specialties\" : msg.payload.list[0]?.specialty?.map((x) => \n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.inspector;\nreturn msg;",
+        "func": "var list = (msg.payload && msg.payload.list) || [];\nif (list.length === 0) {\n    // A lookup by id with no match is a 404, not a 200 full of nulls.\n    msg.statusCode = 404;\n    if (msg.res) { msg.res.statusCode = 404; }\n    var wanted = (msg.req && msg.req.params && msg.req.params.externalId) || \"\";\n    msg.payload = { success: false, error: \"Inspector not found: \" + wanted };\n    return msg;\n}\nmsg.inspector = {\n    \"id\" : list[0]?.id,\n    \"name\" : list[0]?.name,\n    \"serviceAreaId\" : list[0]?.serviceAreaId || null,\n    \"serviceAreaName\" : list[0]?.serviceAreaName || null,\n    \"specialties\" : list[0]?.specialty?.map((x) =>\n        ({\n            \"id\": x.id,\n            \"code\" : x.code,\n            \"name\" : x.name\n        }))\n}\nmsg.payload = msg.inspector;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -5046,7 +5394,7 @@
         "y": 840,
         "wires": [
             [
-                "ba30a1d3a6d9a47e"
+                "p21env-ba30a1d3a6d9a47e"
             ]
         ]
     },
@@ -5175,6 +5523,44 @@
         "wires": [
             [
                 "f214c53eba0d1c22"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-3800a06e3170345b",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "3800a06e3170345b"
+            ]
+        ]
+    },
+    {
+        "id": "p21env-ba30a1d3a6d9a47e",
+        "type": "function",
+        "z": "4462ef5386374bff",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 840,
+        "wires": [
+            [
+                "ba30a1d3a6d9a47e"
             ]
         ]
     },
@@ -5986,7 +6372,7 @@
         "type": "function",
         "z": "dbdd767669d57957",
         "name": "set inspectors-by-specialty params",
-        "func": "const query = (msg.req && msg.req.query) || {};\nconst raw = query.specialty || query.specialtyCode || \"\";\nconst code = String(raw).trim().toUpperCase();\n\nif (!code) {\n  msg.statusCode = 400;\n  if (msg.res) { msg.res.statusCode = 400; }\n  msg.payload = { error: \"specialty query parameter is required\" };\n  return [null, msg];\n}\n\nmsg.specialtyCode = code;\nmsg.entity = \"Inspector\";\nmsg.entityData = { deleted: false };\nmsg.entitySelect = \"id,name,externalUserID,specialty\";\nreturn [msg, null];",
+        "func": "const query = (msg.req && msg.req.query) || {};\nconst raw = query.specialty || query.specialtyCode || \"\";\nconst code = String(raw).trim().toUpperCase();\n\nif (!code) {\n  msg.statusCode = 400;\n  if (msg.res) { msg.res.statusCode = 400; }\n  msg.payload = { success: false, error: \"specialty query parameter is required\" };\n  return [null, msg];\n}\n\nmsg.specialtyCode = code;\nmsg.entity = \"Inspector\";\nmsg.entityData = { deleted: false };\nmsg.entitySelect = \"id,name,externalUserID,specialty\";\nreturn [msg, null];",
         "outputs": 2,
         "timeout": 0,
         "noerr": 0,
@@ -6142,6 +6528,51 @@
         ]
     },
     {
+        "id": "b6726ffba2fe494e",
+        "type": "catch",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 120,
+        "y": 980,
+        "wires": [
+            [
+                "p21env-4ee3b05369286bb3"
+            ]
+        ]
+    },
+    {
+        "id": "4ee3b05369286bb3",
+        "type": "http response",
+        "z": "dbdd767669d57957",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 340,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "p21env-4ee3b05369286bb3",
+        "type": "function",
+        "z": "dbdd767669d57957",
+        "name": "error envelope",
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nmsg.payload = { success: false, error: message };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 980,
+        "wires": [
+            [
+                "4ee3b05369286bb3"
+            ]
+        ]
+    },
+    {
         "id": "b7ef9a6b5d70ce2a",
         "type": "http in",
         "z": "be74fd69d845153f",
@@ -6226,8 +6657,7 @@
         "y": 340,
         "wires": [
             [
-                "da044a31bcb31118",
-                "4afccf560762d782"
+                "p21chk-de062de86100cbc3"
             ]
         ]
     },
@@ -6392,6 +6822,26 @@
         ]
     },
     {
+        "id": "p21chk-de062de86100cbc3",
+        "type": "function",
+        "z": "be74fd69d845153f",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "da044a31bcb31118",
+                "4afccf560762d782"
+            ]
+        ]
+    },
+    {
         "id": "355c318caf6fc721",
         "type": "http in",
         "z": "5e1aad1777646734",
@@ -6462,7 +6912,7 @@
         "y": 340,
         "wires": [
             [
-                "463ace0ebbc03553"
+                "p21chk-3856a097e0ba3c92"
             ]
         ]
     },
@@ -6627,29 +7077,22 @@
         ]
     },
     {
-        "id": "b6726ffba2fe494e",
-        "type": "catch",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "scope": null,
-        "uncaught": false,
-        "x": 120,
-        "y": 980,
+        "id": "p21chk-3856a097e0ba3c92",
+        "type": "function",
+        "z": "5e1aad1777646734",
+        "name": "check upstream status",
+        "func": "// Upstream 4xx/5xx are delivered on the normal output; raise them so the flow's\n// catch handler returns the error envelope instead of a 200 with the error body.\nvar status = parseInt(msg.statusCode, 10);\nif (status >= 400) {\n    var body = (typeof msg.payload === \"string\") ? msg.payload\n        : (msg.payload && msg.payload.error) ? msg.payload.error : \"\";\n    node.error(\"HTTP \" + status + (body ? \": \" + body : \"\"), msg);\n    return null;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 340,
         "wires": [
             [
-                "4ee3b05369286bb3"
+                "463ace0ebbc03553"
             ]
         ]
-    },
-    {
-        "id": "4ee3b05369286bb3",
-        "type": "http response",
-        "z": "dbdd767669d57957",
-        "name": "",
-        "statusCode": "400",
-        "headers": {},
-        "x": 340,
-        "y": 980,
-        "wires": []
     }
 ]
