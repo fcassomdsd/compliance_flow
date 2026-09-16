@@ -418,7 +418,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "save inspected provider data",
-        "func": "msg.inspectionReport[\"providerName\"] = msg.payload.list[0].serviceProviderName\nmsg.inspectedProviderId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "if (!msg.payload || !msg.payload.list || msg.payload.list.length === 0) {\n    // Same guard as the plan tab: an unknown /provider left this list empty and the\n    // TypeError reached the client instead of naming what was not found.\n    node.error(\"No inspected provider found for id: \" + msg.providerId, msg);\n    return null;\n}\nmsg.inspectionReport[\"providerName\"] = msg.payload.list[0].serviceProviderName\nmsg.inspectedProviderId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
