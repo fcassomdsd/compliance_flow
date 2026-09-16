@@ -18,6 +18,12 @@
 //   BASE=... SPECIALTY_CODE=... SITE_VISIT_ID=... node scripts/audit-error-envelope.mjs
 
 const BASE = (process.env.BASE || 'http://localhost:1880').replace(/\/$/, '');
+
+// Node-RED gates every endpoint with `X-API-Key` when its `API_KEY` is set, which the deployed
+// stack should have on. Pass it here (API_KEY, or NODE_RED_API_KEY as compliance_web names it) so
+// the harness works either way instead of reporting 401s for a correctly configured gateway.
+const API_KEY = process.env.API_KEY || process.env.NODE_RED_API_KEY || '';
+const authHeaders = API_KEY ? { 'X-API-Key': API_KEY } : {};
 const enforce = process.argv.includes('--enforce');
 
 const probes = [
@@ -52,7 +58,7 @@ async function call({ method = 'GET', path, params, body }) {
   try {
     res = await fetch(url, {
       method,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      headers: { ...authHeaders, ...(body ? { 'Content-Type': 'application/json' } : {}) },
       body: body ? JSON.stringify(body) : undefined,
       signal: controller.signal,
     });
