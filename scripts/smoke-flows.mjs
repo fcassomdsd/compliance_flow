@@ -10,23 +10,28 @@
 //
 // Usage:
 //   BASE=http://localhost:1880 \
-//   SPECIALTY_CODE=MET \
-//   INSPECTOR_EXTERNAL_ID=osvaldo.delgadillo \
-//   SITE_VISIT_ID=... INSPECTION_ID=... INSPECTED_PROVIDER_ID=... \
-//   LOCATION_CODE=MDPP \
+//   SPECIALTY_CODE=ATS \
+//   INSPECTOR_EXTERNAL_ID=demo.inspector1 \
+//   SITE_VISIT_ID=demo-sv-01 INSPECTION_ID=demo-insp-ans-01 INSPECTED_PROVIDER_ID=demo-iprov-ans \
+//   LOCATION_CODE=ZZZZ \
 //   node scripts/smoke-flows.mjs
+//
+// The defaults are the committed demo dataset's stable ids (`atrocore-docker/sql/
+// seed-demo-dataset.sql`), not ids from a particular long-lived instance: this harness is run on
+// a fresh clone by `atrocore-docker/scripts/demo-quickstart.sh`, and it used to fail there
+// because its defaults pointed at records that only existed on the developer's instance.
 //
 // Exits 0 when every run test passes, 2 when any assertion fails. Skipped
 // mutation endpoints never affect the exit code.
 
 const BASE = (process.env.BASE || 'http://localhost:1880').replace(/\/$/, '');
 const cfg = {
-  specialtyCode: process.env.SPECIALTY_CODE || 'MET',
-  inspectorExternalId: process.env.INSPECTOR_EXTERNAL_ID || 'osvaldo.delgadillo',
-  siteVisitId: process.env.SITE_VISIT_ID || 'a01m1xss7xge4z9gygvcmj3mb64',
-  inspectionId: process.env.INSPECTION_ID || 'a01m1xst8faebz93nas6xdht053',
-  inspectedProviderId: process.env.INSPECTED_PROVIDER_ID || 'a01m1xssv0tedgr0jmfwt3b2mh3',
-  locationCode: process.env.LOCATION_CODE || 'MDPP',
+  specialtyCode: process.env.SPECIALTY_CODE || 'ATS',
+  inspectorExternalId: process.env.INSPECTOR_EXTERNAL_ID || 'demo.inspector1',
+  siteVisitId: process.env.SITE_VISIT_ID || 'demo-sv-01',
+  inspectionId: process.env.INSPECTION_ID || 'demo-insp-ans-01',
+  inspectedProviderId: process.env.INSPECTED_PROVIDER_ID || 'demo-iprov-ans',
+  locationCode: process.env.LOCATION_CODE || 'ZZZZ',
 };
 
 let passed = 0;
