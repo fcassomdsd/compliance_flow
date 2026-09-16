@@ -186,7 +186,7 @@ All endpoints are served at `http://<host>:1880`.
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/inspectionPlan` | Generate an inspection plan; after successful generation, transitions AtroCore inspection status to `Planned` |
+| `GET` | `/inspectionPlan` | Generate an inspection plan; after successful generation, transitions AtroCore inspection status to `Planned`. Answers with the generated document — `generatedFile.name`/`path`/`version`/`downloadURL`, plus `inspectionId` and `inspectionStatus` — or with the error envelope naming what was missing when `siteVisit` or `provider` does not resolve |
 | `GET` | `/inspectionReport` | Generate an inspection report; after successful generation, transitions AtroCore inspection status to `Reported` |
 | `POST` | `/importFollowUps` | Import follow-up items into the system |
 | `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; after successful import, transitions AtroCore inspection status from `Planned` to `Uploaded` |

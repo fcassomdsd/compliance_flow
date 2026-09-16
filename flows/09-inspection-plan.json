@@ -185,7 +185,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "get contact name and services",
-        "func": "  let prov = msg.payload.list[0];\n  \n  // if location service has a point of contact associated to it, save the contact id  \n  if (prov.pointOfContactId) {\n    msg.inspectionPlan.provider[\"contact\"] = {};\n    msg.inspectionPlan.provider.contact = {\n      \"id\" : prov.pointOfContactId,\n      \"name\" : prov.pointOfContactName\n    }\n  }\n\n  msg.inspectionPlan.provider[\"services\"] = [];\n\nfor (var provider of msg.payload.list) {\n  msg.inspectionPlan.provider.services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
+        "func": "if (!msg.payload || !msg.payload.list || msg.payload.list.length === 0) {\n    node.error(\"No location service linked to the inspected services of inspection: \" +\n        ((msg.inspectionPlan && msg.inspectionPlan.inspectionId) ? msg.inspectionPlan.inspectionId : \"?\"), msg);\n    return null;\n}\n\n  let prov = msg.payload.list[0];\n  \n  // if location service has a point of contact associated to it, save the contact id  \n  if (prov.pointOfContactId) {\n    msg.inspectionPlan.provider[\"contact\"] = {};\n    msg.inspectionPlan.provider.contact = {\n      \"id\" : prov.pointOfContactId,\n      \"name\" : prov.pointOfContactName\n    }\n  }\n\n  msg.inspectionPlan.provider[\"services\"] = [];\n\nfor (var provider of msg.payload.list) {\n  msg.inspectionPlan.provider.services.push({\n    \"name\" : provider.shortName,\n    \"specialties\" : msg.locationServiceObj[provider.id]\n  });\n}\n\nmsg.payload = msg.inspectionPlan\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -332,7 +332,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "add contact info",
-        "func": "let thisOne = 0;\nlet providerName = \"\";\nconst person = msg.payload.list[0];\nmsg.inspectionPlan.provider.contact = {\n    \"name\" : person.name,\n    \"position\" : person.workPosition\n}\n\nreturn msg;",
+        "func": "const person = (msg.payload && msg.payload.list) ? msg.payload.list[0] : null;\nif (!person) {\n    node.error(\"No contact person found for provider: \" +\n        ((msg.inspectionPlan && msg.inspectionPlan.provider) ? msg.inspectionPlan.provider.id : \"?\"), msg);\n    return null;\n}\nmsg.inspectionPlan.provider.contact = {\n    \"name\" : person.name,\n    \"position\" : person.workPosition\n};\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -597,7 +597,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "set parameteros for status to Planned",
-        "func": "var inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId);\nif (!inspectionId) {\n    node.warn(\"No inspection ID for status update\");\n    return;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Planned\" };\nreturn msg;",
+        "func": "// The caller asked for the plan, not for this status update, and the update rewrites msg\n// (entity / entityId / updateData) for the AtroCore call. Keep the generation result aside\n// for the response; without it the response carried the updateEntity result.\nmsg.planGenerationResult = msg.payload;\n\nvar inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId);\nif (!inspectionId) {\n    node.error(\"No inspection ID for status update\", msg);\n    return null;\n}\n\nmsg.entity = \"Inspection\";\nmsg.entityId = inspectionId;\nmsg.updateData = { status: \"Planned\" };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -637,7 +637,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save inspection data",
-        "func": "msg.inspectionPlan[\"inspectionNo\"] = msg.payload.list[0].code;\nmsg.inspectionPlan[\"scope\"] = msg.payload.list[0].scope; \nmsg.inspectionPlan[\"objective\"] = msg.payload.list[0].objective;\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "if (!msg.payload || !msg.payload.list || msg.payload.list.length === 0) {\n    node.error(\"No inspection found for site visit: \" + (msg.siteVisitId || msg.inspectionCode), msg);\n    return null;\n}\nmsg.inspectionPlan[\"inspectionNo\"] = msg.payload.list[0].code;\nmsg.inspectionPlan[\"scope\"] = msg.payload.list[0].scope; \nmsg.inspectionPlan[\"objective\"] = msg.payload.list[0].objective;\nmsg.inspectionId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -687,7 +687,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save site visit data",
-        "func": "msg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
+        "func": "if (!msg.payload || !msg.payload.list || msg.payload.list.length === 0) {\n    // An unknown ?siteVisit= code leaves the SiteVisit query empty; indexing list[0] threw a\n    // TypeError whose message reached the client instead of naming what was not found.\n    node.error(\"No site visit found for code: \" + msg.inspectionCode, msg);\n    return null;\n}\nmsg.inspectionPlan = {\n    //\"inspectionId\" : msg.payload.list[0].id,\n    \"inspectionNo\" : msg.payload.list[0].code,\n    \"locationId\" : msg.payload.list[0].locationId,\n    \"locationName\": msg.payload.list[0].locationName,\n    //\"objective\": msg.payload.list[0].objective,\n    //\"scope\": msg.payload.list[0].scope,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"secondaryInspector\": msg.payload.list[0].secondaryInspectorName,\n    \"startDate\": msg.payload.list[0].startDate,\n    \"endDate\": msg.payload.list[0].endDate,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.siteVisitId = msg.payload.list[0].id\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -727,7 +727,7 @@
         "type": "function",
         "z": "5afaefaae1db46d5",
         "name": "save provider data",
-        "func": "msg.inspectionPlan[\"provider\"] = {\n    \"id\" : msg.payload.list[0].serviceProviderId,\n    \"name\" : msg.payload.list[0].serviceProviderName\n};\n\nreturn msg;",
+        "func": "if (!msg.payload || !msg.payload.list || msg.payload.list.length === 0) {\n    // An unknown /provider makes the InspectedProvider query come back empty. Indexing\n    // list[0] here threw a TypeError that the catch could only report after the response\n    // had already gone out, which left the flow answering ERR_HTTP_HEADERS_SENT until a\n    // restart. Fail with a message instead.\n    node.error(\"No inspected provider found for id: \" + msg.providerId, msg);\n    return null;\n}\nmsg.inspectionPlan[\"provider\"] = {\n    \"id\" : msg.payload.list[0].serviceProviderId,\n    \"name\" : msg.payload.list[0].serviceProviderName\n};\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -944,7 +944,7 @@
         "y": 560,
         "wires": [
             [
-                "7cb35d6d0bf3d372"
+                "5c31a0d47be9f210"
             ]
         ]
     },
@@ -964,6 +964,26 @@
         "wires": [
             [
                 "af66b696c5573785"
+            ]
+        ]
+    },
+    {
+        "id": "5c31a0d47be9f210",
+        "type": "function",
+        "z": "5afaefaae1db46d5",
+        "name": "restore plan result",
+        "func": "// Answer with what the caller asked for. The plan is already generated and the\n// inspection status already set, so the response is just the generation result plus the\n// status the flow settled on. (Before this node the response returned the updateEntity\n// result, which is empty, so a successful call answered `200` with no body at all.)\nvar plan = msg.planGenerationResult;\nvar inspectionId = msg.inspectionId || (msg.inspectionPlan && msg.inspectionPlan.inspectionId) || null;\nmsg.payload = (plan && plan.generatedFile) ? plan : { status: \"success\" };\nmsg.payload.inspectionId = inspectionId;\nmsg.payload.inspectionStatus = \"Planned\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 560,
+        "wires": [
+            [
+                "7cb35d6d0bf3d372"
             ]
         ]
     }
