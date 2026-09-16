@@ -43,6 +43,10 @@ All notable changes are documented in this file.
 
 ## [2026-09-06]
 
+### Fixed
+
+- **A fresh checkout can start Node-RED: `scripts/bootstrap-node-red-data.sh`.** Node-RED runs as uid/gid 1000 and writes into `/data` — `node_modules` at startup plus its runtime files — which is a bind mount of this repository's tracked `data/`, so the ownership is the host's. On a developer's machine the host uid is usually 1000 and it works by accident; anywhere else the container cannot create `node_modules`, logs `EACCES: permission denied, mkdir '/data/node_modules'`, and **exits** — showing as `Exited (0)`, so the port never answers and it reads like a slow start. The new script chowns the directory to the container's user when run as root and makes it world-writable otherwise (only the directory's mode, so the tracked files keep their git modes); the README says to run it before `docker compose up`. **Found by the new whole-stack demo guard**, which is the first thing here to start Node-RED from an empty checkout.
+
 ### Added
 - **`/activityTypes` endpoint**: Returns the Nomenclatura oversight-activity-type catalog (`id`/`code`/`name`, e.g. `A`/`Auditoría`), mirroring the `/location` route pattern.
 - **`locale` parameter on `/inspectionPlan` and `/inspectionReport`**: forwarded (default `es`) into the payload posted to the Alfresco report-generation webscripts, so a caller's UI locale reaches the generated document. Completes the localization work landing in `compliance_web` and `compliance_cmis` in the same change set.
