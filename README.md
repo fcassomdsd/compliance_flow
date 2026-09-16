@@ -75,7 +75,7 @@ docker network create import-backend
 
    ```bash
    git clone <repository-url>
-   cd compliance_repo/node-red
+   cd compliance_repo/compliance_flow
    ```
 
 2. **Start the service**:
@@ -334,7 +334,7 @@ it — a reviewable rename, not a content change.
 ## Project Structure
 
 ```
-node-red/
+compliance_flow/
 ├── docker-compose.yaml       # Docker service definition
 ├── flows/                    # One flow file per tab/subflow (the maintained source)
 │   ├── 01-getchecklistquestion.json
