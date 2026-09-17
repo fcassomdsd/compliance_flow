@@ -98,6 +98,10 @@ docker network create import-backend
 
 ## Whole-Platform Demo Quickstart
 
+First time running this platform? See the root-level
+[`GETTING_STARTED_FOR_ADOPTERS.md`](../GETTING_STARTED_FOR_ADOPTERS.md) for hardware
+requirements, timing expectations, and what the demo dataset actually is before diving in.
+
 Taking a running stack to a demonstrable dataset and a walked finding-closure
 workflow means exercising every service, so the canonical sequence lives once, in
 the `atrocore-docker` repository: §7 of
