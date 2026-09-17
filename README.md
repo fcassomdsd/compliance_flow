@@ -127,7 +127,7 @@ the failure-isolation cues for when a flow misbehaves.
 - **Flow file**: `flows.json`
 - **Credential encryption**: `credentialSecret` is set via `NODE_RED_CREDENTIAL_SECRET` env var with a dev default
 - **Editor auth**: `adminAuth` is enabled — login required to access the Node-RED editor
-- **API auth**: all REST endpoints are gated by `httpNodeMiddleware` — when `API_KEY` is set, requests require the `X-API-Key` header
+- **API auth**: all REST endpoints are gated by `httpNodeMiddleware` — when `API_KEY` is set (the shipped `.env.example` default, since 2026-09), requests require a matching `X-API-Key` header; leave it empty only for local development where nothing else points at this gateway
 
 ### Environment variables
 
@@ -136,7 +136,7 @@ the failure-isolation cues for when a flow misbehaves.
 | `TZ` | `Europe/Amsterdam` | Container timezone |
 | `ALFRESCO_USERNAME` / `ALFRESCO_PASSWORD` | *(required)* | Alfresco credentials (used when the caller does not forward a user ticket) |
 | `ATROCORE_USERNAME` / `ATROCORE_PASSWORD` | *(required)* | AtroCore credentials |
-| `API_KEY` | *(unset)* | Shared secret for REST endpoint protection; unset = no auth (dev mode) |
+| `API_KEY` | *(demo placeholder — change it)* | Shared secret for REST endpoint protection; unset = no auth (dev mode only) |
 | `ADMIN_USERNAME` | `admin` | Node-RED editor login username |
 | `ADMIN_PASSWORD_HASH` | *(bcrypt hash)* | Node-RED editor login password (bcrypt hash) |
 | `NODE_RED_CREDENTIAL_SECRET` | *(required)* | Encryption key for flow credentials — change in production |
@@ -361,7 +361,7 @@ compliance_flow/
 ## Security Notes
 
 - **`adminAuth` is enabled** — the Node-RED editor requires login (username/password from `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH` env vars).
-- **API key protection**: when `API_KEY` env var is set, every REST endpoint requires the `X-API-Key` header.
+- **API key protection**: when `API_KEY` env var is set (the shipped default), every REST endpoint requires a matching `X-API-Key` header. **The `.env.example` value is a public placeholder** — generate a real value (`openssl rand -hex 32`) and set the same one in `compliance_web`'s `NODE_RED_API_KEY` and `compliance_import`'s `IMPORT_API_KEY` before any deployment reachable by anyone you do not trust.
 - **`credentialSecret`** is managed via `NODE_RED_CREDENTIAL_SECRET` env var — set a unique value in production.
 - **Alfresco credentials** are read from `ALFRESCO_USERNAME`/`ALFRESCO_PASSWORD` env vars. Frontend apps can forward user-specific Alfresco tickets via the `X-Alfresco-Ticket` header, which the auth flow will use preferentially over env var credentials.
 - **`.gitignore`** excludes backup files (`.backup`), runtime configs (`.config.*.json`), and `node_modules/`.
