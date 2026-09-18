@@ -284,7 +284,7 @@ node scripts/smoke-flows.mjs
 
 ### Error-envelope audit
 
-`scripts/audit-error-envelope.mjs` reports how error responses currently behave and is the gate for the P2.1 "one error envelope" work. A "proper" error is **HTTP ≥ 400 with a JSON body `{ "success": false, "error": … }`**. Today several endpoints return HTTP 200 with a raw error string or an empty body (the `http request` nodes do not throw on upstream failure by default), so the audit reports `0 pass / 5 fail` until that is fixed in the editor:
+`scripts/audit-error-envelope.mjs` checks how error responses behave. A "proper" error is **HTTP ≥ 400 with a JSON body `{ "success": false, "error": … }`**. P2.1 normalised the flow's error paths to that envelope, so the audit now passes 5/5 and `--enforce` is the local gate for keeping it that way (CI has no live stack to run it against):
 
 ```bash
 node scripts/audit-error-envelope.mjs            # report only (exit 0)
