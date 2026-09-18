@@ -1,0 +1,33 @@
+name: CI
+
+# Mirror of this repository's GitLab CI validation job, published on GitHub purely for public
+# visibility (GitLab remains the source of truth for development — see CONTRIBUTING.md). Only
+# the correctness-signal jobs are mirrored here; release automation and anything else specific
+# to the GitLab workflow stays GitLab-only.
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate-flows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # data/flows.json is the entire service, so a duplicate id or a wire/link that points at a
+      # node that no longer exists only surfaces at runtime. Validate the structure, verify the
+      # README endpoint manifest still matches the flow's http-in nodes, and unit-check the
+      # JavaScript embedded in the function nodes — all without a stack.
+      - run: node --test scripts/flows-files.test.mjs
+      - run: node scripts/assemble-flows.mjs --check
+      - run: node scripts/split-flows.mjs --check
+      - run: node scripts/validate-flows.mjs
+      - run: node scripts/verify-endpoints.mjs
+      - run: node scripts/verify-flow-logic.mjs
