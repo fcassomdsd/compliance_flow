@@ -136,7 +136,7 @@ Checklist:
 
 ## 6. Documentation and compatibility
 
-- Update the README, `docs/`, and `example/` payloads whenever a contract changes — API routes, payload fields, schemas, document ID formats, or Alfresco folder paths.
+- Update the README (especially its API Reference, which CI checks against `flows/`) whenever a contract changes — API routes, payload fields, schemas, document ID formats, or Alfresco folder paths. This repository has no `docs/` or `example/` directory; the per-tab fragments under `flows/` and the README are the contract.
 - Keep identifiers and payload aliases backward compatible where practical, and call out breaking changes explicitly in the merge request.
 - When a change spans more than one repository in this platform, open one merge request per repository and link them to each other.
 

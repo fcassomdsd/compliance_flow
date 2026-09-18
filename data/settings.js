@@ -264,10 +264,8 @@ module.exports = {
             return next();
         }
         res.status(401).json({
-            error: {
-                code: "UNAUTHORIZED",
-                message: "A valid X-API-Key header is required."
-            }
+            success: false,
+            error: "A valid X-API-Key header is required."
         });
     },
 
