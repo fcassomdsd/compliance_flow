@@ -104,7 +104,14 @@ const readOnlyTests = [
   { name: 'GET /providers?siteVisit=', path: '/providers', params: { siteVisit: cfg.siteVisitId }, expect: 'array' },
   { name: 'GET /inspection/:inspectionId', path: `/inspection/${cfg.inspectionId}`, expect: 'json' },
   { name: 'GET /assignmentGroup/:externalGroup', path: '/assignmentGroup/test-group', expect: 'json' },
-  { name: 'GET /findings/open?locationCode=&specialtyCode=', path: '/findings/open', params: { locationCode: cfg.locationCode, specialtyCode: cfg.specialtyCode }, expect: 'array' },
+  // Search-backed (AFTS/Solr), so it lags a few seconds behind a status change — the same lag
+  // the runbook documents for this endpoint. The demo walks a follow-up to Pending Closure
+  // Approval immediately before this harness runs, so a single request can race the index and
+  // see zero results even though the transition genuinely succeeded (confirmed repeatedly: the
+  // same finding shows up correctly a few seconds later). Retried for that reason; every other
+  // test here queries AtroCore directly through Node-RED, not a search index, so none of them
+  // need this.
+  { name: 'GET /findings/open?locationCode=&specialtyCode=', path: '/findings/open', params: { locationCode: cfg.locationCode, specialtyCode: cfg.specialtyCode }, expect: 'array', retries: 5, retryDelayMs: 3000 },
   { name: 'GET /checklist', path: '/checklist', params: { inspectionId: cfg.inspectionId, specialty: cfg.specialtyCode, siteVisitId: cfg.siteVisitId, inspectedProviderId: cfg.inspectedProviderId }, expect: 'object' },
   { name: 'GET /getLinks', path: '/getLinks', params: { entity: 'Inspection', id: cfg.inspectionId, link: 'inspectionSchedule' }, expect: 'json' },
   { name: 'POST /queryEntity', path: '/queryEntity', method: 'POST', params: { entity: 'Inspection', select: 'id,code' }, body: { id: cfg.inspectionId }, expect: 'json' },
@@ -161,17 +168,30 @@ function satisfies(result, expect) {
   return null;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function main() {
   console.log(`smoke-flows: target ${BASE}`);
   for (const t of readOnlyTests) {
-    try {
-      const result = await call(t);
-      const problem = satisfies(result, t.expect);
-      if (problem) bad(t.name, problem);
-      else ok(t.name);
-    } catch (error) {
-      bad(t.name, error.message);
+    const attempts = 1 + (t.retries || 0);
+    let problem = null;
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        const result = await call(t);
+        problem = satisfies(result, t.expect);
+      } catch (error) {
+        problem = error.message;
+      }
+      if (!problem) break;
+      if (attempt < attempts) {
+        console.log(`  retry ${t.name} (${attempt}/${attempts}): ${problem}`);
+        await sleep(t.retryDelayMs || 1000);
+      }
     }
+    if (problem) bad(t.name, problem);
+    else ok(t.name);
   }
   for (const [name, reason] of destructiveTests) {
     skip(name, `destructive (${reason}) — needs throwaway data + cleanup`);
