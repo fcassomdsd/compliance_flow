@@ -4,6 +4,10 @@ All notable changes are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- **`smoke-flows.mjs`'s `/findings/open` check no longer fails on the demo's own known search-index lag.** This endpoint is search-backed (AFTS/Solr), so it lags a few seconds behind a status change — already documented in `atrocore-docker`'s runbook as a trap this exact spot in the demo hits, since the harness runs immediately after a follow-up walks a finding to `Pending Closure Approval`. Every other check in this harness queries AtroCore directly through Node-RED, not a search index, so none of them needed this. Hit three times this session in practice (twice on GitLab's `demo:verify`, once on its new GitHub Actions mirror) before being fixed rather than deferred again. The check now retries up to 5 times, 3 seconds apart, before failing — verified against the live stack (passes immediately, no regression) and by reasoning through the retry loop directly (only reports failure after exhausting all attempts, same as every other check's single-attempt behavior when it doesn't opt in to retries).
+
 ### Added
 
 - **`THIRD_PARTY_LICENSES.md`.** This project uses the official `nodered/node-red:4.1.10` image unmodified (Apache-2.0), with no extra community nodes installed — no code-level third-party dependency scan needed beyond that.
