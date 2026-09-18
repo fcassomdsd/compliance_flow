@@ -1,5 +1,7 @@
 # Node-RED — Compliance Inspection API
 
+[![CI](https://github.com/fcassomdsd/compliance_flow/actions/workflows/ci.yml/badge.svg)](https://github.com/fcassomdsd/compliance_flow/actions/workflows/ci.yml)
+
 A Node-RED service that acts as the integration middleware for an aviation compliance inspection management system. It exposes a REST API consumed by the front-end checklist application and orchestrates data flow between the **AtroCRM/AtroCore** backend and an **Alfresco** document management system.
 
 ## Table of Contents
