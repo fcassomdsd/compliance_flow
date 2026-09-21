@@ -194,6 +194,8 @@ All endpoints are served at `http://<host>:1880`.
 |---|---|---|
 | `GET` | `/inspectionPlan` | Generate an inspection plan; after successful generation, transitions AtroCore inspection status to `Planned`. Answers with the generated document — `generatedFile.name`/`path`/`version`/`downloadURL`, plus `inspectionId` and `inspectionStatus` — or with the error envelope naming what was missing when `siteVisit` or `provider` does not resolve |
 | `GET` | `/inspectionReport` | Generate an inspection report; after successful generation, transitions AtroCore inspection status to `Reported` |
+| `GET` | `/inspectionDefine` | Move an inspection to `Defined`, from `Created` only. Takes `inspection=<id>`. The caller names the action, not the target status, so the status of an inspection is never written directly by a client |
+| `GET` | `/inspectionAssign` | Move an inspection to `Assigned`, from `Defined` or from `Planned` — the latter being the reassignment revert, which sends an already-planned inspection back so its plan is regenerated. Takes `inspection=<id>` |
 | `POST` | `/importFollowUps` | Import follow-up items into the system |
 | `GET` | `/importCanonical` | Import canonical inspection data into Alfresco; after successful import, transitions AtroCore inspection status from `Planned` to `Uploaded` |
 | `GET` | `/inspection/:inspectionId` | Query a single inspection entity by id (also accepts its `code`) |
@@ -267,7 +269,7 @@ Reusable logic extracted from the tabs above. A Subflow is instantiated wherever
 
 **On a fresh checkout, run `scripts/bootstrap-node-red-data.sh` before `docker compose up`.** Node-RED runs as uid 1000 and writes into `/data`, which is a bind mount of this repository's tracked `data/` — on a machine whose user is not uid 1000 the container cannot create `node_modules`, logs `EACCES: permission denied, mkdir '/data/node_modules'` and exits (showing as `Exited (0)`, so the port simply never answers). The script chowns the directory to the container's user when run as root and makes it world-writable otherwise.
 
-`scripts/smoke-flows.mjs` is a read-only smoke harness that calls the safe HTTP endpoints against a running stack and asserts each returns HTTP 200 with a JSON body (and, for list endpoints, a non-empty array). Endpoints that mutate state (`addEntity`, `updateEntity`, `deleteEntity`, `addLinks`, `deleteLinks`, `importCanonical`, `importFollowUps`, `inspectionPlan`, `inspectionReport`) are listed but not exercised — they need throwaway data and cleanup — so they are skipped, not failed.
+`scripts/smoke-flows.mjs` is a read-only smoke harness that calls the safe HTTP endpoints against a running stack and asserts each returns HTTP 200 with a JSON body (and, for list endpoints, a non-empty array). Endpoints that mutate state (`addEntity`, `updateEntity`, `deleteEntity`, `addLinks`, `deleteLinks`, `importCanonical`, `importFollowUps`, `inspectionPlan`, `inspectionReport`, `inspectionDefine`, `inspectionAssign`) are listed but not exercised — they need throwaway data and cleanup — so they are skipped, not failed.
 
 ```bash
 # stack up first (see the runbook), then:

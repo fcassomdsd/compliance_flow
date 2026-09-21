@@ -6633,6 +6633,274 @@
         ]
     },
     {
+        "id": "a16f5c0d7b2e4901",
+        "type": "tab",
+        "label": "Inspection Status Transitions",
+        "disabled": false,
+        "info": "Status transitions of an Inspection.\n\n`Created -> Defined` and `-> Assigned` used to be written by the web app as a plain `updateEntity` on the `status` field, which meant the state machine was enforced only in the browser and any authenticated caller could jump an inspection to any state.\n\nThese two endpoints own those transitions instead. The caller names the *action*, never the target status, so the gateway proxy can gate each one by role, and the rules that were in compliance_web's src/utils/inspectionStatus.js are applied here:\n\n  GET /inspectionDefine?inspection=<id>   Defined, only from Created\n  GET /inspectionAssign?inspection=<id>   Assigned, from Defined or Planned\n\n`Planned -> Assigned` is the reassignment revert: assigning different inspectors to an inspection that already has a plan sends it back to Assigned so the plan is regenerated.\n\nThe other transitions already live in flows: `-> Planned` in Inspection Plan, `Planned -> Uploaded` in Import Canonical, `-> Reported` in Inspection Report.",
+        "env": []
+    },
+    {
+        "id": "a16in-define",
+        "type": "http in",
+        "name": "Inspection Define",
+        "url": "/inspectionDefine",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "a16fn-define"
+            ]
+        ],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16in-assign",
+        "type": "http in",
+        "name": "Inspection Assign",
+        "url": "/inspectionAssign",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "a16fn-assign"
+            ]
+        ],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-define",
+        "type": "function",
+        "name": "define: target and allowed states",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 100,
+        "wires": [
+            [
+                "a16fn-read"
+            ]
+        ],
+        "func": "// The caller asks to *define* an inspection; the target status is this\n// flow's to decide, never the request's.\nmsg.targetStatus = \"Defined\";\nmsg.allowedFrom = [\"Created\"];\nmsg.action = \"inspectionDefine\";\nreturn msg;\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-assign",
+        "type": "function",
+        "name": "assign: target and allowed states",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "a16fn-read"
+            ]
+        ],
+        "func": "// \"Planned\" is the reassignment revert: changing the acting inspectors of an\n// inspection that already has a plan sends it back to Assigned so the plan is\n// regenerated. Mirrors shouldRevertToAssignedOnReassign in compliance_web.\nmsg.targetStatus = \"Assigned\";\nmsg.allowedFrom = [\"Defined\", \"Planned\"];\nmsg.action = \"inspectionAssign\";\nreturn msg;\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-read",
+        "type": "function",
+        "name": "read the inspection",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 150,
+        "wires": [
+            [
+                "a16q-read"
+            ],
+            [
+                "a16fn-envelope"
+            ]
+        ],
+        "func": "var inspectionId = msg.req && msg.req.query && msg.req.query.inspection;\nif (!inspectionId) {\n    msg.statusCode = 400;\n    msg.payload = { success: false, error: \"inspection is required\" };\n    return [null, msg];\n}\n\nmsg.inspectionId = String(inspectionId);\nmsg.entity = \"Inspection\";\nmsg.entityData = { id: msg.inspectionId };\nmsg.entitySelect = \"select=id,status&\";\nreturn [msg, null];\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16q-read",
+        "type": "subflow:17a5a86e5107e286",
+        "name": "",
+        "x": 900,
+        "y": 120,
+        "wires": [
+            [
+                "a16fn-validate"
+            ]
+        ],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-validate",
+        "type": "function",
+        "name": "validate the transition",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 120,
+        "wires": [
+            [
+                "a16fn-apply"
+            ],
+            [
+                "a16resp-ok"
+            ],
+            [
+                "a16fn-envelope"
+            ]
+        ],
+        "func": "// The state machine, enforced here rather than in the browser. An absent or\n// empty status means \"Created\", the same normalisation the web app applies.\nvar list = (msg.payload && msg.payload.list) || [];\nvar inspection = list[0];\n\nif (!inspection) {\n    msg.statusCode = 404;\n    msg.payload = { success: false, error: \"Inspection not found: \" + msg.inspectionId };\n    return [null, null, msg];\n}\n\nvar current = inspection.status || \"Created\";\n\n// Already there: nothing to do, and a success — so it takes its own output\n// rather than the error envelope's.\nif (current === msg.targetStatus) {\n    msg.statusCode = 200;\n    msg.payload = {\n        success: true,\n        inspectionId: msg.inspectionId,\n        status: current,\n        changed: false\n    };\n    return [null, msg, null];\n}\n\nif (msg.allowedFrom.indexOf(current) === -1) {\n    msg.statusCode = 409;\n    msg.payload = {\n        success: false,\n        error: \"An inspection at \\\"\" + current + \"\\\" cannot move to \\\"\" +\n               msg.targetStatus + \"\\\"; allowed from: \" + msg.allowedFrom.join(\", \")\n    };\n    return [null, null, msg];\n}\n\nmsg.previousStatus = current;\nreturn [msg, null, null];\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-apply",
+        "type": "function",
+        "name": "apply the transition",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1400,
+        "y": 100,
+        "wires": [
+            [
+                "a16u-apply"
+            ]
+        ],
+        "func": "msg.entity = \"Inspection\";\nmsg.entityId = msg.inspectionId;\nmsg.updateData = { status: msg.targetStatus };\nreturn msg;\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16u-apply",
+        "type": "subflow:368084b92cefec18",
+        "name": "",
+        "x": 1640,
+        "y": 100,
+        "wires": [
+            [
+                "a16fn-result"
+            ]
+        ],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-result",
+        "type": "function",
+        "name": "transition result",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1880,
+        "y": 100,
+        "wires": [
+            [
+                "a16resp-ok"
+            ],
+            [
+                "a16fn-envelope"
+            ]
+        ],
+        "func": "// The update subflow reports the upstream status; anything but a success is\n// returned as the error envelope rather than as a 200 with a raw body.\nvar code = Number(msg.statusCode);\nif (code === 200 || code === 304) {\n    msg.statusCode = 200;\n    msg.payload = {\n        success: true,\n        inspectionId: msg.inspectionId,\n        status: msg.targetStatus,\n        previousStatus: msg.previousStatus,\n        changed: true\n    };\n    return [msg, null];\n}\n\nmsg.statusCode = code >= 400 ? code : 502;\nmsg.payload = {\n    success: false,\n    error: \"The status update was refused upstream for inspection \" + msg.inspectionId\n};\nreturn [null, msg];\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16resp-ok",
+        "type": "http response",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 2120,
+        "y": 100,
+        "wires": [],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16fn-envelope",
+        "type": "function",
+        "name": "error envelope",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1400,
+        "y": 260,
+        "wires": [
+            [
+                "a16resp-err"
+            ]
+        ],
+        "func": "var err = msg.error;\nvar message = (err && err.message) ? err.message\n    : (typeof err === \"string\" && err) ? err\n    : (msg.payload && msg.payload.error) ? msg.payload.error\n    : (typeof msg.payload === \"string\" && msg.payload) ? msg.payload\n    : \"Request failed\";\nif (!msg.statusCode || Number(msg.statusCode) < 400) {\n    msg.statusCode = 400;\n}\nmsg.payload = { success: false, error: message };\nreturn msg;\n",
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16resp-err",
+        "type": "http response",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1640,
+        "y": 260,
+        "wires": [],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
+        "id": "a16catch",
+        "type": "catch",
+        "name": "",
+        "scope": [
+            "a16fn-read",
+            "a16q-read",
+            "a16fn-validate",
+            "a16fn-apply",
+            "a16u-apply",
+            "a16fn-result"
+        ],
+        "uncaught": false,
+        "x": 1140,
+        "y": 260,
+        "wires": [
+            [
+                "a16fn-envelope"
+            ]
+        ],
+        "z": "a16f5c0d7b2e4901"
+    },
+    {
         "id": "a4fd7864d2ed64a0",
         "type": "subflow",
         "name": "getAlfrescoTicket",
