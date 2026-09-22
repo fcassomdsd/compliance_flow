@@ -4,6 +4,10 @@ All notable changes are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **`GET /inspectionDefine` and `GET /inspectionAssign` own the two inspection status transitions the web app used to write itself.** `Created → Defined` and `→ Assigned` were plain `updateEntity` calls on the `status` field, which left the state machine enforced only in the browser: any authenticated caller could move an inspection to any state, and the gateway could not tell one transition from another to authorise it. The caller now names the **action** and never the target status, so `compliance_web`'s proxy gates each by role (`inspectionDefine` → planner, `inspectionAssign` → assigner), and the rules that lived in `src/utils/inspectionStatus.js` are applied here: Define only from `Created`, Assign from `Defined` or from `Planned` — the latter being the reassignment revert, which sends an already-planned inspection back so its plan is regenerated. Anything else answers `409` with the standard error envelope, an unknown inspection `404`, and a transition that is already in effect `200` with `changed: false` rather than an error. Both take `inspection=<id>`. This completes the pattern the other transitions already followed: `→ Planned` in Inspection Plan, `Planned → Uploaded` in Import Canonical, `→ Reported` in Inspection Report.
+
 ### Fixed
 
 - **The gateway's `401` body now uses the platform error envelope.** `httpNodeMiddleware` answered a rejected `X-API-Key` with `{ error: { code, message } }`, the one response in the service that did not follow the `{ "success": false, "error": "<message>" }` shape every flow error path uses. It now matches, so a consumer can parse any non-2xx the gateway returns the same way. No status changed and no success payload is affected.
