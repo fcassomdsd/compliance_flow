@@ -133,7 +133,7 @@
         "type": "function",
         "z": "041ce3d9cda14530",
         "name": "save site visit data",
-        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"locale\": msg.locale || \"es\"\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
+        "func": "msg.inspectionReport = {\n    \"inspectionCode\" : msg.payload.list[0].code,\n    \"providerId\": msg.providerId,\n    \"reportDate\": msg.reportDate,\n    \"mainInspector\": msg.payload.list[0].mainInspectorName,\n    \"locale\": msg.locale || \"es\",\n    // Approver shown in the report signature block: supplied per inspection with\n    // ?approvedBy=; otherwise entity-profile.json's signatures.reportApprovedBy.\n    \"approvedBy\": (msg.req && msg.req.query && msg.req.query.approvedBy) || \"\"\n};\n\nmsg.locationId = msg.payload.list[0].locationId;\nmsg.siteVisitId = msg.payload.list[0].id;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
