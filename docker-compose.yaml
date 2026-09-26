@@ -31,7 +31,7 @@ services:
       - HTTP_MAX_RETRIES=${HTTP_MAX_RETRIES:-2}
       - HTTP_RETRY_BACKOFF_MS=${HTTP_RETRY_BACKOFF_MS:-500}
     ports:
-      - "1880:1880"
+      - "${BIND_IP:-0.0.0.0}:1880:1880"
     networks:
       - node-red-net
       - node-backend-net
