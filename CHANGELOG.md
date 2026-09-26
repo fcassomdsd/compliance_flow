@@ -4,6 +4,23 @@ All notable changes are documented in this file.
 
 ## [Unreleased]
 
+### Security
+
+- **Container hardening — P3.2.** No service in this platform previously declared a resource limit, a non-root user, a read-only root filesystem, dropped capabilities or `no-new-privileges`. What each service can take differs, and the differences are recorded as comments in the compose files rather than silently skipped:
+
+  - **Full hardening** (read-only rootfs, non-root user, `cap_drop: ALL`, `no-new-privileges`, CPU/memory limits) where the service writes nothing to its own filesystem. Verified by booting each one, not just by rendering the config.
+  - **Partial, with the reason stated in-file**, where a control is structurally inapplicable rather than merely postponed: Postgres chowns its data directory and drops privileges at startup, so `cap_drop: ALL` and a read-only rootfs break it; Node-RED must write `flows.json` into a bind mount, which is its deployment model; AtroCore installs itself into a bind mount at first run and Apache binds `:80` as root; the Alfresco JVM services write caches, logs and indexes inside their own filesystems.
+
+### Added
+
+- **Images are pinned by digest as well as tag — P3.2 (supply chain).** A tag is a mutable pointer: upstream can re-push it at any time, so a tag-only pin does not describe a reproducible build and two builds a week apart could differ with nothing in git changing. Every external image reference now uses `name:tag@sha256:...`, keeping the tag beside the digest so the version stays readable.
+
+- **Supply-chain scanning in CI — P3.2.** No repository in this platform had any security scanning before this. A new `security:scan` job (GitLab, mirrored to GitHub Actions) runs Trivy over the dependency tree and produces a CycloneDX SBOM as an artifact.
+
+  The gate policy was chosen from measurement, not aspiration. **CRITICAL is blocking**: measured at zero across all six repos, so the gate is green today and genuinely stops a regression rather than being red on arrival. **HIGH is reported but not blocking**: 33 findings exist today (21 in `compliance_web`, 12 in `compliance_checklist`), every one with a fix available. Blocking on HIGH immediately would red those pipelines and the gate would be switched off within a day — which is worse than no gate, because a disabled gate still reads as protection. Clear the backlog, then raise the bar.
+
+  `--ignore-unfixed` keeps the gate actionable: a CVE with no available fix is information, not a task. `--skip-dirs` excludes generated and bind-mounted runtime trees — `web-data/` in particular is the AtroCore application installed at container bootstrap, gitignored and absent from a fresh checkout, which vendors its own npm tree; scanning it reports upstream's dependencies as if they were ours. It is not clean (upstream vendors a CRITICAL prototype-pollution advisory in `swiper`), but that belongs in an upstream report and in image scanning, not a gate on tracked source.
+
 ### Added
 
 - **Secrets can arrive as files, not only as environment variables — the first piece of P3.1 (production secrets).** The seven secrets the gateway needs (`API_KEY`, `NODE_RED_CREDENTIAL_SECRET`, `ADMIN_PASSWORD_HASH`, and the Alfresco/AtroCore credential pairs) now resolve by precedence in the new `data/secrets.js`: `<NAME>_FILE` → `/run/secrets/<name>` → the plain environment variable. This is the shape `compliance_import` has always used for its Alfresco credentials, generalised so the platform has one, and it is the seam a secret manager writes into — adding Vault later needs no change here. Two details that are load-bearing rather than incidental: **resolved values are written back into `process.env`**, because the flows' function nodes read `env.get(...)` and would otherwise never see a file-sourced credential; and **a `<NAME>_FILE` pointing at a missing or empty file fails startup rather than falling back** to the environment variable, because a silent fallback is precisely how a failed secret rotation comes to look like a successful one. (This last point is a deliberate divergence from the Python reference implementation, which does fall through; `compliance_import` is being aligned to it.) Covered by 12 unit tests in `scripts/secrets.test.mjs`, now part of the `validate:flows` CI job in both GitLab and the GitHub mirror.
