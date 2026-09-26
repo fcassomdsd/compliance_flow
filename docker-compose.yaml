@@ -39,6 +39,29 @@ services:
       - import-net
     volumes:
       - ./data:/data
+    restart: unless-stopped
+    # Container hardening (P3.2).
+    #
+    # NOT read_only: Node-RED rewrites /data/flows.json and
+    # /data/flows_cred.json from the editor, and that path is a bind mount the
+    # container must be able to write. Making the rootfs immutable would also
+    # break npm module installs from the palette. The bind mount is the whole
+    # point of this service's deployment model, so read_only is not applicable
+    # here rather than merely deferred.
+    #
+    # NOT user: the image runs as uid 1000 (node-red) already, and ./data is
+    # bind-mounted from the host -- bootstrap-node-red-data.sh exists precisely
+    # because that uid must own it. Overriding the user would reintroduce the
+    # ownership problem that script solves.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
 
 networks:
   node-red-net:
