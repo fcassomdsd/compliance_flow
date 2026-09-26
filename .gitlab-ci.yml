@@ -16,6 +16,7 @@ validate:flows:
   image: node:20-alpine
   script:
     - node --test scripts/flows-files.test.mjs
+    - node --test scripts/secrets.test.mjs
     - node scripts/assemble-flows.mjs --check
     - node scripts/split-flows.mjs --check
     - node scripts/validate-flows.mjs

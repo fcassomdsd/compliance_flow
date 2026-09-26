@@ -21,34 +21,22 @@
  **/
 
 var crypto = require("crypto");
+var secrets = require("./secrets.js");
 
 /**
- * Fail fast on an insecure production configuration.
+ * Resolve secrets before anything else reads them.
  *
- * The development defaults used elsewhere in this file (and the sample .env)
- * are not safe to run in production, so refuse to start when a required
- * variable is missing.
+ * Values arrive by the precedence documented in secrets.js (<NAME>_FILE, then
+ * a Docker secret, then the plain environment variable) and are written back
+ * into process.env so the flows' function nodes, which read env.get(...), see
+ * the same values this file does.
  */
-var REQUIRED_IN_PRODUCTION = [
-    "API_KEY",
-    "NODE_RED_CREDENTIAL_SECRET",
-    "ADMIN_PASSWORD_HASH",
-    "ALFRESCO_USERNAME",
-    "ALFRESCO_PASSWORD",
-    "ATROCORE_USERNAME",
-    "ATROCORE_PASSWORD"
-];
+var resolvedSecrets = secrets.applySecrets();
 
 if (process.env.NODE_ENV === "production") {
-    var missing = REQUIRED_IN_PRODUCTION.filter(function (name) {
-        return !process.env[name];
-    });
-    if (missing.length) {
-        throw new Error(
-            "Refusing to start: NODE_ENV=production requires these environment " +
-            "variables to be set: " + missing.join(", ")
-        );
-    }
+    // Throws when a required secret is absent, or when one still holds a value
+    // that is published in this repository and therefore secret to nobody.
+    secrets.assertProductionSecrets(resolvedSecrets);
 }
 
 module.exports = {

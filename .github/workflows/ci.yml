@@ -26,6 +26,7 @@ jobs:
       # README endpoint manifest still matches the flow's http-in nodes, and unit-check the
       # JavaScript embedded in the function nodes — all without a stack.
       - run: node --test scripts/flows-files.test.mjs
+      - run: node --test scripts/secrets.test.mjs
       - run: node scripts/assemble-flows.mjs --check
       - run: node scripts/split-flows.mjs --check
       - run: node scripts/validate-flows.mjs

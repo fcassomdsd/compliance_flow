@@ -126,6 +126,7 @@ the failure-isolation cues for when a flow misbehaves.
 | `data/flows_cred.json` | Encrypted credentials used by flows (do **not** commit plaintext secrets) |
 | `data/package.json` | Node-RED project metadata and custom node dependencies |
 | `.env.example` | Environment variable template (copy to `.env` before deployment) |
+| `data/secrets.js` | Secret resolution (`<NAME>_FILE` → Docker secret → env) and the production startup guard |
 
 ### Key settings (`data/settings.js`)
 
@@ -134,6 +135,33 @@ the failure-isolation cues for when a flow misbehaves.
 - **Credential encryption**: `credentialSecret` is set via `NODE_RED_CREDENTIAL_SECRET` env var with a dev default
 - **Editor auth**: `adminAuth` is enabled — login required to access the Node-RED editor
 - **API auth**: all REST endpoints are gated by `httpNodeMiddleware` — when `API_KEY` is set (the shipped `.env.example` default, since 2026-09), requests require a matching `X-API-Key` header; leave it empty only for local development where nothing else points at this gateway
+
+### Secret resolution
+
+The seven secrets below (`API_KEY`, `NODE_RED_CREDENTIAL_SECRET`, `ADMIN_PASSWORD_HASH`,
+`ALFRESCO_USERNAME`, `ALFRESCO_PASSWORD`, `ATROCORE_USERNAME`, `ATROCORE_PASSWORD`) do not have to
+be environment variables. Each resolves by precedence (`data/secrets.js`):
+
+1. `<NAME>_FILE` — a path to a file holding the value
+2. `/run/secrets/<name>` — a Docker/Compose secret, lowercase name
+3. `<NAME>` — a plain environment variable
+
+So `ALFRESCO_PASSWORD_FILE=/run/secrets/alfresco_password` works in place of `ALFRESCO_PASSWORD=…`.
+This matches how `compliance_import` has always resolved its Alfresco credentials, and it is the
+seam a secret manager writes into — introducing one requires no change here.
+
+Two behaviours worth knowing:
+
+- **A broken `<NAME>_FILE` fails startup rather than falling back.** If the path is set but the file
+  is missing or empty, Node-RED refuses to start instead of quietly using the environment variable.
+  A silent fallback is how a failed secret rotation looks like a successful one.
+- **Resolved values are written back into `process.env`**, because the flows' function nodes read
+  `env.get(...)`, not this file. Without that, a file-sourced credential would never reach the nodes
+  that use it.
+
+With `NODE_ENV=production`, startup additionally refuses any secret still holding a value published
+in this repository — the demo API key, `replace-me`, `admin`, and similar. Setting a variable is not
+the same as securing it, and the gateway is the single chokepoint for all entity CRUD.
 
 ### Environment variables
 
@@ -146,7 +174,7 @@ the failure-isolation cues for when a flow misbehaves.
 | `ADMIN_USERNAME` | `admin` | Node-RED editor login username |
 | `ADMIN_PASSWORD_HASH` | *(bcrypt hash)* | Node-RED editor login password (bcrypt hash) |
 | `NODE_RED_CREDENTIAL_SECRET` | *(required)* | Encryption key for flow credentials — change in production |
-| `NODE_ENV` | `development` | `production` enables the startup validation (fails on missing secrets) |
+| `NODE_ENV` | `development` | `production` enables the startup validation (fails on missing secrets **and on any value published in this repository**) |
 | `ATROCORE_BASE_URL` | `http://atro-web/api/v1` | AtroCore API base URL used by every `http request` node |
 | `ALFRESCO_BASE_URL` | `http://proxy:8080/alfresco` | Alfresco base URL used by every `http request` node |
 | `HTTP_REQUEST_TIMEOUT_MS` | *(empty → 5000)* | Per-request timeout in ms; empty keeps the node's own 5s default |
