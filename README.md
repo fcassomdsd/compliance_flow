@@ -234,6 +234,24 @@ All endpoints are served at `http://<host>:1880`.
 |---|---|---|
 | `GET` | `/content/lastSeq` | Get the last content sequence number from Alfresco |
 
+### Health
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/health` | Liveness probe. **Exempt from `X-API-Key`** — a compose healthcheck, a Prometheus scrape and the quickstart's readiness probe none of them send the header, and a probe that answers `401` never reports healthy. It exposes no data and no upstream state. |
+
+Deliberately **shallow**: it answers `200` whenever Node-RED is serving the flow, and says nothing
+about AtroCore, Alfresco, Solr or the broker. That is liveness, not readiness, and the distinction
+matters here — `FOOTPRINT_AUDIT.md` measured that a dead ActiveMQ makes some gateway calls hang
+indefinitely with no error, and a dead Solr makes others hang. A probe that reached upstreams would
+inherit those hangs, so the container restart policy would be driven by something that can itself
+wedge. Upstream checks belong in Prometheus, which can time out and alert independently.
+
+It is implemented with a `change` node rather than a `function` node for the same reason: a
+function node can throw, and when the first version of this called `process.uptime()` — which the
+Node-RED sandbox does not expose — the endpoint accepted requests and never answered them. A
+hanging liveness probe is worse than none.
+
 ### Static / Reference Data
 
 | Method | Path | Description |

@@ -53,6 +53,18 @@ services:
     # bind-mounted from the host -- bootstrap-node-red-data.sh exists precisely
     # because that uid must own it. Overriding the user would reintroduce the
     # ownership problem that script solves.
+    healthcheck:
+      # Uses the gateway's own /health, which is exempt from the X-API-Key
+      # middleware precisely so probes can reach it. The node-red image ships
+      # its own HEALTHCHECK, but that one only knows the runtime is up -- this
+      # one proves the flow is loaded and serving, which is the thing that
+      # actually breaks (a flows.json that fails to load leaves the runtime
+      # happily running and every endpoint 404ing).
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://127.0.0.1:1880/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     cap_drop:
       - ALL
     security_opt:

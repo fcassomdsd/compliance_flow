@@ -4,6 +4,18 @@ All notable changes are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **`GET /health` on the gateway, and a compose healthcheck that uses it — P3.5.** This service had no health endpoint; the demo quickstart probed `/specialties` as a stand-in, which needs AtroCore to be up and answering, so it conflated "the gateway is alive" with "the whole chain works".
+
+  **Exempt from `X-API-Key`**, for the same reason `compliance_import` exempts its own: compose healthchecks, Prometheus scrapes and the quickstart's readiness probe none of them send the header, and a probe that answers `401` never reports healthy. Verified that with a key set, `/health` still returns `200` unauthenticated while `/specialties` correctly returns `401`.
+
+  Deliberately **shallow** — it reports that the flow is serving and nothing about AtroCore, Alfresco, Solr or the broker. That is liveness, not readiness, and the distinction is load-bearing here: `FOOTPRINT_AUDIT.md` measured that a dead ActiveMQ makes some gateway calls hang indefinitely with no error. A probe that reached upstreams would inherit those hangs, so a container's restart policy would depend on something that can itself wedge. Upstream checks belong in Prometheus, which can time out independently.
+
+  Implemented with a `change` node, not a `function` node, and that is not stylistic: the first version called `process.uptime()`, which the Node-RED sandbox does not expose. The function threw, no response was ever sent, and the endpoint accepted requests and hung until the client timed out — the exact failure shape this platform is already worst at diagnosing. A change node setting a static payload has nothing to throw.
+
+  The compose healthcheck targets it rather than relying on the upstream image's built-in `HEALTHCHECK`, which only knows the runtime is up: a `flows.json` that fails to load leaves Node-RED running happily while every endpoint 404s.
+
 ### Changed
 
 - **`BIND_IP` controls which host interface published ports listen on — P3.3.** Every published port in this repo now binds through `${BIND_IP:-0.0.0.0}`. The default preserves current behaviour exactly: the demo quickstart and `demo-verify-ci.sh` reach services over the network, and under dind `DEMO_HOST` is `docker` rather than localhost, so a hardcoded loopback bind would break the whole-stack guard. A production deployment sets `BIND_IP=127.0.0.1`, leaving `compliance_web`'s TLS edge on 443 as the only externally published port. See "An ideal production configuration.md" §2.3.
