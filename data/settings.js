@@ -240,6 +240,16 @@ module.exports = {
         // requires a matching X-API-Key header. The editor and admin API are
         // protected separately by adminAuth above. Production startup fails when
         // API_KEY is unset, so this guard cannot be left open by accident.
+        // /health is exempt from the key, for the same reason compliance_import
+        // exempts its own: a compose healthcheck, a Prometheus scrape and the
+        // quickstart's readiness probe none of them send X-API-Key, and a
+        // liveness probe that 401s is a liveness probe that never reports
+        // healthy. It exposes only that the process is running -- no data, no
+        // upstream state.
+        if (req.path === "/health") {
+            return next();
+        }
+
         var requiredKey = process.env.API_KEY;
         if (!requiredKey) {
             // Development only: without API_KEY the gateway is intentionally open.

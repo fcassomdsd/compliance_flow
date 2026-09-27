@@ -6901,6 +6901,78 @@
         "z": "a16f5c0d7b2e4901"
     },
     {
+        "id": "0ea523c0ec402e8e",
+        "type": "tab",
+        "label": "Health",
+        "disabled": false,
+        "info": "Liveness probe for the gateway.\n\nDeliberately shallow: it answers 200 whenever Node-RED is running the flow, and says nothing about AtroCore, Alfresco, Solr or the broker. That is a liveness check, not readiness, and the distinction matters here -- FOOTPRINT_AUDIT.md measured that a dead ActiveMQ makes some gateway calls hang indefinitely with no error, and a dead Solr makes others hang. A probe that reached upstreams would inherit those hangs and turn a health check into another way to wedge.\n\nChecking upstreams belongs in Prometheus, which can time out and alert independently, not in the liveness probe a container restart policy depends on.\n\nImplemented with a change node, not a function node, on purpose. A function node can throw -- the first version of this called process.uptime(), which the Node-RED sandbox does not expose, and the result was that the endpoint accepted the request and never answered. A liveness probe that hangs is worse than no probe: a hang is the one failure shape this platform already suffers from elsewhere (see FOOTPRINT_AUDIT.md on ActiveMQ) and the hardest to diagnose.",
+        "env": []
+    },
+    {
+        "id": "cb5cae576a0a7465",
+        "type": "http in",
+        "z": "0ea523c0ec402e8e",
+        "name": "Health",
+        "url": "/health",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "7ffc7659f5afe003"
+            ]
+        ]
+    },
+    {
+        "id": "7ffc7659f5afe003",
+        "type": "change",
+        "z": "0ea523c0ec402e8e",
+        "name": "Static payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"status\":\"ok\",\"service\":\"compliance_flow\",\"checked\":\"gateway process only; upstreams are not probed\"}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "statusCode",
+                "pt": "msg",
+                "to": "200",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 80,
+        "wires": [
+            [
+                "59658173db5e29bc"
+            ]
+        ]
+    },
+    {
+        "id": "59658173db5e29bc",
+        "type": "http response",
+        "z": "0ea523c0ec402e8e",
+        "name": "OK",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 560,
+        "y": 80,
+        "wires": []
+    },
+    {
         "id": "a4fd7864d2ed64a0",
         "type": "subflow",
         "name": "getAlfrescoTicket",
